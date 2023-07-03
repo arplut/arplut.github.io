@@ -134,6 +134,7 @@
 <body>
   <!-- Create a navbar with three tabs -->
   <div class="navbar">
+    <a href="#about">About</a>
      <a href="#resume">Resume</a>
      <a href="#blog">Blog</a>
      <a href="#contact">Contact</a>
@@ -141,6 +142,15 @@
 
    <!-- Create a container for the content -->
    <div class="container">
+
+    <!-- Create a card for the about tab -->
+    <div class="card" id="about">
+        <h2>About Me</h2>
+        <p>Hi, I'm John Doe, a web developer and a blogger. I love coding, learning new things, and sharing my knowledge with others.</p>
+        <img src="image.jpg" alt="A picture of me">
+        <p>On this website, you can find my resume, my blog posts, and my contact information. Feel free to explore and get in touch with me.</p>
+    </div>
+  
 
      <!-- Create a card for the resume tab -->
      <div class="card" id="resume">
@@ -250,6 +260,15 @@
          }
        });
      }
+
+     // Hide all the cards except the blog card when the page loads
+  window.onload = function() {
+    for (var k = 0; k < cards.length; k++) {
+      if (cards[k].id !== "blog") {
+        cards[k].style.display = "none";
+      }
+    }
+  }
 
    </script>
 

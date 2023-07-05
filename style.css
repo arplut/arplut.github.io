@@ -1,0 +1,181 @@
+/* Style the body element */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    
+}
+
+body {
+    /* Set the background color */
+    background-color: powderblue;
+    /* Set the font family */
+    font-family: Arial, sans-serif;
+
+  }
+  
+  /* Style the card element */
+  .card {
+    /* Set the display property to flex */
+    display: flex;
+    /* Set the flex direction property to column */
+    flex-direction: column;
+    /* Set the align items property to center */
+    align-items: center;
+    /* Set the margin property */
+    margin: 20px;
+    /* Set the padding property */
+    padding: 20px;
+    /* Set the border property */
+    border: 2px solid black;
+
+    background-color: white;
+      box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+      padding: 20px;
+  }
+  
+  /* Style the blog element */
+  .blog {
+    /* Set the display property to flex */
+    display: flex;
+    /* Set the flex direction property to column */
+    flex-direction: column;
+    
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-gap: 20px;
+  }
+  
+  /* Style the post element */
+  .post {
+    /* Set the margin property */
+    margin: 10px;
+  }
+  
+  /* Style the post element when hovered */
+  .post:hover {
+    /* Set the background color */
+    background-color: lightgreen;
+  }
+  
+  /* Style the h3 element inside the post element */
+  .post h3 {
+    /* Set the text align property to center */
+    text-align: center;
+  }
+  
+  /* Style all images inside the post element */
+  .post img {
+    /* Set the width property */
+    width: 300px;
+  }
+
+    /* Add some style to the page */
+ 
+
+    /* Create a navbar with three tabs */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      background-color: white;
+      height: 60px;
+    }
+
+    .navbar a {
+      text-decoration: none;
+      color: black;
+      font-weight: bold;
+    }
+
+    .navbar a:hover {
+      color: blue;
+    }
+
+    /* Create a container for the content */
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+    }
+
+
+
+    /* Add some style to the resume tab */
+    .resume {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      grid-gap: 20px;
+    }
+
+    .resume h2 {
+      color: blue;
+      margin-bottom: 10px;
+    }
+
+    .resume h3 {
+      margin-top: 10px;
+      margin-bottom: 5px;
+    }
+
+    .resume p {
+      margin-bottom: 10px;
+    }
+
+    .resume ul {
+      list-style-type: none;
+    }
+
+    .resume li {
+      margin-bottom: 5px;
+    }
+
+    /* Add some style to the blog tab */
+    
+
+    .blog h2 {
+      color: blue;
+      margin-bottom: 10px;
+    }
+
+    .blog h3 {
+      margin-top: 10px;
+      margin-bottom: 5px;
+    }
+
+    .blog p {
+      margin-bottom: 10px;
+    }
+
+    .blog img {
+      width: 100%;
+      height: auto;
+    }
+
+    /* Add some style to the contact tab */
+    .contact {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .contact h2 {
+      color: blue;
+      margin-bottom: 10px;
+    }
+
+    .contact p {
+      margin-bottom: 10px;
+    }
+
+    .contact a {
+      text-decoration: none;
+      color: black;
+      font-weight: bold;
+      margin-right: 10px;
+    }
+
+    .contact a:hover {
+      color: blue;
+    }
+    
+  

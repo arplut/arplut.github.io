@@ -11,7 +11,7 @@ body {
     background-color: powderblue;
     /* Set the font family */
     font-family: Arial, sans-serif;
-    
+
   }
   
   /* Style the card element */
@@ -21,7 +21,7 @@ body {
     /* Set the flex direction property to column */
     flex-direction: column;
     /* Set the align items property to center */
-    align-items: center;
+    align-items: left;
     /* Set the margin property */
     margin: 20px;
     /* Set the padding property */
@@ -32,8 +32,6 @@ body {
     background-color: white;
       box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
       padding: 20px;
-
-    
   }
   
   /* Style the blog element */
@@ -50,7 +48,7 @@ body {
   /* Style the post element */
   .post {
     /* Set the margin property */
-    margin: 10px;
+    margin: 20px;
   }
   
   /* Style the post element when hovered */
@@ -157,7 +155,7 @@ body {
     .contact {
       display: flex;
       flex-direction: column;
-      align-items: left;
+      align-items: center;
     }
 
     .contact h2 {

@@ -144,17 +144,105 @@
         <h2></h2>
         <div class="curations">
           <p>A page for things I have curated and made collections of, ranging from Korean pop music to cat reels on Instagram.</p>
-          <p>Pratul's Korean Music Playlist: </p>
-          <p>Pratul's Upbeat Hindi Music Playlist: </p>
-          <p>Cat reels that absolve social media of all its detrimental effects: </p>
-          <p><br>This section is a work in progress too! Stay tuned.</p>
+          <p><br><b>Pratul's Korean Music Playlist (P.S I don't know Korean just picked these songs based on how they sounded not sure what they mean): </b></p>
+          <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/0XJuBUnkaEMuEQTUM1odn1?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+          <p><br><b>Pratul's Hindi Music Playlist: </b></p>
+          <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/7lSULBtHwF1AsqE9yQlxLY?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+          <p><br><b>Cat reels that absolve social media of all its detrimental effects:</b><br><br>Unfortunately I could not figure out how to share cat reels on my website but if you are interested in funny cat videos+memes you may DM me to send it to you occassionally.</p>
         </div>
         
       </div>
 
       <div class="card" id="photography">
-        <h2>Photgography</h2>
-        <iframe src="photography.html" frameborder="0"></iframe>
+        <div class="gallery">
+          <div class="row" style="padding: 10px;">
+            <h2>Photos from New York<br></h2>
+          </div>
+          <div class="row">
+            
+            <div class="image"><a href="https://drive.google.com/uc?export=view&id=1D96ZHhoOIacl5YQ942YTpKewd6_PZc_J" data-lightbox="gallery"><img data-src="https://drive.google.com/uc?export=view&id=1D96ZHhoOIacl5YQ942YTpKewd6_PZc_J"></a></div>
+            <div class="image"><a href="https://drive.google.com/uc?export=view&id=1xqNaAHBxJ_MREFyyriD0f4vtQMrKfH1R" data-lightbox="gallery"><img data-src="https://drive.google.com/uc?export=view&id=1xqNaAHBxJ_MREFyyriD0f4vtQMrKfH1R"></a></div>
+            <div class="image"><a href="https://drive.google.com/uc?export=view&id=1nztQOsLzQdhU6RhlEUkmrDSH0yh1RD0K" data-lightbox="gallery"><img data-src="https://drive.google.com/uc?export=view&id=1nztQOsLzQdhU6RhlEUkmrDSH0yh1RD0K"></a></div>
+            <div class="image"><a href="https://drive.google.com/uc?export=view&id=13aai1pvv5987Pe82sHoJmR5iFTqRTRa1" data-lightbox="gallery"><img data-src="https://drive.google.com/uc?export=view&id=13aai1pvv5987Pe82sHoJmR5iFTqRTRa1"></a></div>
+            <div class="image"><a href="https://drive.google.com/uc?export=view&id=1v7VTGTcOJqQIfxcepOiXCdI1I-c53myP" data-lightbox="gallery"><img data-src="https://drive.google.com/uc?export=view&id=1v7VTGTcOJqQIfxcepOiXCdI1I-c53myP"></a></div>
+            <div class="image"><a href="https://drive.google.com/uc?export=view&id=1gpFcuwxfCqv58bdDHF0TJ9w86K3eschk" data-lightbox="gallery"><img data-src="https://drive.google.com/uc?export=view&id=1gpFcuwxfCqv58bdDHF0TJ9w86K3eschk"></a></div>
+            <div class="image"><a href="https://drive.google.com/uc?export=view&id=1rAmQC45lbOd_L-7Wb61Wu_DSpdblCCRw" data-lightbox="gallery"><img data-src="https://drive.google.com/uc?export=view&id=1rAmQC45lbOd_L-7Wb61Wu_DSpdblCCRw"></a></div>
+          </div>
+          
+        </div>
+
+        <style>
+          .gallery {
+            display: table-row;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            
+            overflow-x: scroll;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+          }
+
+          .row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            
+            align-items: center;
+            scroll-snap-align: start;
+            width: fit-content;
+          }
+
+          .image {
+            position: relative;
+            padding: 10px;
+          }
+
+          .image img {
+            width: 100%;
+            height: auto;
+          }
+
+          .image a {
+            display: block;
+          }
+
+          @media screen and (max-width: 768px) {
+            .row {
+              grid-template-columns: repeat(1, 1fr);
+            }
+          }
+        </style>
+
+        <script>
+          const images = document.querySelectorAll('img[data-src]');
+
+          function preloadImage(img) {
+            const src = img.getAttribute('data-src');
+            if (!src) {
+              return;
+            }
+            img.src = src;
+          }
+
+          const imgOptions = {
+            threshold: 0,
+            rootMargin: '0px 0px 200px 0px'
+          };
+
+          const imgObserver = new IntersectionObserver((entries, imgObserver) => {
+            entries.forEach(entry => {
+              if (!entry.isIntersecting) {
+                return;
+              } else {
+                preloadImage(entry.target);
+                imgObserver.unobserve(entry.target);
+              }
+            });
+          }, imgOptions);
+
+          images.forEach(image => {
+            imgObserver.observe(image);
+          });
+        </script>
+
       </div>
      
      <div class="card" id="contact">

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>WEB TITLE</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .content {
+        width: 50%;
+        margin: auto;
+        display: block;
+    }
+    @media screen and (max-width: 1100px) {
+        .content {
+            width: 100%;
+        }
+    }
+    </style>
+</head>
+  <body>
+    <div class = "content">
+      
+      <div class="card">
+        <h1>MAIN TITLE<br></h1>
+        <h3><b>Posted on March 26, 2024. By Pratul Venkatesh</b><br> <br></h3>
+        <p>If I dream of leading the universe then I will be a good leader for the world. </p>
+        <p>If I dream of leading the world then I will be a good leader for the country. </p>
+        <hr>
+        <br>
+        
+      
+      </div>
+      <button onclick="goBack()" style="display: block; margin: auto; margin-bottom: 50px;"">&nbsp;Go Back&nbsp;</button>
+    </div>
+    <script>
+      function goBack() {
+        window.history.back();
+      }
+    </script>
+  </body>
+
+</html>

@@ -1,223 +1,56 @@
-/* Style the body element */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    
-}
 
 body {
-    /* Set the background color */
-    background-color: powderblue;
-    /* Set the font family */
-    font-family: Arial, sans-serif;
-    
-  }
+  font-family: Arial, sans-serif;
+  background-color: powderblue;
   
-  /* Style the card element */
-  .card {
-    /* Set the display property to flex */
-    display: flex;
-    /* Set the flex direction property to column */
-    flex-direction: column;
-    /* Set the align items property to center */
-    align-items: center;
-    /* Set the margin property */
-    margin: 20px;
-    /* Set the padding property */
-    padding: 20px;
-    /* Set the border property */
-    border: 2px solid black;
+  margin: 0;
+  padding: 0;
+}
 
-    background-color: white;
-      box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-      padding: 20px;
+.card {
+  background-color: #fff;
+  border: 2px solid black;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 20px;
+  padding: 20px;
+}
 
-    
-  }
+h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+h3 {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+p {
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+button {
+  background-color: #d3d3d3;
+  border: 1px solid #000000;
+  border-radius: 1px;
+  color: #000000;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  margin: 20px;
+  padding: 10px 20px;
+}
+
+button:hover {
+  background-color: rgb(191, 238, 245);
+}
   
-  /* Style the blog element */
-  .blog {
-    /* Set the display property to flex */
-    display: flex;
-    /* Set the flex direction property to column */
-    flex-direction: column;
-    
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      grid-gap: 20px;
-  }
-  
-  /* Style the post element */
-  .post {
-    /* Set the margin property */
-    margin: 10px;
-  }
-  
-  /* Style the post element when hovered */
-  .post:hover {
-    /* Set the background color */
-    background-color: lightgreen;
-  }
-  
-  /* Style the h3 element inside the post element */
-  .post h3 {
-    /* Set the text align property to center */
-    text-align: center;
-  }
-  
-  /* Style all images inside the post element */
-  .post img {
-    /* Set the width property */
-    width: 300px;
-  }
-
-    /* Add some style to the page */
- 
-
-    /* Create a navbar with three tabs */
-    .navbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
-      background-color: white;
-      height: 60px;
-    }
-
-    .navbar a {
-      text-decoration: none;
-      color: black;
-      font-weight: bold;
-    }
-
-    .navbar a:hover {
-      color: blue;
-    }
-
-    /* Create a container for the content */
-    .container {
-      max-width: 1200px;
-      margin: 20px auto;
-      padding: 20px;
-    }
-
-
-
-    /* Add some style to the resume tab */
-    .resume {
-      display: grid;
-      /*grid-template-columns: 2fr 2fr;*/
-      grid-gap: 20px;
-    }
-
-    .resume h2 {
-      color: blue;
-      margin-bottom: 10px;
-    }
-
-    .resume h3 {
-      margin-top: 10px;
-      margin-bottom: 5px;
-    }
-
-    .resume p {
-      margin-bottom: 10px;
-    }
-
-    .resume ul {
-      list-style-type: none;
-    }
-
-    .resume li {
-      margin-bottom: 5px;
-    }
-
-    /* Add some style to the blog tab */
-    
-
-    .blog h2 {
-      /*color: blue;*/
-      margin-bottom: 10px;
-    }
-
-    .blog h3 {
-      margin-top: 10px;
-      margin-bottom: 5px;
-    }
-
-    .blog p {
-      margin-bottom: 10px;
-    }
-
-    .blog img {
-      width: 100%;
-      height: auto;
-    }
-
-    /* Add some style to the contact tab */
-    .contact {
-      display: flex;
-      flex-direction: column;
-      align-items: left;
-    }
-
-    .contact h2 {
-      /*color: blue;*/
-      margin-bottom: 10px;
-    }
-
-    .contact p {
-      margin-bottom: 10px;
-    }
-
-    .contact a {
-      text-decoration: none;
-      color: black;
-      font-weight: bold;
-      margin-right: 10px;
-    }
-
-    .contact a:hover {
-      color: blue;
-    }
-    
-    .photography {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      grid-gap: 20px;
-    }
-    
-    .gallery img {
-      width: 100%;
-      height: auto;
-      cursor: pointer;
-    }
-    
-    .row-title {
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-    
-    .scroll-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 10px;
-    }
-    
-    .scroll-bar button {
-      background: none;
-      border: none;
-      font-size: 24px;
-      cursor: pointer;
-    }
-    
-    .scroll-bar button:disabled {
-      opacity: 0.5;
-      cursor: default;
-    }  

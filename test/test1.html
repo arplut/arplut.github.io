@@ -89,36 +89,64 @@
         const gridItems = document.querySelectorAll('.grid-item img');
         const totalStates = 3; // Total number of states
         const sliderWidth = sliderBar.offsetWidth; // Width of the slider bar
-        const stateWidth = sliderWidth / (totalStates -1) - 15; // Width of each state
+        const stateWidth = sliderWidth / (totalStates - 1) - 15; // Width of each state
         let currentState = 0;
+
+        const onMouseMove = (e) => {
+            let newLeft = e.clientX - sliderBar.getBoundingClientRect().left - sliderButton.offsetWidth / 2;
+            newLeft = Math.max(0, Math.min(newLeft, sliderWidth - sliderButton.offsetWidth)); // Constrain within slider bar
+            sliderButton.style.left = newLeft + 'px';
+
+            // Calculate the current state based on the slider position
+            const newState = Math.round(newLeft / stateWidth);
+            if (newState !== currentState) {
+                currentState = newState;
+                changeImages();
+            }
+        };
+
+        const onTouchMove = (e) => {
+            let touch = e.touches[0];
+            let newLeft = touch.clientX - sliderBar.getBoundingClientRect().left - sliderButton.offsetWidth / 2;
+            newLeft = Math.max(0, Math.min(newLeft, sliderWidth - sliderButton.offsetWidth)); // Constrain within slider bar
+            sliderButton.style.left = newLeft + 'px';
+
+            // Calculate the current state based on the slider position
+            const newState = Math.round(newLeft / stateWidth);
+            if (newState !== currentState) {
+                currentState = newState;
+                changeImages();
+            }
+        };
+
+        const onMouseUp = () => {
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+
+            // Snap to the nearest state
+            const finalLeft = currentState * stateWidth;
+            sliderButton.style.left = finalLeft + 'px';
+        };
+
+        const onTouchEnd = () => {
+            document.removeEventListener('touchmove', onTouchMove);
+            document.removeEventListener('touchend', onTouchEnd);
+
+            // Snap to the nearest state
+            const finalLeft = currentState * stateWidth;
+            sliderButton.style.left = finalLeft + 'px';
+        };
 
         sliderButton.addEventListener('mousedown', (e) => {
             e.preventDefault(); // Prevent text selection
-
-            const onMouseMove = (e) => {
-                let newLeft = e.clientX - sliderBar.getBoundingClientRect().left - sliderButton.offsetWidth / 2;
-                newLeft = Math.max(0, Math.min(newLeft, sliderWidth - sliderButton.offsetWidth)); // Constrain within slider bar
-                sliderButton.style.left = newLeft + 'px';
-
-                // Calculate the current state based on the slider position
-                const newState = Math.round(newLeft / stateWidth);
-                if (newState !== currentState) {
-                    currentState = newState;
-                    changeImages();
-                }
-            };
-
-            const onMouseUp = () => {
-                document.removeEventListener('mousemove', onMouseMove);
-                document.removeEventListener('mouseup', onMouseUp);
-
-                // Snap to the nearest state
-                const finalLeft = currentState * stateWidth;
-                sliderButton.style.left = finalLeft + 'px';
-            };
-
             document.addEventListener('mousemove', onMouseMove);
             document.addEventListener('mouseup', onMouseUp);
+        });
+
+        sliderButton.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Prevent text selection
+            document.addEventListener('touchmove', onTouchMove);
+            document.addEventListener('touchend', onTouchEnd);
         });
 
         function changeImages() {
@@ -135,6 +163,12 @@
                 }, index * 100);
             });
         }
+
+        // Initialize the slider button position to the middle state
+        window.addEventListener('load', () => {
+            const initialLeft = 0; // Adjust this value as needed
+            sliderButton.style.left = initialLeft + 'px';
+        });
     </script>
 </body>
 </html>

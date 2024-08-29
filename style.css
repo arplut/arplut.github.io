@@ -680,14 +680,14 @@ blockquote {
 .grid {
   display: grid;
   justify-content: center;
-  grid-template-columns: repeat(2, 200px);
-  grid-template-rows: repeat(2, 200px);
+  grid-template-columns: repeat(2, 250px);
+  grid-template-rows: repeat(2, 250px);
   gap: 10px; /* Reduced gap between grid items */
 }
 
 .grid-item {
-  width: 200px;
-  height: 200px;
+  width: 250px;
+  height: 250px;
   overflow: hidden;
 }
 
@@ -703,8 +703,8 @@ blockquote {
   position: relative;
   width: 50%;
   height: 20px;
-  margin-top: 0px;
-  margin-bottom: 50px;
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
 .slider-bar {

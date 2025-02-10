@@ -706,24 +706,23 @@ blockquote {
 }
 
 
-
 .button-container {
     display: flex;
     justify-content: center;
     gap: 20px; /* Increased gap between buttons */
-    margin-bottom: 0px; /* Added margin-bottom for spacing */
+    margin-bottom: 20px; /* Added margin-bottom for spacing */
 }
 
 .nav-button {
-    padding: 20px; /* Increased padding for larger buttons */
-    font-size: 24px; /* Increased font size */
+    padding: 15px 20px; /* Adjusted padding for better text visibility */
+    font-size: 35px; /* Increased font size */
     cursor: pointer;
     border: none;
     background-color: #007bff;
     color: white;
     border-radius: 5px;
     transition: background-color 0.3s;
-    width: 25%; /* Each button takes up 1/4th of the page width */
+    width: 27%; /* Each button takes up 1/4th of the page width */
 }
 
 .nav-button:disabled {

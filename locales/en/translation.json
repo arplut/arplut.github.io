@@ -1,0 +1,174 @@
+{
+  "common": {
+    "title": "Geodha",
+    "description": "Geodha - Location Intelligence Platform",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "more": "More",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "all": "All",
+    "none": "None"
+  },
+  "navigation": {
+    "home": "Home",
+    "about": "About",
+    "features": "Features",
+    "pricing": "Pricing",
+    "contact": "Contact",
+    "login": "Login",
+    "signup": "Sign Up",
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot Password?",
+    "resetPassword": "Reset Password",
+    "loginTitle": "Login to your account",
+    "signupTitle": "Create an account",
+    "or": "Or",
+    "continueWith": "Continue with",
+    "alreadyHaveAccount": "Already have an account?",
+    "dontHaveAccount": "Don't have an account?",
+    "resetPasswordTitle": "Reset your password",
+    "resetPasswordDescription": "Enter your email and we'll send you a link to reset your password."
+  },
+  "dashboard": {
+    "welcome": "Welcome",
+    "overview": "Overview",
+    "statistics": "Statistics",
+    "recentActivity": "Recent Activity",
+    "notifications": "Notifications",
+    "newNotification": "New Notification",
+    "noNotifications": "No notifications",
+    "viewAll": "View All",
+    "dashboardTitle": "Dashboard"
+  },
+  "errors": {
+    "somethingWentWrong": "Something went wrong",
+    "pageNotFound": "Page not found",
+    "goHome": "Go to Homepage",
+    "tryAgain": "Try again",
+    "networkError": "Network error",
+    "serverError": "Server error",
+    "unauthorized": "Unauthorized",
+    "forbidden": "Forbidden",
+    "notFound": "Not found",
+    "timeout": "Request timeout"
+  },
+  "footer": {
+    "company": "Company",
+    "legal": "Legal",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "cookies": "Cookie Policy",
+    "rights": "All rights reserved",
+    "contactUs": "Contact Us",
+    "resources": "Resources",
+    "documentation": "Documentation",
+    "tutorials": "Tutorials",
+    "blog": "Blog",
+    "support": "Support",
+    "changelog": "Changelog"
+  },
+  "hero": {
+    "title": "Location Intelligence Platform",
+    "subtitle": "Unlock location-based insights for your business",
+    "getStarted": "Get Started",
+    "learnMore": "Learn More"
+  },
+  "features": {
+    "title": "Features",
+    "subtitle": "Why choose Geodha",
+    "feature1Title": "Real-time Analysis",
+    "feature1Desc": "Analyze location data in real-time for immediate insights",
+    "feature2Title": "Interactive Maps",
+    "feature2Desc": "Create and customize interactive maps with ease",
+    "feature3Title": "Data Visualization",
+    "feature3Desc": "Visualize complex spatial data in meaningful ways"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "Get in touch with our team",
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "send": "Send Message",
+    "address": "Address",
+    "phone": "Phone",
+    "emailAddress": "Email",
+    "sendSuccess": "Your message has been sent successfully!",
+    "sendError": "There was an error sending your message. Please try again.",
+    "getInTouch": "Get in Touch",
+    "interest": "Interested in helping us further realize this mission?",
+    "lookingFor": "We're looking for passionate individuals to join our team! If you have skills in ",
+    "appDevelopment": "app development",
+    "contentCreation": "content creation",
+    "kannadaTranslation": "Kannada translation",
+    "coFounder": "co-founder",
+    "hearFromYou": "we'd love to hear from you.",
+    "messageSent": "Message Sent!",
+    "sendAnotherMessage": "Send Another Message",
+    "yourName": "Your name",
+    "yourEmail": "Your email address",
+    "tellUsMessage": "Tell us how you'd like to contribute",
+    "sending": "Sending...",
+    "reachOut": "Or reach out directly at:"
+  },
+  "download": {
+    "title": "Download Our App",
+    "subtitle": "Available on iOS and Android",
+    "appStore": "App Store",
+    "googlePlay": "Google Play",
+    "desktopApp": "Desktop App",
+    "freeDownload": "Free Download"
+  },
+  "environmental": {
+    "awareness": "Environmental Awareness",
+    "whyImportant": "Why this is important?",
+    "description": "Over the past decades, we've witnessed our cities transform - not for the better. Our once vibrant urban spaces are now choked with pollution, making them increasingly uninhabitable. The air we breathe, the water we drink, and the land we live on are all suffering. This isn't just about statistics; it's about our homes, our future, and the legacy we'll leave behind.",
+    "element": {
+      "fire": {
+        "title": "Fire",
+        "pristineDescription": "The element of transformation and energy",
+        "currentDescription": "Deforestation and burning lead to air pollution and biodiversity loss"
+      },
+      "water": {
+        "title": "Water",
+        "pristineDescription": "The element of life and purification",
+        "currentDescription": "Water pollution affects drinking water, marine life, and public health"
+      },
+      "air": {
+        "title": "Air",
+        "pristineDescription": "The element of freedom and breath",
+        "currentDescription": "Industrial emissions create smog, decrease air quality, and contribute to climate change"
+      },
+      "earth": {
+        "title": "Earth",
+        "pristineDescription": "The element of stability and growth",
+        "currentDescription": "Soil contamination, improper waste disposal, and erosion threaten agricultural land"
+      },
+      "viewNaturalState": "View Natural State",
+      "viewCurrentState": "View Current State",
+      "previous": "PREVIOUS",
+      "next": "NEXT",
+      "clickNext": "Click next to see how these elements look today..."
+    }
+  }
+}

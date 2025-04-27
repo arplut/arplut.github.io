@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file://C%3A/Users/Pratul%20Venkatesh/Documents/GitHub/arplut.github.io/components/layout/map-component.tsx"],"sourcesContent":["'use client';\r\n\r\nimport { MapContainer, TileLayer } from 'react-leaflet';\r\nimport 'leaflet/dist/leaflet.css';\r\nimport L from 'leaflet';\r\n\r\n\r\nexport function BangaloreMap() {\r\n\r\n  const bangalore: [number, number] = [12.9716, 77.5946];\r\n  \r\n  return (\r\n    <MapContainer \r\n      center={bangalore as L.LatLngExpression} \r\n      zoom={12} \r\n      style={{ height: '100%', width: '100%' }}\r\n      scrollWheelZoom={true}\r\n    >\r\n      <TileLayer\r\n        url=\"https://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}{r}.png\"\r\n        minZoom={0}\r\n        maxZoom={20}\r\n      />\r\n    </MapContainer>\r\n  );\r\n}\r\n"],"names":[],"mappings":";;;;AAEA;AAAA;AAFA;;;;AAOO,SAAS;IAEd,MAAM,YAA8B;QAAC;QAAS;KAAQ;IAEtD,qBACE,6LAAC,0JAAA,CAAA,eAAY;QACX,QAAQ;QACR,MAAM;QACN,OAAO;YAAE,QAAQ;YAAQ,OAAO;QAAO;QACvC,iBAAiB;kBAEjB,cAAA,6LAAC,uJAAA,CAAA,YAAS;YACR,KAAI;YACJ,SAAS;YACT,SAAS;;;;;;;;;;;AAIjB;KAlBgB","debugId":null}}]
+}

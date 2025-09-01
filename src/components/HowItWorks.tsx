@@ -63,7 +63,10 @@ const HowItWorks = () => {
         </div>
 
         <div className="text-center">
-          <Button variant="hero" size="lg">
+          <Button variant="hero" size="lg" onClick={() => {
+            window.history.pushState({}, '', '/create');
+            window.dispatchEvent(new PopStateEvent('popstate'));
+          }}>
             <Camera className="h-5 w-5 mr-2" />
             Start Your First Report
           </Button>

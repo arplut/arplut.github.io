@@ -23,11 +23,17 @@ const Hero = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button variant="hero" size="lg" className="flex-1 sm:flex-none">
+              <Button variant="hero" size="lg" className="flex-1 sm:flex-none" onClick={() => {
+                window.history.pushState({}, '', '/create');
+                window.dispatchEvent(new PopStateEvent('popstate'));
+              }}>
                 <Camera className="h-5 w-5 mr-2" />
                 Start Reporting
               </Button>
-              <Button variant="outline" size="lg" className="flex-1 sm:flex-none">
+              <Button variant="outline" size="lg" className="flex-1 sm:flex-none" onClick={() => {
+                window.history.pushState({}, '', '/reports');
+                window.dispatchEvent(new PopStateEvent('popstate'));
+              }}>
                 <MapPin className="h-5 w-5 mr-2" />
                 View Map
               </Button>

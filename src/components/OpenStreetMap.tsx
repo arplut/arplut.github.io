@@ -1,5 +1,6 @@
+
 import { useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { Icon } from 'leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -38,26 +39,6 @@ interface OpenStreetMapProps {
   selectedReportId?: string | null;
   className?: string;
 }
-
-// Simple map event handler component
-const MapEvents = ({ onReportClick }: { onReportClick?: (reportId: string) => void }) => {
-  const map = useMap();
-  
-  useEffect(() => {
-    // Add any map event listeners here if needed
-    const handleMapClick = () => {
-      // Handle map click events
-    };
-    
-    map.on('click', handleMapClick);
-    
-    return () => {
-      map.off('click', handleMapClick);
-    };
-  }, [map, onReportClick]);
-
-  return null;
-};
 
 // Custom marker icons based on status
 const getMarkerIcon = (status: string, isSelected: boolean) => {
@@ -116,8 +97,6 @@ const OpenStreetMap: React.FC<OpenStreetMapProps> = ({
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        
-        <MapEvents onReportClick={onReportClick} />
         
         {reports.map((report) => (
           <Marker

@@ -3,16 +3,17 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { getFunctions } from 'firebase/functions';
+import { getAnalytics } from "firebase/analytics";
 
-// Firebase configuration - Replace with your actual config
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "your-api-key-here",
-  authDomain: "your-project.firebaseapp.com",
-  projectId: "your-project-id",
-  storageBucket: "your-project.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "your-app-id",
-  measurementId: "your-measurement-id"
+  apiKey: "***REMOVED***",
+  authDomain: "***REMOVED***",
+  projectId: "***REMOVED***",
+  storageBucket: "***REMOVED***.firebasestorage.app",
+  messagingSenderId: "***REMOVED***",
+  appId: "***REMOVED***",
+  measurementId: "***REMOVED***"
 };
 
 // Initialize Firebase
@@ -23,5 +24,6 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 export const functions = getFunctions(app);
+export const analytics = getAnalytics(app);
 
 export default app;

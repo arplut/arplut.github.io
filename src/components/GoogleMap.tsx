@@ -165,7 +165,7 @@ const GoogleMap: React.FC<GoogleMapProps> = (props) => {
 
   useEffect(() => {
     // Try to get API key from environment or localStorage
-    const storedApiKey = localStorage.getItem('GOOGLE_MAPS_API_KEY') || 'YOUR_GOOGLE_MAPS_API_KEY_HERE';
+    const storedApiKey = localStorage.getItem('GOOGLE_MAPS_API_KEY') || '***REMOVED***';
     setApiKey(storedApiKey);
   }, []);
 

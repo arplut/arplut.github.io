@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin, Filter, Camera, Navigation, ZoomIn, ZoomOut, Layers } from "lucide-react";
 import { mockReports, statusColors, categoryColors } from "@/data/mockData";
 import { useToast } from "@/hooks/use-toast";
-import OpenStreetMap, { type MapReport } from "@/components/OpenStreetMap";
+import GoogleMap, { type MapReport } from "@/components/GoogleMap";
 
 const Map = () => {
   const [selectedReport, setSelectedReport] = useState<string | null>(null);
@@ -179,7 +179,7 @@ const Map = () => {
           <div className="lg:col-span-3">
             <Card className="shadow-soft h-[600px] relative overflow-hidden">
               <CardContent className="p-0 h-full">
-                <OpenStreetMap
+                <GoogleMap
                   reports={mapReports}
                   center={[12.9716, 77.5946]} // Bangalore
                   zoom={13}

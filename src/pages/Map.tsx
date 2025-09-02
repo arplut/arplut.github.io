@@ -1,263 +1,196 @@
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Filter, Camera, Navigation, ZoomIn, ZoomOut, Layers } from "lucide-react";
-import { mockReports, statusColors, categoryColors } from "@/data/mockData";
+import { MapPin, Filter, ThumbsUp, Loader2, ServerCrash, Layers } from "lucide-react";
+import { reportsService, Report } from "@/services/reportsService";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import GoogleMap, { type MapReport } from "@/components/GoogleMap";
+import { statusColors, categoryColors } from "@/data/mockData"; // Keep for colors
+import { formatDistanceToNow } from 'date-fns';
 
-const Map = () => {
-  const [selectedReport, setSelectedReport] = useState<string | null>(null);
-  const [mapView, setMapView] = useState<'satellite' | 'street'>('street');
+const MapPage = () => {
+  const { user } = useAuth();
+  const [reports, setReports] = useState<Report[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
   const [visibleCategories, setVisibleCategories] = useState<string[]>(['all']);
   const { toast } = useToast();
 
-  const filteredReports = mockReports.filter(report => 
+  useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        setLoading(true);
+        const fetchedReports = await reportsService.getReports();
+        setReports(fetchedReports);
+        setError(null);
+      } catch (err) {
+        setError("Failed to load map data. Please try again.");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchReports();
+  }, []);
+
+  const handleReportClick = (reportId: string) => {
+    setSelectedReportId(reportId);
+  };
+
+  const handleEndorse = async (reportId: string) => {
+    if (!user) {
+      toast({ title: "Login Required", description: "Please log in to endorse a report.", variant: "destructive" });
+      return;
+    }
+    try {
+      await reportsService.endorseReport(reportId, user.uid);
+      // Optimistically update the UI
+      setReports(prevReports => prevReports.map(r => 
+        r.id === reportId 
+          ? { ...r, endorsementCount: r.endorsementCount + 1, endorsements: [...r.endorsements, user.uid] }
+          : r
+      ));
+      toast({ title: "Success", description: "Report endorsed successfully!" });
+    } catch (err) {
+      toast({ title: "Error", description: "Failed to endorse the report.", variant: "destructive" });
+      console.error(err);
+    }
+  };
+
+  const filteredReports = reports.filter(report => 
     visibleCategories.includes('all') || visibleCategories.includes(report.category)
   );
 
-  // Convert mock reports to map format
-  const mapReports: MapReport[] = filteredReports.map((report, index) => ({
-    id: report.id,
-    position: [
-      12.9716 + (Math.random() - 0.5) * 0.1, // Random positions around Bangalore
-      77.5946 + (Math.random() - 0.5) * 0.1
-    ],
+  const mapReports: MapReport[] = filteredReports.map(report => ({
+    id: report.id!,
+    position: [report.location.coordinates.latitude, report.location.coordinates.longitude],
     title: report.title,
     category: report.category,
     status: report.status,
     description: report.description,
     photos: report.photos,
-    endorsementCount: report.endorsements
+    endorsementCount: report.endorsementCount,
   }));
 
-  const handleReportClick = (reportId: string) => {
-    setSelectedReport(reportId);
-  };
-
-  const handleEndorse = (reportId: string) => {
-    toast({
-      title: "Report Endorsed!",
-      description: "Thank you for validating this report.",
-    });
-  };
-
-  const selectedReportData = mockReports.find(r => r.id === selectedReport);
+  const selectedReportData = reports.find(r => r.id === selectedReportId);
 
   const categoryOptions = [
-    { value: 'all', label: 'All Categories', count: mockReports.length },
-    { value: 'garbage', label: 'Garbage', count: mockReports.filter(r => r.category === 'garbage').length },
-    { value: 'sewage', label: 'Sewage', count: mockReports.filter(r => r.category === 'sewage').length },
-    { value: 'burning', label: 'Burning', count: mockReports.filter(r => r.category === 'burning').length },
-    { value: 'construction', label: 'Construction', count: mockReports.filter(r => r.category === 'construction').length },
-    { value: 'pollution', label: 'Pollution', count: mockReports.filter(r => r.category === 'pollution').length },
+    { value: 'all', label: 'All Categories' },
+    { value: 'garbage', label: 'Garbage' },
+    { value: 'sewage', label: 'Sewage' },
+    { value: 'burning', label: 'Burning' },
+    { value: 'construction', label: 'Construction' },
+    { value: 'pollution', label: 'Pollution' },
+    { value: 'other', label: 'Other' },
   ];
 
+  const toggleCategory = (category: string) => {
+    if (category === 'all') {
+      setVisibleCategories(['all']);
+      return;
+    }
+    const newCategories = visibleCategories.includes('all') 
+      ? [category] 
+      : visibleCategories.includes(category)
+        ? visibleCategories.filter(c => c !== category)
+        : [...visibleCategories, category];
+    
+    if (newCategories.length === 0) {
+      setVisibleCategories(['all']);
+    } else {
+      setVisibleCategories(newCategories.filter(c => c !== 'all'));
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container px-4 py-8 space-y-6">
-        {/* Header */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-          <div>
-            <h1 className="text-3xl font-bold">Interactive Map</h1>
-            <p className="text-muted-foreground">Explore civic issues across your city</p>
+    <div className="flex flex-col lg:flex-row h-[calc(100vh-4rem)]">
+      {/* Sidebar */}
+      <div className="w-full lg:w-96 bg-background border-r overflow-y-auto p-4 space-y-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Map Filters</CardTitle>
+            <CardDescription>Select categories to display on the map.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-2">
+              {categoryOptions.map(cat => (
+                <Button
+                  key={cat.value}
+                  variant={visibleCategories.includes(cat.value) ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => toggleCategory(cat.value)}
+                >
+                  {cat.label}
+                </Button>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {selectedReportData ? (
+          <Card className="sticky top-4">
+            <CardHeader>
+              <CardTitle>{selectedReportData.title}</CardTitle>
+              <CardDescription>{selectedReportData.location.address}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {selectedReportData.photos.length > 0 && (
+                <img src={selectedReportData.photos[0]} alt={selectedReportData.title} className="rounded-lg w-full h-40 object-cover mb-4" />
+              )}
+              <p className="text-sm text-muted-foreground mb-4">{selectedReportData.description}</p>
+              <div className="flex flex-wrap gap-2 mb-4">
+                <Badge style={{ backgroundColor: statusColors[selectedReportData.status] }} className="text-white">{selectedReportData.status}</Badge>
+                <Badge style={{ backgroundColor: categoryColors[selectedReportData.category] }} className="text-white">{selectedReportData.category}</Badge>
+              </div>
+              <div className="text-sm text-muted-foreground mb-4">
+                Reported {formatDistanceToNow(selectedReportData.createdAt.toDate(), { addSuffix: true })}
+              </div>
+              <Button 
+                className="w-full" 
+                onClick={() => handleEndorse(selectedReportData.id!)}
+                disabled={!user || selectedReportData.endorsements.includes(user.uid)}
+              >
+                <ThumbsUp className="h-4 w-4 mr-2" />
+                {selectedReportData.endorsements.includes(user?.uid || '') ? 'Endorsed' : `Endorse (${selectedReportData.endorsementCount})`}
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="text-center text-muted-foreground p-8">
+            <MapPin className="h-8 w-8 mx-auto mb-2" />
+            <p>Click on a map pin to see report details.</p>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" size="lg">
-              <Navigation className="h-5 w-5 mr-2" />
-              Center on Me
-            </Button>
-            <Button variant="hero" size="lg" onClick={() => {
-              window.history.pushState({}, '', '/create');
-              window.dispatchEvent(new PopStateEvent('popstate'));
-            }}>
-              <Camera className="h-5 w-5 mr-2" />
-              New Report
-            </Button>
+        )}
+      </div>
+
+      {/* Map Area */}
+      <div className="flex-1 h-full w-full">
+        {loading ? (
+          <div className="h-full w-full flex items-center justify-center bg-muted">
+            <Loader2 className="h-12 w-12 animate-spin text-primary" />
           </div>
-        </div>
-
-        <div className="grid lg:grid-cols-4 gap-6">
-          {/* Map Controls Sidebar */}
-          <div className="lg:col-span-1 space-y-4">
-            {/* Map Controls */}
-            <Card className="shadow-soft">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Layers className="h-5 w-5" />
-                  Map Controls
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex gap-2">
-                  <Button
-                    variant={mapView === 'street' ? 'default' : 'outline'}
-                    size="sm"
-                    className="flex-1"
-                    onClick={() => setMapView('street')}
-                  >
-                    Street
-                  </Button>
-                  <Button
-                    variant={mapView === 'satellite' ? 'default' : 'outline'}
-                    size="sm"
-                    className="flex-1"
-                    onClick={() => setMapView('satellite')}
-                  >
-                    Satellite
-                  </Button>
-                </div>
-                <div className="flex gap-2">
-                  <Button variant="outline" size="icon">
-                    <ZoomIn className="h-4 w-4" />
-                  </Button>
-                  <Button variant="outline" size="icon">
-                    <ZoomOut className="h-4 w-4" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Category Filters */}
-            <Card className="shadow-soft">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Filter className="h-5 w-5" />
-                  Categories
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {categoryOptions.map((category) => (
-                  <div key={category.value} className="flex items-center justify-between">
-                    <label className="flex items-center space-x-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={visibleCategories.includes(category.value)}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setVisibleCategories([...visibleCategories, category.value]);
-                          } else {
-                            setVisibleCategories(visibleCategories.filter(c => c !== category.value));
-                          }
-                        }}
-                        className="rounded border-input"
-                      />
-                      <span className="text-sm">{category.label}</span>
-                    </label>
-                    <Badge variant="secondary" className="text-xs">
-                      {category.count}
-                    </Badge>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-
-            {/* Legend */}
-            <Card className="shadow-soft">
-              <CardHeader>
-                <CardTitle>Status Legend</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <div className="h-3 w-3 rounded-full bg-warning"></div>
-                  <span className="text-sm">Pending Verification</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="h-3 w-3 rounded-full bg-accent"></div>
-                  <span className="text-sm">Verified Issue</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="h-3 w-3 rounded-full bg-primary"></div>
-                  <span className="text-sm">Resolved</span>
-                </div>
-              </CardContent>
-            </Card>
+        ) : error ? (
+          <div className="h-full w-full flex items-center justify-center bg-destructive/10 text-destructive">
+            <ServerCrash className="h-12 w-12 mr-4" />
+            <div>
+              <p className="font-bold">Could not load map</p>
+              <p>{error}</p>
+            </div>
           </div>
-
-          {/* Map Area */}
-          <div className="lg:col-span-3">
-            <Card className="shadow-soft h-[600px] relative overflow-hidden">
-              <CardContent className="p-0 h-full">
-                <GoogleMap
-                  reports={mapReports}
-                  center={[12.9716, 77.5946]} // Bangalore
-                  zoom={13}
-                  onReportClick={handleReportClick}
-                  selectedReportId={selectedReport}
-                  className="h-full w-full"
-                />
-
-                {/* Selected Report Popup Overlay */}
-                {selectedReport && selectedReportData && (
-                  <div className="absolute top-4 left-4 max-w-sm z-[1000]">
-                    <Card className="shadow-glow border-2 border-primary/20">
-                      <CardHeader className="pb-3">
-                        <div className="flex justify-between items-start">
-                          <CardTitle className="text-lg line-clamp-1">
-                            {selectedReportData.title}
-                          </CardTitle>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setSelectedReport(null)}
-                          >
-                            ×
-                          </Button>
-                        </div>
-                        <div className="flex gap-2">
-                          <Badge className={statusColors[selectedReportData.status]} variant="secondary">
-                            {selectedReportData.status}
-                          </Badge>
-                          <Badge className={categoryColors[selectedReportData.category]} variant="outline">
-                            {selectedReportData.category}
-                          </Badge>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="space-y-3">
-                        {selectedReportData.photos.length > 0 && (
-                          <div className="aspect-video rounded-lg overflow-hidden bg-muted">
-                            <img 
-                              src={selectedReportData.photos[0]} 
-                              alt={selectedReportData.title}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                        )}
-                        <p className="text-sm text-muted-foreground line-clamp-2">
-                          {selectedReportData.description}
-                        </p>
-                        <div className="text-xs text-muted-foreground">
-                          <div className="flex items-center gap-1">
-                            <MapPin className="h-3 w-3" />
-                            <span className="line-clamp-1">{selectedReportData.location.address}</span>
-                          </div>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button variant="outline" size="sm" className="flex-1">
-                            View Details
-                          </Button>
-                          {!selectedReportData.hasUserEndorsed && (
-                            <Button 
-                              variant="default" 
-                              size="sm"
-                              onClick={() => handleEndorse(selectedReportData.id)}
-                            >
-                              Endorse
-                            </Button>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+        ) : (
+          <GoogleMap
+            reports={mapReports}
+            onReportClick={handleReportClick}
+            selectedReportId={selectedReportId}
+            className="h-full w-full"
+          />
+        )}
       </div>
     </div>
   );
 };
 
-export default Map;
+export default MapPage;

@@ -9,11 +9,11 @@ import { getAnalytics } from "firebase/analytics";
 const firebaseConfig = {
   apiKey: "***REMOVED***",
   authDomain: "***REMOVED***",
+  databaseURL: "https://***REMOVED***",
   projectId: "***REMOVED***",
-  storageBucket: "***REMOVED***.firebasestorage.app",
+  storageBucket: "***REMOVED***.appspot.com",
   messagingSenderId: "***REMOVED***",
-  appId: "***REMOVED***",
-  measurementId: "***REMOVED***"
+  appId: "1:***REMOVED***:web:26022ae4f9a45b95d06134"
 };
 
 // Initialize Firebase

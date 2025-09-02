@@ -13,7 +13,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { reportsService, CreateReportData } from '@/services/reportsService';
-import { Loader2, AlertTriangle } from 'lucide-react';
+import { Loader2, AlertTriangle, MapPin } from 'lucide-react';
+import LocationPicker, { type Location } from '@/components/LocationPicker';
 
 const reportSchema = z.object({
   title: z.string().min(10, 'Title must be at least 10 characters long.'),
@@ -32,6 +33,11 @@ const CreateReport = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState<Location>({
+    latitude: 12.9716,
+    longitude: 77.5946,
+    address: ''
+  });
 
   const form = useForm<z.infer<typeof reportSchema>>({
     resolver: zodResolver(reportSchema),
@@ -58,10 +64,9 @@ const CreateReport = () => {
         description: values.description,
         category: values.category,
         location: {
-          // Using placeholder coordinates. In a real app, you'd get this from a map or device GPS.
-          latitude: 12.9716,
-          longitude: 77.5946,
-          address: values.address,
+          latitude: selectedLocation.latitude,
+          longitude: selectedLocation.longitude,
+          address: selectedLocation.address || values.address,
           city: values.city,
           state: values.state,
         },
@@ -176,6 +181,23 @@ const CreateReport = () => {
                   </FormItem>
                 )}
               />
+              
+              {/* Location Picker */}
+              <div className="space-y-2">
+                <FormLabel className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4" />
+                  Location
+                </FormLabel>
+                <LocationPicker
+                  initialLocation={selectedLocation}
+                  onLocationChange={setSelectedLocation}
+                  height="300px"
+                />
+                <p className="text-sm text-muted-foreground">
+                  Click on the map to set the exact location of the issue, or use your current location.
+                </p>
+              </div>
+
                <FormField
                 control={form.control}
                 name="address"
@@ -183,7 +205,15 @@ const CreateReport = () => {
                   <FormItem>
                     <FormLabel>Address</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g., 123 Main St" {...field} />
+                      <Input 
+                        placeholder="e.g., 123 Main St" 
+                        {...field} 
+                        value={selectedLocation.address || field.value}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          setSelectedLocation(prev => ({ ...prev, address: e.target.value }));
+                        }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

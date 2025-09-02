@@ -6,7 +6,7 @@ import { MapPin, Filter, ThumbsUp, Loader2, ServerCrash, Layers } from "lucide-r
 import { reportsService, Report } from "@/services/reportsService";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
-import GoogleMap, { type MapReport } from "@/components/GoogleMap";
+import OpenStreetMap, { type MapReport } from "@/components/OpenStreetMap";
 import { statusColors, categoryColors } from "@/data/mockData"; // Keep for colors
 import { formatDistanceToNow } from 'date-fns';
 
@@ -181,7 +181,7 @@ const MapPage = () => {
             </div>
           </div>
         ) : (
-          <GoogleMap
+          <OpenStreetMap
             reports={mapReports}
             onReportClick={handleReportClick}
             selectedReportId={selectedReportId}

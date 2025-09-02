@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import { Icon, LatLngExpression } from 'leaflet';
+import { Icon } from 'leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -39,21 +39,22 @@ interface OpenStreetMapProps {
   className?: string;
 }
 
-// Component to handle map events
-const MapEventHandler = ({ 
-  onReportClick, 
-  selectedReportId 
-}: { 
-  onReportClick?: (reportId: string) => void;
-  selectedReportId?: string | null;
-}) => {
+// Simple map event handler component
+const MapEvents = ({ onReportClick }: { onReportClick?: (reportId: string) => void }) => {
   const map = useMap();
   
   useEffect(() => {
-    if (selectedReportId) {
-      // You could add logic here to center the map on the selected report
-    }
-  }, [selectedReportId, map]);
+    // Add any map event listeners here if needed
+    const handleMapClick = () => {
+      // Handle map click events
+    };
+    
+    map.on('click', handleMapClick);
+    
+    return () => {
+      map.off('click', handleMapClick);
+    };
+  }, [map, onReportClick]);
 
   return null;
 };
@@ -98,11 +99,8 @@ const OpenStreetMap: React.FC<OpenStreetMapProps> = ({
   selectedReportId,
   className = "h-96 w-full"
 }) => {
-  const mapRef = useRef<any>(null);
-
-  // Default to Leaflet's default icon if custom icons fail
+  // Set default icon for all markers
   useEffect(() => {
-    // Set default icon for all markers
     L.Marker.prototype.options.icon = DefaultIcon;
   }, []);
 
@@ -112,17 +110,14 @@ const OpenStreetMap: React.FC<OpenStreetMapProps> = ({
         center={center}
         zoom={zoom}
         className="h-full w-full rounded-lg"
-        ref={mapRef}
+        scrollWheelZoom={true}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
         
-        <MapEventHandler 
-          onReportClick={onReportClick}
-          selectedReportId={selectedReportId}
-        />
+        <MapEvents onReportClick={onReportClick} />
         
         {reports.map((report) => (
           <Marker

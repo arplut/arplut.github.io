@@ -161,41 +161,19 @@ const GoogleMapWrapper: React.FC<MapComponentProps> = ({ apiKey, ...props }) => 
 
 // Main component with API key handling
 const GoogleMap: React.FC<GoogleMapProps> = (props) => {
-  const [apiKey, setApiKey] = useState<string>('');
+  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
-  useEffect(() => {
-    // Try to get API key from environment or localStorage
-    const storedApiKey = localStorage.getItem('GOOGLE_MAPS_API_KEY') || '***REMOVED***';
-    setApiKey(storedApiKey);
-  }, []);
-
-  if (!apiKey || apiKey === 'YOUR_GOOGLE_MAPS_API_KEY_HERE') {
+  if (!apiKey) {
     return (
-      <div className="flex flex-col items-center justify-center h-96 w-full bg-muted rounded-lg border-2 border-dashed border-muted-foreground/25">
+      <div className="flex flex-col items-center justify-center h-96 w-full bg-destructive/10 rounded-lg border border-destructive/20">
         <div className="text-center max-w-md p-6">
-          <h3 className="font-semibold text-lg mb-2">Google Maps API Key Required</h3>
-          <p className="text-muted-foreground text-sm mb-4">
-            To use Google Maps, please add your API key. Get one from the Google Cloud Console.
+          <h3 className="font-semibold text-lg mb-2 text-destructive">Google Maps API Key is Missing</h3>
+          <p className="text-destructive/80 text-sm mb-4">
+            Please add your Google Maps API key to your <code>.env</code> file as <code>VITE_GOOGLE_MAPS_API_KEY</code>.
           </p>
-          <div className="space-y-3">
-            <input
-              type="text"
-              placeholder="Enter your Google Maps API Key"
-              className="w-full px-3 py-2 border border-input rounded-md text-sm"
-              onKeyPress={(e) => {
-                if (e.key === 'Enter') {
-                  const target = e.target as HTMLInputElement;
-                  if (target.value) {
-                    localStorage.setItem('GOOGLE_MAPS_API_KEY', target.value);
-                    setApiKey(target.value);
-                  }
-                }
-              }}
-            />
-            <p className="text-xs text-muted-foreground">
-              Press Enter to save and load the map
-            </p>
-          </div>
+          <p className="text-xs text-muted-foreground">
+            You can get a key from the Google Cloud Console. Remember to restart the development server after adding the key.
+          </p>
         </div>
       </div>
     );

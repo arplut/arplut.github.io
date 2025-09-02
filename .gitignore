@@ -24,3 +24,4 @@ dist-ssr
 *.sw?
 src/components/GoogleMap.tsx
 src/lib/firebase.ts
+.env

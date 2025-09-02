@@ -1,11 +1,12 @@
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { auth, db } from '@/lib/firebase';
 import { UserProfile } from '@/services/authService';
 
 interface AuthContextType {
   user: User | null;
-  userProfile: UserProfile | null; // You'll need to fetch this
+  userProfile: UserProfile | null;
   loading: boolean;
 }
 
@@ -17,22 +18,37 @@ const AuthContext = createContext<AuthContextType>({
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  // TODO: Add state for userProfile
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+    const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
       setLoading(false);
-      // TODO: If user exists, fetch their profile from Firestore
     });
 
-    return () => unsubscribe();
+    return () => unsubscribeAuth();
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      const userDocRef = doc(db, 'users', user.uid);
+      const unsubscribeProfile = onSnapshot(userDocRef, (doc) => {
+        if (doc.exists()) {
+          setUserProfile(doc.data() as UserProfile);
+        } else {
+          setUserProfile(null);
+        }
+      });
+      return () => unsubscribeProfile();
+    } else {
+      setUserProfile(null);
+    }
+  }, [user]);
 
   const value = {
     user,
-    userProfile: null, // Replace with actual profile
+    userProfile,
     loading,
   };
 

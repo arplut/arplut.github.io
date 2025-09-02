@@ -224,7 +224,7 @@ export default class ReportsService {
     try {
       const userRef = doc(db, 'users', userId);
       await updateDoc(userRef, {
-        reportCount: increment(1),
+        totalReports: increment(1),
       });
     } catch (error) {
       // It's possible the user document doesn't exist yet.

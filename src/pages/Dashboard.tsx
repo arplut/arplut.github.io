@@ -1,78 +1,117 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Camera, Award, TrendingUp, Users, MapPin, Calendar } from "lucide-react";
-import { mockUser, mockReports } from "@/data/mockData";
+import { Camera, Award, TrendingUp, Users, Calendar, Loader2 } from "lucide-react";
+import { reportsService, Report } from "@/services/reportsService";
 import ReportCard from "@/components/ReportCard";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
-  const [reports] = useState(mockReports.filter(report => report.reportedBy === mockUser.name));
+  const { user, userProfile } = useAuth();
+  const [reports, setReports] = useState<Report[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const handleViewDetails = (reportId: string) => {
-    toast({
-      title: "Feature Coming Soon",
-      description: "Report details view will be available soon!",
-    });
-  };
+  useEffect(() => {
+    if (user) {
+      const fetchReports = async () => {
+        try {
+          setLoading(true);
+          const userReports = await reportsService.getReports({ authorId: user.uid });
+          setReports(userReports);
+          setError(null);
+        } catch (err) {
+          setError("Failed to fetch reports. Please try again later.");
+          console.error(err);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchReports();
+    }
+  }, [user]);
 
-  const handleEndorse = (reportId: string) => {
-    toast({
-      title: "Report Endorsed!",
-      description: "Thank you for validating this report.",
-    });
+  const handleEndorse = async (reportId: string) => {
+    if (!user) {
+      toast({ title: "Authentication Required", description: "You must be logged in to endorse reports.", variant: "destructive" });
+      return;
+    }
+    try {
+      await reportsService.endorseReport(reportId, user.uid);
+      toast({
+        title: "Report Endorsed!",
+        description: "Thank you for validating this report.",
+      });
+    } catch (error) {
+      console.error(error);
+      toast({ title: "Endorsement Failed", description: "There was an error endorsing the report.", variant: "destructive" });
+    }
   };
 
   const stats = [
     {
       title: "Reports Submitted",
-      value: mockUser.reportsSubmitted,
+      value: userProfile?.totalReports ?? 0,
       icon: Camera,
       description: "Total issues reported",
       color: "text-primary"
     },
     {
       title: "Endorsements Given",
-      value: mockUser.endorsementsGiven,
+      value: 0,
       icon: Users,
       description: "Reports you've validated",
       color: "text-accent"
     },
     {
       title: "Endorsements Received",
-      value: mockUser.endorsementsReceived,
+      value: userProfile?.totalEndorsements ?? 0,
       icon: TrendingUp,
       description: "Community trust score",
       color: "text-warning"
     },
     {
       title: "Badges Earned",
-      value: mockUser.badges.length,
+      value: userProfile?.badges.length ?? 0,
       icon: Award,
       description: "Achievement milestones",
       color: "text-primary"
     }
   ];
 
+  if (!user && !loading) {
+    return (
+      <div className="container px-4 py-8 text-center">
+        <h2 className="text-2xl font-bold mb-4">Please Log In</h2>
+        <p className="text-muted-foreground mb-6">You need to be logged in to view your dashboard.</p>
+        <Button asChild>
+          <Link to="/login">Go to Login</Link>
+        </Button>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container px-4 py-8 space-y-8">
-        {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold">Welcome back, {mockUser.name}!</h1>
+            <h1 className="text-3xl font-bold">Welcome back, {user?.displayName || 'User'}!</h1>
             <p className="text-muted-foreground">Here's your civic engagement overview</p>
           </div>
-          <Button variant="hero" size="lg">
-            <Camera className="h-5 w-5 mr-2" />
-            New Report
+          <Button asChild variant="hero" size="lg">
+            <Link to="/create">
+              <Camera className="h-5 w-5 mr-2" />
+              New Report
+            </Link>
           </Button>
         </div>
 
-        {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {stats.map((stat, index) => (
             <Card key={index} className="shadow-soft hover:shadow-glow transition-all duration-300">
@@ -88,7 +127,6 @@ const Dashboard = () => {
           ))}
         </div>
 
-        {/* Profile Section */}
         <Card className="shadow-soft">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -99,22 +137,21 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-2">
-              {mockUser.badges.map((badge, index) => (
+              {userProfile?.badges.map((badge, index) => (
                 <Badge key={index} variant="secondary" className="px-3 py-1">
                   {badge}
                 </Badge>
-              ))}
+              )) || <p className="text-sm text-muted-foreground">No badges earned yet.</p>}
             </div>
             <div className="mt-4 flex items-center gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
                 <Calendar className="h-4 w-4" />
-                <span>Member since {new Date(mockUser.joinedAt).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })}</span>
+                <span>Member since {user?.metadata.creationTime ? new Date(user.metadata.creationTime).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' }) : 'N/A'}</span>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Reports Tabs */}
         <Tabs defaultValue="my-reports" className="space-y-6">
           <TabsList className="grid w-full grid-cols-2 lg:w-[400px]">
             <TabsTrigger value="my-reports">My Reports</TabsTrigger>
@@ -128,14 +165,25 @@ const Dashboard = () => {
                 <CardDescription>Issues you've reported to the community</CardDescription>
               </CardHeader>
               <CardContent>
-                {reports.length === 0 ? (
+                {loading ? (
+                  <div className="flex justify-center items-center py-8">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    <p className="ml-4 text-muted-foreground">Loading your reports...</p>
+                  </div>
+                ) : error ? (
+                  <div className="text-center py-8 text-destructive">
+                    <p>{error}</p>
+                  </div>
+                ) : reports.length === 0 ? (
                   <div className="text-center py-8">
                     <Camera className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                     <h3 className="text-lg font-semibold mb-2">No reports yet</h3>
                     <p className="text-muted-foreground mb-4">Start making a difference in your community</p>
-                    <Button variant="hero">
-                      <Camera className="h-4 w-4 mr-2" />
-                      Create First Report
+                    <Button asChild variant="hero">
+                      <Link to="/create">
+                        <Camera className="h-4 w-4 mr-2" />
+                        Create First Report
+                      </Link>
                     </Button>
                   </div>
                 ) : (
@@ -144,7 +192,7 @@ const Dashboard = () => {
                       <ReportCard
                         key={report.id}
                         report={report}
-                        onViewDetails={handleViewDetails}
+                        onViewDetails={() => {}}
                         onEndorse={handleEndorse}
                       />
                     ))}
@@ -161,35 +209,7 @@ const Dashboard = () => {
                 <CardDescription>Your latest civic engagement actions</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-                    <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                      <Users className="h-4 w-4 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-medium">Endorsed a sewage report</p>
-                      <p className="text-sm text-muted-foreground">Koramangala area • 2 hours ago</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-                    <div className="h-8 w-8 rounded-full bg-warning/10 flex items-center justify-center">
-                      <Camera className="h-4 w-4 text-warning" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-medium">Submitted garbage overflow report</p>
-                      <p className="text-sm text-muted-foreground">MG Road • 1 day ago</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-                    <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                      <Award className="h-4 w-4 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-medium">Earned "Community Champion" badge</p>
-                      <p className="text-sm text-muted-foreground">For 20+ report endorsements • 3 days ago</p>
-                    </div>
-                  </div>
-                </div>
+                <p className="text-muted-foreground">Recent activity feed coming soon.</p>
               </CardContent>
             </Card>
           </TabsContent>

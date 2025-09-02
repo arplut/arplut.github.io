@@ -1,6 +1,6 @@
-import { 
-  createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword, 
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
   User,
@@ -8,14 +8,14 @@ import {
   GoogleAuthProvider,
   signInWithPopup
 } from 'firebase/auth';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, Timestamp } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
 
 export interface UserProfile {
   id: string;
   email: string;
-  displayName?: string;
-  photoURL?: string;
+  displayName: string; // Changed to be required
+  photoURL: string;   // Changed to be required
   isAnonymous: boolean;
   language: 'en' | 'kn' | 'hi';
   notificationPreferences: {
@@ -27,13 +27,13 @@ export interface UserProfile {
     shareNamePublicly: boolean;
     allowAnonymousReporting: boolean;
   };
-  createdAt: Date;
+  createdAt: Timestamp; // Changed to Timestamp
   totalReports: number;
   totalEndorsements: number;
   badges: string[];
 }
 
-class AuthService {
+export default class AuthService {
   // Register with email and password
   async register(email: string, password: string, displayName?: string): Promise<User> {
     try {
@@ -45,7 +45,7 @@ class AuthService {
       }
       
       // Create user profile in Firestore
-      await this.createUserProfile(user);
+      await this.createUserProfile(user, displayName);
       
       return user;
     } catch (error) {
@@ -96,12 +96,12 @@ class AuthService {
   }
 
   // Create user profile in Firestore
-  private async createUserProfile(user: User): Promise<void> {
+  private async createUserProfile(user: User, displayName?: string): Promise<void> {
     const userProfile: UserProfile = {
       id: user.uid,
-      email: user.email!,
-      displayName: user.displayName || undefined,
-      photoURL: user.photoURL || undefined,
+      email: user.email || '', // Provide default for email
+      displayName: displayName || user.displayName || 'Anonymous User', // Ensure displayName is never undefined
+      photoURL: user.photoURL || '', // Provide a default empty string for photoURL
       isAnonymous: user.isAnonymous,
       language: 'en',
       notificationPreferences: {
@@ -110,41 +110,36 @@ class AuthService {
         endorsements: true,
       },
       privacySettings: {
-        shareNamePublicly: false,
-        allowAnonymousReporting: true,
+        shareNamePublicly: true,
+        allowAnonymousReporting: false,
       },
-      createdAt: new Date(),
+      createdAt: Timestamp.now(), // Use Firestore Timestamp
       totalReports: 0,
       totalEndorsements: 0,
-      badges: [],
+      badges: ['New Member'],
     };
 
-    await setDoc(doc(db, 'users', user.uid), userProfile);
+    const userRef = doc(db, 'users', user.uid);
+    await setDoc(userRef, userProfile);
   }
 
-  // Get user profile
+  // Listen for auth state changes
+  onAuthStateChanged(callback: (user: User | null) => void) {
+    return onAuthStateChanged(auth, callback);
+  }
+
+  // Get user profile from Firestore
   async getUserProfile(userId: string): Promise<UserProfile | null> {
     try {
-      const userDoc = await getDoc(doc(db, 'users', userId));
+      const userRef = doc(db, 'users', userId);
+      const userDoc = await getDoc(userRef);
       if (userDoc.exists()) {
         return userDoc.data() as UserProfile;
       }
       return null;
     } catch (error) {
-      console.error('Get user profile error:', error);
+      console.error('Error fetching user profile:', error);
       throw error;
     }
   }
-
-  // Listen to auth state changes
-  onAuthStateChanged(callback: (user: User | null) => void) {
-    return onAuthStateChanged(auth, callback);
-  }
-
-  // Get current user
-  getCurrentUser(): User | null {
-    return auth.currentUser;
-  }
 }
-
-export const authService = new AuthService();

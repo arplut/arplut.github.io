@@ -1,12 +1,12 @@
-import { 
-  collection, 
-  addDoc, 
-  getDocs, 
-  doc, 
-  updateDoc, 
-  query, 
-  where, 
-  orderBy, 
+import {
+  collection,
+  addDoc,
+  getDocs,
+  doc,
+  updateDoc,
+  query,
+  where,
+  orderBy,
   limit,
   GeoPoint,
   Timestamp,
@@ -15,6 +15,7 @@ import {
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '@/lib/firebase';
 
+// ... (Keep the Report and CreateReportData interfaces as they are) ...
 export interface Report {
   id?: string;
   title: string;
@@ -65,10 +66,11 @@ export interface CreateReportData {
   capturedAt: Date;
 }
 
-class ReportsService {
+
+export default class ReportsService {
   private reportsCollection = collection(db, 'reports');
 
-  // Create a new report
+  // ... (createReport, uploadPhotos, classifyImages methods remain the same) ...
   async createReport(reportData: CreateReportData, userId: string): Promise<string> {
     try {
       // Upload photos first
@@ -76,7 +78,7 @@ class ReportsService {
       
       // Classify images with AI (placeholder for now)
       const aiClassification = await this.classifyImages(photoUrls);
-      
+
       const report: Omit<Report, 'id'> = {
         title: reportData.title,
         description: reportData.description,
@@ -87,7 +89,7 @@ class ReportsService {
           address: reportData.location.address,
           city: reportData.location.city,
           state: reportData.location.state,
-          postalCode: reportData.location.postalCode,
+          ...(reportData.location.postalCode && { postalCode: reportData.location.postalCode }),
         },
         photos: photoUrls,
         authorId: userId,
@@ -100,7 +102,7 @@ class ReportsService {
         },
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
-        aiClassification,
+        ...(aiClassification && { aiClassification }),
       };
 
       const docRef = await addDoc(this.reportsCollection, report);
@@ -115,7 +117,6 @@ class ReportsService {
     }
   }
 
-  // Upload photos to Firebase Storage
   private async uploadPhotos(photos: File[], userId: string): Promise<string[]> {
     const uploadPromises = photos.map(async (photo, index) => {
       const timestamp = Date.now();
@@ -127,10 +128,9 @@ class ReportsService {
     return Promise.all(uploadPromises);
   }
 
-  // AI Image Classification (placeholder - integrate with Google Vision AI)
   private async classifyImages(photoUrls: string[]): Promise<Report['aiClassification']> {
     // TODO: Integrate with Google Cloud Vision API
-    // For now, return mock data
+    console.log("AI Classification: Using placeholder data for:", photoUrls);
     return {
       detectedObjects: ['waste', 'garbage'],
       confidence: 0.85,
@@ -138,109 +138,56 @@ class ReportsService {
     };
   }
 
-  // Get reports with filters
-  async getReports(filters?: {
-    category?: string;
-    status?: string;
-    location?: {
-      latitude: number;
-      longitude: number;
-      radius: number; // in kilometers
-    };
-    limit?: number;
-  }): Promise<Report[]> {
+  // OPTIMIZED: Get reports with filters
+  async getReports(filters: { authorId?: string; category?: string; status?: string; limit?: number } = {}): Promise<Report[]> {
     try {
-      let q = query(this.reportsCollection, orderBy('createdAt', 'desc'));
+      const { authorId, category, status, limit: limitCount } = filters;
+      let constraints = [orderBy('createdAt', 'desc')];
 
-      if (filters?.category && filters.category !== 'all') {
-        q = query(q, where('category', '==', filters.category));
+      if (authorId) {
+        constraints.push(where('authorId', '==', authorId));
+      }
+      if (category && category !== 'all') {
+        constraints.push(where('category', '==', category));
+      }
+      if (status) {
+        constraints.push(where('status', '==', status));
+      }
+      if (limitCount) {
+        constraints.push(limit(limitCount));
       }
 
-      if (filters?.status && filters.status !== 'all') {
-        q = query(q, where('status', '==', filters.status));
-      }
-
-      if (filters?.limit) {
-        q = query(q, limit(filters.limit));
-      }
-
-      const querySnapshot = await getDocs(q);
-      const reports: Report[] = [];
-      
-      querySnapshot.forEach((doc) => {
-        reports.push({
-          id: doc.id,
-          ...doc.data() as Omit<Report, 'id'>
-        });
-      });
-
-      // Apply location filter if specified (simple distance calculation)
-      if (filters?.location) {
-        return reports.filter(report => {
-          const distance = this.calculateDistance(
-            filters.location!.latitude,
-            filters.location!.longitude,
-            report.location.coordinates.latitude,
-            report.location.coordinates.longitude
-          );
-          return distance <= filters.location!.radius;
-        });
-      }
-
-      return reports;
+      const q = query(this.reportsCollection, ...constraints);
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Report));
     } catch (error) {
-      console.error('Error getting reports:', error);
+      console.error('Error fetching reports:', error);
       throw error;
     }
   }
 
-  // Endorse a report
-  async endorseReport(reportId: string, userId: string): Promise<void> {
+  async getReportById(reportId: string): Promise<Report | null> {
     try {
       const reportRef = doc(db, 'reports', reportId);
-      
-      await updateDoc(reportRef, {
-        endorsements: [...(await this.getReport(reportId))?.endorsements || [], userId],
-        endorsementCount: increment(1),
-        updatedAt: Timestamp.now()
-      });
+      const reportSnap = await getDoc(reportRef);
 
-      // Check if report should be verified (threshold: 3 endorsements)
-      const report = await this.getReport(reportId);
-      if (report && report.endorsementCount >= 3 && report.status === 'pending') {
-        await this.updateReportStatus(reportId, 'verified');
+      if (reportSnap.exists()) {
+        return { id: reportSnap.id, ...reportSnap.data() } as Report;
+      } else {
+        return null;
       }
     } catch (error) {
-      console.error('Error endorsing report:', error);
+      console.error('Error fetching report by ID:', error);
       throw error;
     }
   }
 
-  // Get single report
-  async getReport(reportId: string): Promise<Report | null> {
-    try {
-      const reportDoc = await getDocs(query(this.reportsCollection, where('__name__', '==', reportId)));
-      if (!reportDoc.empty) {
-        const doc = reportDoc.docs[0];
-        return {
-          id: doc.id,
-          ...doc.data() as Omit<Report, 'id'>
-        };
-      }
-      return null;
-    } catch (error) {
-      console.error('Error getting report:', error);
-      throw error;
-    }
-  }
-
-  // Update report status
   async updateReportStatus(reportId: string, status: Report['status']): Promise<void> {
     try {
       const reportRef = doc(db, 'reports', reportId);
       await updateDoc(reportRef, {
-        status,
-        updatedAt: Timestamp.now()
+        status: status,
+        updatedAt: Timestamp.now(),
       });
     } catch (error) {
       console.error('Error updating report status:', error);
@@ -248,33 +195,42 @@ class ReportsService {
     }
   }
 
-  // Update user's report count
+  async endorseReport(reportId: string, userId: string): Promise<void> {
+    try {
+      const reportRef = doc(db, 'reports', reportId);
+      const report = await this.getReportById(reportId);
+
+      if (report && !report.endorsements.includes(userId)) {
+        await updateDoc(reportRef, {
+          endorsements: [...report.endorsements, userId],
+          endorsementCount: increment(1),
+          updatedAt: Timestamp.now(),
+        });
+      } else if (report) {
+        // Optional: Allow un-endorsing
+        await updateDoc(reportRef, {
+          endorsements: report.endorsements.filter(id => id !== userId),
+          endorsementCount: increment(-1),
+          updatedAt: Timestamp.now(),
+        });
+      }
+    } catch (error) {
+      console.error('Error endorsing report:', error);
+      throw error;
+    }
+  }
+
   private async updateUserReportCount(userId: string): Promise<void> {
     try {
       const userRef = doc(db, 'users', userId);
       await updateDoc(userRef, {
-        totalReports: increment(1)
+        reportCount: increment(1),
       });
     } catch (error) {
-      console.error('Error updating user report count:', error);
+      // It's possible the user document doesn't exist yet.
+      // We can choose to create it here or handle it gracefully.
+      console.warn('Could not update user report count. User doc might not exist.', error);
     }
-  }
-
-  // Calculate distance between two coordinates (Haversine formula)
-  private calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
-    const R = 6371; // Earth's radius in kilometers
-    const dLat = this.degreesToRadians(lat2 - lat1);
-    const dLon = this.degreesToRadians(lon2 - lon1);
-    const a = 
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(this.degreesToRadians(lat1)) * Math.cos(this.degreesToRadians(lat2)) * 
-      Math.sin(dLon/2) * Math.sin(dLon/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return R * c;
-  }
-
-  private degreesToRadians(degrees: number): number {
-    return degrees * (Math.PI/180);
   }
 }
 

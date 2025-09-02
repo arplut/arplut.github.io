@@ -3,48 +3,46 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState } from "react";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Reports from "./pages/Reports";
 import CreateReport from "./pages/CreateReport";
-import Map from "./pages/Map";
+import MapPage from "./pages/Map"; // Renamed to avoid conflict with Route 'Map'
 import Blog from "./pages/Blog";
 import Navigation from "./components/Navigation";
 import NotFound from "./pages/NotFound";
+import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
+import { AuthProvider } from "./hooks/useAuth";
 
 const queryClient = new QueryClient();
 
 const App = () => {
-  const [currentPath, setCurrentPath] = useState(window.location.pathname);
-
-  const handleNavigate = (path: string) => {
-    setCurrentPath(path);
-    window.history.pushState({}, '', path);
-    // Trigger a popstate event to update the route
-    window.dispatchEvent(new PopStateEvent('popstate'));
-  };
-
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <BrowserRouter>
-          <div className="min-h-screen bg-background">
-            <Navigation currentPath={currentPath} onNavigate={handleNavigate} />
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/reports" element={<Reports />} />
-              <Route path="/create" element={<CreateReport />} />
-              <Route path="/map" element={<Map />} />
-              <Route path="/blog" element={<Blog />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </div>
-        </BrowserRouter>
+        <AuthProvider>
+          <BrowserRouter>
+            <div className="min-h-screen bg-background">
+              {/* The Navigation component will now read the route directly from React Router */}
+              <Navigation />
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/reports" element={<Reports />} />
+                <Route path="/create" element={<CreateReport />} />
+                <Route path="/map" element={<MapPage />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<SignUp />} />
+                {/* The catch-all route for 404 errors */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </div>
+          </BrowserRouter>
+        </AuthProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

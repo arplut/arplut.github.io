@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin, Filter, Camera, Navigation, ZoomIn, ZoomOut, Layers } from "lucide-react";
 import { mockReports, statusColors, categoryColors } from "@/data/mockData";
 import { useToast } from "@/hooks/use-toast";
+import OpenStreetMap, { type MapReport } from "@/components/OpenStreetMap";
 
 const Map = () => {
   const [selectedReport, setSelectedReport] = useState<string | null>(null);
@@ -15,6 +16,21 @@ const Map = () => {
   const filteredReports = mockReports.filter(report => 
     visibleCategories.includes('all') || visibleCategories.includes(report.category)
   );
+
+  // Convert mock reports to map format
+  const mapReports: MapReport[] = filteredReports.map((report, index) => ({
+    id: report.id,
+    position: [
+      12.9716 + (Math.random() - 0.5) * 0.1, // Random positions around Bangalore
+      77.5946 + (Math.random() - 0.5) * 0.1
+    ],
+    title: report.title,
+    category: report.category,
+    status: report.status,
+    description: report.description,
+    photos: report.photos,
+    endorsementCount: report.endorsements
+  }));
 
   const handleReportClick = (reportId: string) => {
     setSelectedReport(reportId);
@@ -163,123 +179,78 @@ const Map = () => {
           <div className="lg:col-span-3">
             <Card className="shadow-soft h-[600px] relative overflow-hidden">
               <CardContent className="p-0 h-full">
-                {/* Mock Map Background */}
-                <div className={`w-full h-full relative ${
-                  mapView === 'satellite' 
-                    ? 'bg-gradient-to-br from-green-800 via-green-700 to-green-900'
-                    : 'bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300'
-                }`}>
-                  {/* Street overlay for street view */}
-                  {mapView === 'street' && (
-                    <div className="absolute inset-0 opacity-30">
-                      <svg className="w-full h-full" viewBox="0 0 600 600">
-                        <path d="M100 100 L500 100 L500 200 L400 200 L400 300 L500 300 L500 500 L100 500 Z" 
-                              fill="none" stroke="gray" strokeWidth="2"/>
-                        <path d="M200 150 L300 150 M350 150 L450 150 M150 250 L250 250 M300 250 L400 250" 
-                              stroke="gray" strokeWidth="1"/>
-                      </svg>
-                    </div>
-                  )}
+                <OpenStreetMap
+                  reports={mapReports}
+                  center={[12.9716, 77.5946]} // Bangalore
+                  zoom={13}
+                  onReportClick={handleReportClick}
+                  selectedReportId={selectedReport}
+                  className="h-full w-full"
+                />
 
-                  {/* Report Pins */}
-                  {filteredReports.map((report, index) => {
-                    // Generate pseudo-random positions based on report ID
-                    const x = (index * 67 + 150) % 400 + 100;
-                    const y = (index * 83 + 120) % 350 + 100;
-                    
-                    return (
-                      <div
-                        key={report.id}
-                        className={`absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 transition-all duration-200 ${
-                          selectedReport === report.id ? 'scale-125 z-20' : 'hover:scale-110 z-10'
-                        }`}
-                        style={{ left: `${x}px`, top: `${y}px` }}
-                        onClick={() => handleReportClick(report.id)}
-                      >
-                        {/* Pin */}
-                        <div className={`relative`}>
-                          <MapPin className={`h-8 w-8 drop-shadow-lg ${
-                            report.status === 'pending' ? 'text-warning' :
-                            report.status === 'verified' ? 'text-accent' : 'text-primary'
-                          }`} />
-                          {/* Pulse animation for selected pin */}
-                          {selectedReport === report.id && (
-                            <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping"></div>
+                {/* Selected Report Popup Overlay */}
+                {selectedReport && selectedReportData && (
+                  <div className="absolute top-4 left-4 max-w-sm z-[1000]">
+                    <Card className="shadow-glow border-2 border-primary/20">
+                      <CardHeader className="pb-3">
+                        <div className="flex justify-between items-start">
+                          <CardTitle className="text-lg line-clamp-1">
+                            {selectedReportData.title}
+                          </CardTitle>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setSelectedReport(null)}
+                          >
+                            ×
+                          </Button>
+                        </div>
+                        <div className="flex gap-2">
+                          <Badge className={statusColors[selectedReportData.status]} variant="secondary">
+                            {selectedReportData.status}
+                          </Badge>
+                          <Badge className={categoryColors[selectedReportData.category]} variant="outline">
+                            {selectedReportData.category}
+                          </Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        {selectedReportData.photos.length > 0 && (
+                          <div className="aspect-video rounded-lg overflow-hidden bg-muted">
+                            <img 
+                              src={selectedReportData.photos[0]} 
+                              alt={selectedReportData.title}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        )}
+                        <p className="text-sm text-muted-foreground line-clamp-2">
+                          {selectedReportData.description}
+                        </p>
+                        <div className="text-xs text-muted-foreground">
+                          <div className="flex items-center gap-1">
+                            <MapPin className="h-3 w-3" />
+                            <span className="line-clamp-1">{selectedReportData.location.address}</span>
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm" className="flex-1">
+                            View Details
+                          </Button>
+                          {!selectedReportData.hasUserEndorsed && (
+                            <Button 
+                              variant="default" 
+                              size="sm"
+                              onClick={() => handleEndorse(selectedReportData.id)}
+                            >
+                              Endorse
+                            </Button>
                           )}
                         </div>
-                      </div>
-                    );
-                  })}
-
-                  {/* Selected Report Popup */}
-                  {selectedReport && selectedReportData && (
-                    <div className="absolute top-4 left-4 max-w-sm">
-                      <Card className="shadow-glow border-2 border-primary/20">
-                        <CardHeader className="pb-3">
-                          <div className="flex justify-between items-start">
-                            <CardTitle className="text-lg line-clamp-1">
-                              {selectedReportData.title}
-                            </CardTitle>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => setSelectedReport(null)}
-                            >
-                              ×
-                            </Button>
-                          </div>
-                          <div className="flex gap-2">
-                            <Badge className={statusColors[selectedReportData.status]} variant="secondary">
-                              {selectedReportData.status}
-                            </Badge>
-                            <Badge className={categoryColors[selectedReportData.category]} variant="outline">
-                              {selectedReportData.category}
-                            </Badge>
-                          </div>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                          {selectedReportData.photos.length > 0 && (
-                            <div className="aspect-video rounded-lg overflow-hidden bg-muted">
-                              <img 
-                                src={selectedReportData.photos[0]} 
-                                alt={selectedReportData.title}
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                          )}
-                          <p className="text-sm text-muted-foreground line-clamp-2">
-                            {selectedReportData.description}
-                          </p>
-                          <div className="text-xs text-muted-foreground">
-                            <div className="flex items-center gap-1">
-                              <MapPin className="h-3 w-3" />
-                              <span className="line-clamp-1">{selectedReportData.location.address}</span>
-                            </div>
-                          </div>
-                          <div className="flex gap-2">
-                            <Button variant="outline" size="sm" className="flex-1">
-                              View Details
-                            </Button>
-                            {!selectedReportData.hasUserEndorsed && (
-                              <Button 
-                                variant="default" 
-                                size="sm"
-                                onClick={() => handleEndorse(selectedReportData.id)}
-                              >
-                                Endorse
-                              </Button>
-                            )}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  )}
-
-                  {/* Map Attribution */}
-                  <div className="absolute bottom-2 right-2 text-xs text-muted-foreground bg-background/80 px-2 py-1 rounded">
-                    GEODHA Interactive Map
+                      </CardContent>
+                    </Card>
                   </div>
-                </div>
+                )}
               </CardContent>
             </Card>
           </div>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Camera, Map, BarChart3, User, Home, Menu, X } from "lucide-react";
+import { Camera, Map, BarChart3, User, Home, Menu, X, BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface NavigationProps {
@@ -15,9 +15,9 @@ const Navigation = ({ currentPath, onNavigate }: NavigationProps) => {
     { path: '/', label: 'Home', icon: Home },
     { path: '/reports', label: 'Reports', icon: Map },
     { path: '/map', label: 'Map', icon: Map },
+    { path: '/blog', label: 'Blog', icon: BookOpen },
     { path: '/create', label: 'New Report', icon: Camera },
     { path: '/dashboard', label: 'Dashboard', icon: BarChart3 },
-    { path: '/profile', label: 'Profile', icon: User },
   ];
 
   const handleNavigate = (path: string) => {

@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import Reports from "./pages/Reports";
 import CreateReport from "./pages/CreateReport";
 import Map from "./pages/Map";
+import Blog from "./pages/Blog";
 import Navigation from "./components/Navigation";
 import NotFound from "./pages/NotFound";
 
@@ -38,6 +39,7 @@ const App = () => {
               <Route path="/reports" element={<Reports />} />
               <Route path="/create" element={<CreateReport />} />
               <Route path="/map" element={<Map />} />
+              <Route path="/blog" element={<Blog />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

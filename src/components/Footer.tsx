@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Camera, MapPin, Users, Mail, Phone, Globe } from "lucide-react";
+import { Link } from "react-router-dom";
+import logoSvg from '@/assets/LOGO_SVG.svg';
 
 const Footer = () => {
   return (
@@ -7,12 +9,15 @@ const Footer = () => {
       <div className="container px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-primary">
-                <Camera className="h-4 w-4 text-white" />
-              </div>
-              <span className="text-xl font-bold text-primary">GEODHA</span>
-            </div>
+            <Link to="/" className="flex items-center space-x-2 group inline-block">
+              <img 
+                src={logoSvg} 
+                alt="GEODHA Logo" 
+                className="h-8 w-auto object-contain transition-transform duration-200 ease-in-out group-hover:scale-105"
+                loading="lazy"
+                decoding="async"
+              />
+            </Link>
             <p className="text-muted-foreground">
               Empowering citizens to create cleaner, safer communities through transparent civic engagement.
             </p>

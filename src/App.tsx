@@ -9,7 +9,9 @@ import Reports from "./pages/Reports";
 import CreateReport from "./pages/CreateReport";
 import MapPage from "./pages/Map"; // Renamed to avoid conflict with Route 'Map'
 import Blog from "./pages/Blog";
+import About from "./pages/About";
 import Navigation from "./components/Navigation";
+import Footer from "./components/Footer";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
@@ -35,11 +37,13 @@ const App = () => {
                 <Route path="/create" element={<CreateReport />} />
                 <Route path="/map" element={<MapPage />} />
                 <Route path="/blog" element={<Blog />} />
+                <Route path="/about" element={<About />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<SignUp />} />
                 {/* The catch-all route for 404 errors */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
+              <Footer />
             </div>
           </BrowserRouter>
         </AuthProvider>

@@ -118,6 +118,15 @@ const About = () => {
           </div>
 
           <div className="max-w-4xl mx-auto space-y-8">
+            <div className="prose prose-lg mx-auto text-muted-foreground">
+              <p className="text-lg leading-relaxed">
+                <strong>Spread the word!</strong> We are developing an app for everyone to submit reports of community challenges and view statistics for their community on issues such as open dumps, dirty water, garbage collection, electricity blackouts, air quality, and more.
+              </p>
+              
+              <p className="text-lg leading-relaxed">
+                Our primary goal is raising awareness on the extent of these issues in different communities, often unnoticed. Towards solving the challenges, we want to create datasets for researchers, public policy makers, and governments to utilize in crafting more comprehensive and effective solutions.
+              </p>
+            </div>
             <div className="bg-card p-8 rounded-xl border shadow-soft">
               <h3 className="text-2xl font-bold mb-6 text-center">Applications & Impact</h3>
               <ul className="space-y-4">

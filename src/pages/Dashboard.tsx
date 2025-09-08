@@ -9,6 +9,8 @@ import ReportCard from "@/components/ReportCard";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "react-router-dom";
+// TEMP_WIP_OVERLAY: Import for temporary work-in-progress overlay - remove when page is ready
+import WorkInProgressOverlay from "@/components/WorkInProgressOverlay";
 
 const Dashboard = () => {
   const { user, userProfile } = useAuth();
@@ -98,6 +100,8 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* TEMP_WIP_OVERLAY: Temporary work-in-progress overlay - remove when page is ready */}
+      <WorkInProgressOverlay />
       <div className="container px-4 py-8 space-y-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>

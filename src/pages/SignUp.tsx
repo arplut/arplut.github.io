@@ -7,6 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { FirebaseError } from 'firebase/app';
+// TEMP_WIP_OVERLAY: Import for temporary work-in-progress overlay - remove when page is ready
+import WorkInProgressOverlay from '@/components/WorkInProgressOverlay';
 
 const authService = new AuthService();
 
@@ -51,6 +53,8 @@ const SignUp = () => {
 
   return (
     <div className="container mx-auto flex items-center justify-center min-h-screen p-4">
+      {/* TEMP_WIP_OVERLAY: Temporary work-in-progress overlay - remove when page is ready */}
+      <WorkInProgressOverlay />
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Create an Account</CardTitle>

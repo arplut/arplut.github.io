@@ -7,6 +7,8 @@ import ReportCard from "@/components/ReportCard";
 import { reportsService, Report } from "@/services/reportsService";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+// TEMP_WIP_OVERLAY: Import for temporary work-in-progress overlay - remove when page is ready
+import WorkInProgressOverlay from "@/components/WorkInProgressOverlay";
 
 const Reports = () => {
   const { user } = useAuth();
@@ -64,6 +66,8 @@ const Reports = () => {
 
   return (
     <div className="container px-4 py-8 space-y-6">
+      {/* TEMP_WIP_OVERLAY: Temporary work-in-progress overlay - remove when page is ready */}
+      <WorkInProgressOverlay />
       <Card>
         <CardHeader>
           <CardTitle>Community Reports</CardTitle>

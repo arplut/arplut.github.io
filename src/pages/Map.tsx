@@ -6,9 +6,12 @@ import { MapPin, Filter, ThumbsUp, Loader2, ServerCrash, Layers } from "lucide-r
 import { reportsService, Report } from "@/services/reportsService";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
-import OpenStreetMap, { type MapReport } from "@/components/OpenStreetMap";
+// TEMP_WIP_OVERLAY: OpenStreetMap import temporarily disabled to prevent z-index conflict with overlay - restore when page is ready
+// import OpenStreetMap, { type MapReport } from "@/components/OpenStreetMap";
 import { statusColors, categoryColors } from "@/data/mockData"; // Keep for colors
 import { formatDistanceToNow } from 'date-fns';
+// TEMP_WIP_OVERLAY: Import for temporary work-in-progress overlay - remove when page is ready
+import WorkInProgressOverlay from "@/components/WorkInProgressOverlay";
 
 const MapPage = () => {
   const { user } = useAuth();
@@ -64,16 +67,17 @@ const MapPage = () => {
     visibleCategories.includes('all') || visibleCategories.includes(report.category)
   );
 
-  const mapReports: MapReport[] = filteredReports.map(report => ({
-    id: report.id!,
-    position: [report.location.coordinates.latitude, report.location.coordinates.longitude],
-    title: report.title,
-    category: report.category,
-    status: report.status,
-    description: report.description,
-    photos: report.photos,
-    endorsementCount: report.endorsementCount,
-  }));
+  // TEMP_WIP_OVERLAY: mapReports conversion temporarily disabled while OpenStreetMap is disabled - restore when page is ready
+  // const mapReports: MapReport[] = filteredReports.map(report => ({
+  //   id: report.id!,
+  //   position: [report.location.coordinates.latitude, report.location.coordinates.longitude],
+  //   title: report.title,
+  //   category: report.category,
+  //   status: report.status,
+  //   description: report.description,
+  //   photos: report.photos,
+  //   endorsementCount: report.endorsementCount,
+  // }));
 
   const selectedReportData = reports.find(r => r.id === selectedReportId);
 
@@ -107,6 +111,8 @@ const MapPage = () => {
 
   return (
     <div className="flex flex-col lg:flex-row h-[calc(100vh-4rem)]">
+      {/* TEMP_WIP_OVERLAY: Temporary work-in-progress overlay - remove when page is ready */}
+      <WorkInProgressOverlay />
       {/* Sidebar */}
       <div className="w-full lg:w-96 bg-background border-r overflow-y-auto p-4 space-y-4">
         <Card>
@@ -181,12 +187,22 @@ const MapPage = () => {
             </div>
           </div>
         ) : (
-          <OpenStreetMap
-            reports={mapReports}
-            onReportClick={handleReportClick}
-            selectedReportId={selectedReportId}
-            className="h-full w-full"
-          />
+          // TEMP_WIP_OVERLAY: OpenStreetMap component temporarily disabled to prevent z-index conflict with overlay
+          // <OpenStreetMap
+          //   reports={mapReports}
+          //   onReportClick={handleReportClick}
+          //   selectedReportId={selectedReportId}
+          //   className="h-full w-full"
+          // />
+          
+          // TEMP_WIP_OVERLAY: Placeholder div while OpenStreetMap is disabled - remove when page is ready
+          <div className="h-full w-full flex items-center justify-center bg-muted/20 text-muted-foreground">
+            <div className="text-center">
+              <Layers className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <p className="text-lg">Map Component Disabled</p>
+              <p className="text-sm">Will be available after work in progress</p>
+            </div>
+          </div>
         )}
       </div>
     </div>

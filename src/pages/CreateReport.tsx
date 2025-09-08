@@ -13,6 +13,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { reportsService, CreateReportData } from '@/services/reportsService';
+// TEMP_WIP_OVERLAY: Import for temporary work-in-progress overlay - remove when page is ready
+import WorkInProgressOverlay from '@/components/WorkInProgressOverlay';
 import { Loader2, AlertTriangle, MapPin } from 'lucide-react';
 import LocationPicker, { type Location } from '@/components/LocationPicker';
 
@@ -109,6 +111,8 @@ const CreateReport = () => {
 
   return (
     <div className="container mx-auto max-w-3xl p-4 py-8">
+      {/* TEMP_WIP_OVERLAY: Temporary work-in-progress overlay - remove when page is ready */}
+      <WorkInProgressOverlay />
       <Card>
         <CardHeader>
           <CardTitle>Create a New Report</CardTitle>

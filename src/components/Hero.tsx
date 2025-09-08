@@ -39,7 +39,8 @@ const Hero = () => {
               </Button>
             </div>
 
-            <div className="grid grid-cols-3 gap-8 pt-8">
+          {/* 
+            <div className="grid grid-cols-3 gap-8 </p>pt-8">
               <div className="text-center">
                 <div className="text-2xl font-bold text-primary">10K+</div>
                 <div className="text-sm text-muted-foreground">Reports Filed</div>
@@ -52,6 +53,21 @@ const Hero = () => {
                 <div className="text-2xl font-bold text-primary">5K+</div>
                 <div className="text-sm text-muted-foreground">Active Citizens</div>
               </div>
+            </div>
+            */}
+
+            <div className="pt-8">
+              <p className="text-lg text-muted-foreground">
+                Beta testing in Bangalore, India has been completed. We have identified an area with significant challenges of garbage dumping and open burning.{" "}
+                <button 
+                  className="text-primary hover:text-primary-foreground underline underline-offset-4 hover:no-underline transition-all duration-200"
+                  onClick={() => {
+                    window.open('https://drive.google.com/file/d/1mAYuQQaYTORPAEiC3b8xcQ3jHLebaxVY/view?usp=drive_link', '_blank', 'noopener,noreferrer');
+                  }}
+                >
+                  Click here to read the report.
+                </button>
+              </p>
             </div>
           </div>
 

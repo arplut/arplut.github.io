@@ -7,6 +7,8 @@ import { Separator } from "@/components/ui/separator";
 import { Clock, Search, BookOpen, ExternalLink, User } from "lucide-react";
 import { blogService, type BlogPost } from "@/services/blogService";
 import { useToast } from "@/hooks/use-toast";
+// TEMP_WIP_OVERLAY: Import for temporary work-in-progress overlay - remove when page is ready
+import WorkInProgressOverlay from "@/components/WorkInProgressOverlay";
 
 const Blog = () => {
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
@@ -118,6 +120,8 @@ const Blog = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* TEMP_WIP_OVERLAY: Temporary work-in-progress overlay - remove when page is ready */}
+      <WorkInProgressOverlay />
       <div className="container px-4 py-8 space-y-8">
         {/* Header */}
         <div className="text-center space-y-4">

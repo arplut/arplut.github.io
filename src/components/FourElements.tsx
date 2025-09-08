@@ -2,38 +2,27 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-// Import all images
-import idealWind from "@/assets/ideal-wind.jpg";
-import idealWater from "@/assets/ideal-water.jpg";
-import idealElectricity from "@/assets/ideal-electricity.jpg";
-import idealEarth from "@/assets/ideal-earth.jpg";
-import realityWind from "@/assets/reality-wind.jpg";
-import realityWater from "@/assets/reality-water.jpg";
-import realityElectricity from "@/assets/reality-electricity.jpg";
-import realityEarth from "@/assets/reality-earth.jpg";
+// Import all 12 images
+import image1 from "@/assets/image1.jpg";
+import image2 from "@/assets/image2.jpg";
+import image3 from "@/assets/image3.jpg";
+import image4 from "@/assets/image4.jpg";
+import image5 from "@/assets/image5.jpg";
+import image6 from "@/assets/image6.jpg";
+import image7 from "@/assets/image7.jpg";
+import image8 from "@/assets/image8.jpg";
+import image9 from "@/assets/image9.jpg";
+import image10 from "@/assets/image10.jpg";
+import image11 from "@/assets/image11.jpg";
+import image12 from "@/assets/image12.jpg";
 
-const elementData = [
-  {
-    ideal: { img: idealWind, label: "Clean Wind Energy" },
-    reality: { img: realityWind, label: "Air Pollution" },
-    element: "Wind"
-  },
-  {
-    ideal: { img: idealWater, label: "Abundant Clean Water" },
-    reality: { img: realityWater, label: "Water Scarcity" },
-    element: "Water"
-  },
-  {
-    ideal: { img: idealElectricity, label: "Reliable Electricity" },
-    reality: { img: realityElectricity, label: "Power Outages" },
-    element: "Fire"
-  },
-  {
-    ideal: { img: idealEarth, label: "Green Urban Spaces" },
-    reality: { img: realityEarth, label: "Urban Waste" },
-    element: "Earth"
-  }
-];
+// Define the three image sets
+const imageSet1 = [image1, image2, image3, image4];
+const imageSet2 = [image5, image6, image7, image8];
+const imageSet3 = [image9, image10, image11, image12];
+
+// Element labels for each position
+const elementLabels = ["Fire", "Earth", "Water", "Air"];
 
 const FourElements = () => {
   const [currentState, setCurrentState] = useState(0);
@@ -45,9 +34,20 @@ const FourElements = () => {
   ];
 
   const getImageSet = () => {
-    if (currentState === 0) return elementData.map(e => ({ img: e.ideal.img, label: e.element }));
-    if (currentState === 1) return elementData.map(e => ({ img: e.ideal.img, label: e.ideal.label }));
-    return elementData.map(e => ({ img: e.reality.img, label: e.reality.label }));
+    let images: string[];
+    
+    if (currentState === 0) {
+      images = imageSet1;
+    } else if (currentState === 1) {
+      images = imageSet2;
+    } else {
+      images = imageSet3;
+    }
+    
+    return images.map((img, index) => ({ 
+      img, 
+      label: elementLabels[index] 
+    }));
   };
 
   const handleNext = () => {
@@ -74,12 +74,12 @@ const FourElements = () => {
           {getImageSet().map((item, index) => (
             <div 
               key={`${currentState}-${index}`}
-              className="relative group overflow-hidden rounded-xl shadow-soft hover:shadow-glow transition-all duration-500 animate-slide-in-right"
+              className="relative group overflow-hidden rounded-xl shadow-soft hover:shadow-glow transition-all duration-500 animate-slide-in-right aspect-square"
             >
               <img
                 src={item.img}
                 alt={item.label}
-                className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="absolute bottom-4 left-4 right-4">

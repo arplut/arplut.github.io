@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Camera, MapPin, Users, Mail, Phone, Globe } from "lucide-react";
+import { Camera, MapPin, Users, Mail, Phone, Globe, Linkedin, Instagram, MessageSquare } from "lucide-react";
 import { Link } from "react-router-dom";
 import logoSvg from '@/assets/LOGO_SVG.svg';
 
@@ -18,19 +18,34 @@ const Footer = () => {
                 decoding="async"
               />
             </Link>
-            <p className="text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               Empowering citizens to create cleaner, safer communities through transparent civic engagement.
             </p>
-            <div className="flex space-x-2">
-              <Button variant="outline" size="icon">
-                <Globe className="h-4 w-4" />
-              </Button>
-              <Button variant="outline" size="icon">
-                <Mail className="h-4 w-4" />
-              </Button>
-              <Button variant="outline" size="icon">
-                <Phone className="h-4 w-4" />
-              </Button>
+            <div className="space-y-3">
+              
+              
+              <div className="flex space-x-2">
+                <Button variant="outline" size="icon" asChild>
+                  <a href="mailto:contact@geodha.org">
+                    <Mail className="h-4 w-4" />
+                  </a>
+               </Button>
+                <Button variant="outline" size="icon" asChild>
+                  <a href="https://www.linkedin.com/company/geodha" target="_blank" rel="noopener noreferrer">
+                    <Linkedin className="h-4 w-4" />
+                  </a>
+                </Button>
+                <Button variant="outline" size="icon" asChild>
+                  <a href="https://www.instagram.com/geodha_org" target="_blank" rel="noopener noreferrer">
+                    <Instagram className="h-4 w-4" />
+                  </a>
+                </Button>
+                <Button variant="outline" size="icon" asChild>
+                  <a href="https://www.reddit.com/r/geodha" target="_blank" rel="noopener noreferrer">
+                    <MessageSquare className="h-4 w-4" />
+                  </a>
+                </Button>
+              </div>
             </div>
           </div>
 
@@ -68,7 +83,7 @@ const Footer = () => {
 
         <div className="border-t mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-muted-foreground text-sm">
-            © 2024 GEODHA. All rights reserved. Building better communities together.
+            © 2025 GEODHA. All rights reserved. Building better communities together.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Privacy Policy</a>

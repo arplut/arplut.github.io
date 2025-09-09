@@ -138,3 +138,6 @@ REFERENCE_CODE/tsconfig.app.json
 REFERENCE_CODE/tsconfig.json
 REFERENCE_CODE/tsconfig.node.json
 REFERENCE_CODE/vite.config.ts
+cleanup-history.ps1
+passwords.txt
+SECURITY-INCIDENT-RESPONSE.md

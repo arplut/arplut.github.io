@@ -23,7 +23,7 @@ const developmentConfig: FirebaseConfig = {
 // Production config (for GitHub Pages - uses restricted keys)
 const productionConfig: FirebaseConfig = {
   apiKey: 'your-restricted-production-api-key',
-  authDomain: '***REMOVED***',
+  authDomain: '***REMOVED***.firebaseapp.com',
   projectId: '***REMOVED***',
   storageBucket: '***REMOVED***.firebasestorage.app',
   messagingSenderId: '***REMOVED***',

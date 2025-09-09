@@ -13,7 +13,7 @@ export interface NotificationPayload {
 
 class NotificationService {
   private messaging: any;
-  private vapidKey = '***REMOVED***'; // Replace with your VAPID key
+  private vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY; // Use environment variable
 
   constructor() {
     if (typeof window !== 'undefined') {

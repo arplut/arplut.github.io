@@ -149,7 +149,7 @@ const About = () => {
                 <strong>Want to bring GEODHA to your city or contribute to our mission?</strong>
               </p>
               <Button variant="hero" size="lg" asChild>
-                <a href="https://forms.gle/5Srstau5J63tA4Zh6" target="_blank" rel="noopener noreferrer">
+                <a href="https://forms.gle/K3GGQdBe5k2uH44f7" target="_blank" rel="noopener noreferrer">
                   Express Your Interest
                 </a>
               </Button>

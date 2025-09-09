@@ -141,3 +141,4 @@ REFERENCE_CODE/vite.config.ts
 cleanup-history.ps1
 passwords.txt
 SECURITY-INCIDENT-RESPONSE.md
+bfg-1.15.0.jar

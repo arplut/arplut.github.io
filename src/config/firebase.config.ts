@@ -9,8 +9,8 @@ interface FirebaseConfig {
   measurementId: string;
 }
 
-// Development config (uses environment variables)
-const developmentConfig: FirebaseConfig = {
+// Firebase configuration using environment variables
+const firebaseConfig: FirebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || '',
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || '',
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || '',
@@ -20,23 +20,11 @@ const developmentConfig: FirebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || ''
 };
 
-// Production config (for GitHub Pages - uses restricted keys)
-const productionConfig: FirebaseConfig = {
-  apiKey: 'your-restricted-production-api-key',
-  authDomain: '***REMOVED***.firebaseapp.com',
-  projectId: '***REMOVED***',
-  storageBucket: '***REMOVED***.firebasestorage.app',
-  messagingSenderId: '***REMOVED***',
-  appId: 'your-restricted-production-app-id',
-  measurementId: '***REMOVED***'
-};
-
-// Select config based on environment
-const isProduction = import.meta.env.PROD;
-export const firebaseConfig = isProduction ? productionConfig : developmentConfig;
+// Export the configuration
+export { firebaseConfig };
 
 // For Google Maps (if needed)
 export const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
 
 // For VAPID key
-export const vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY || 'production-vapid-key';
+export const vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY || '';

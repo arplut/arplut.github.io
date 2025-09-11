@@ -1,46 +1,35 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Camera, LogOut, Home, Map, BarChart3, BookOpen, LogIn, X } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
-import AuthService from '@/services/authService';
-import { useToast } from '@/hooks/use-toast';
+import { Menu, Home, Map, BookOpen, X, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import logoSvg from '@/assets/LOGO_SVG.svg';
 
-const authService = new AuthService();
-
 const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { user, loading } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const { toast } = useToast();
   const currentPath = location.pathname;
 
   const navigationItems = [
     { path: '/', label: 'Home', icon: Home },
-    { path: '/reports', label: 'Reports', icon: Map },
-    { path: '/map', label: 'Map', icon: Map },
+    { path: '/map', label: 'Reports', icon: Map },
     { path: '/blog', label: 'Blog', icon: BookOpen },
-    { path: '/dashboard', label: 'Dashboard', icon: BarChart3 },
-    { path: '/about', label: 'About', icon: BookOpen },
+    { path: '/about', label: 'About', icon: FileText },
   ];
-
-  const handleLogout = async () => {
-    try {
-      await authService.signOut();
-      toast({ title: 'Logged Out', description: 'You have been successfully logged out.' });
-      navigate('/');
-    } catch (error) {
-      toast({ title: 'Logout Failed', description: 'There was an error logging out.', variant: 'destructive' });
-    }
-  };
 
   const handleNavigation = (path: string) => {
     setIsMobileMenuOpen(false);
     navigate(path);
+  };
+
+  // Function to handle Get Started button click - temporarily link to pre-register form
+  const handleGetStarted = () => {
+    // TODO: Uncomment this when GetStarted page is ready
+    // navigate('/get-started');
+    
+    // Temporary: Link to pre-register form
+    window.open('https://forms.gle/K3GGQdBe5k2uH44f7', '_blank');
   };
 
   return (
@@ -77,33 +66,11 @@ const Navigation = () => {
           ))}
         </div>
 
-        {/* Auth Buttons */}
+        {/* Auth Buttons - Simplified to just Get Started */}
         <div className="hidden md:flex items-center space-x-2">
-          {loading ? (
-            <div className="h-8 w-24 animate-pulse rounded-md bg-muted" />
-          ) : user ? (
-            <>
-              <Button variant="ghost" size="sm" onClick={handleLogout}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Sign Out
-              </Button>
-              <Button variant="hero" size="sm" asChild>
-                <Link to="/create">New Report</Link>
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button variant="ghost" size="sm" asChild>
-                <Link to="/login">
-                  <LogIn className="h-4 w-4 mr-2" />
-                  Sign In
-                </Link>
-              </Button>
-              <Button variant="hero" size="sm" asChild>
-                <Link to="/signup">Get Started</Link>
-              </Button>
-            </>
-          )}
+          <Button variant="hero" size="sm" onClick={handleGetStarted}>
+            Get Started
+          </Button>
         </div>
 
         {/* Mobile Menu Button */}
@@ -135,27 +102,10 @@ const Navigation = () => {
                 </Button>
               ))}
               
-              {user ? (
-                <>
-                  <Button variant="ghost" size="sm" onClick={() => { handleNavigation('/create'); }} className="justify-start">
-                    New Report
-                  </Button>
-                  <Button variant="ghost" size="sm" onClick={handleLogout} className="justify-start">
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Sign Out
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button variant="ghost" size="sm" onClick={() => handleNavigation('/login')} className="justify-start">
-                    <LogIn className="h-4 w-4 mr-2" />
-                    Sign In
-                  </Button>
-                  <Button variant="hero" size="sm" onClick={() => handleNavigation('/signup')} className="justify-start">
-                    Get Started
-                  </Button>
-                </>
-              )}
+              {/* Mobile Get Started Button */}
+              <Button variant="hero" size="sm" onClick={handleGetStarted} className="justify-start">
+                Get Started
+              </Button>
             </div>
           </div>
         </div>

@@ -105,7 +105,7 @@ const FourElements = () => {
           {getImageSet().map((item, index) => (
             <div 
               key={`${currentState}-${index}`}
-              className={`relative group overflow-hidden rounded-sm md:rounded-lg shadow-soft hover:shadow-glow transition-all duration-500 aspect-square ${
+              className={`relative group overflow-hidden rounded-lg md:rounded-xl shadow-soft hover:shadow-glow transition-all duration-500 aspect-square ${
                 imagesLoaded ? 'animate-slide-in-right' : 'opacity-50'
               }`}
             >

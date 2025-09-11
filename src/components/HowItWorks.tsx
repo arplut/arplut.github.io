@@ -6,7 +6,7 @@ const steps = [
   {
     icon: Camera,
     title: "Capture & Report",
-    description: "Take a photo of any civic issue - garbage, potholes, broken streetlights, or pollution.",
+    description: "Take a photo of civic issues like illegal garbage dumping, littering, open burning, etc.",
     step: "01"
   },
   {
@@ -24,7 +24,7 @@ const steps = [
   {
     icon: CheckCircle,
     title: "Track Resolution",
-    description: "Monitor progress as authorities address the issue and the community confirms resolution.",
+    description: "Monitor progress and see community confirmation whether authorities have addressed the issue.",
     step: "04"
   }
 ];
@@ -45,7 +45,7 @@ const HowItWorks = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {steps.map((step, index) => (
             <Card key={index} className="relative border-0 shadow-soft hover:shadow-glow transition-all duration-300 group overflow-hidden">
               <div className="absolute top-4 right-4 text-6xl font-bold text-muted/20 group-hover:text-primary/20 transition-colors">
@@ -62,6 +62,7 @@ const HowItWorks = () => {
           ))}
         </div>
 
+        {/* 
         <div className="text-center">
           <Button variant="hero" size="lg" onClick={() => {
             window.history.pushState({}, '', '/create');
@@ -71,6 +72,7 @@ const HowItWorks = () => {
             Start Your First Report
           </Button>
         </div>
+        */}
       </div>
     </section>
   );

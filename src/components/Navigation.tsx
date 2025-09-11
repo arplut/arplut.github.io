@@ -51,7 +51,7 @@ const Navigation = () => {
             <img 
               src={logoSvg} 
               alt="GEODHA Logo" 
-              className="h-6 w-auto object-contain transition-transform duration-200 ease-in-out group-hover:scale-105 sm:h-7 md:h-8 lg:h-9"
+              className="h-8 w-auto object-contain transition-transform duration-200 ease-in-out group-hover:scale-105 sm:h-7 md:h-8 lg:h-9"
               loading="eager"
               decoding="sync"
             />

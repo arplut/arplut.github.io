@@ -36,6 +36,8 @@ const VideoSection = () => {
             <Button variant="hero" size="lg" onClick={() => {
               window.history.pushState({}, '', '/about');
               window.dispatchEvent(new PopStateEvent('popstate'));
+              // Reset scroll position to top
+              setTimeout(() => window.scrollTo(0, 0), 100);
             }}>
               Learn more about GEODHA
             </Button>

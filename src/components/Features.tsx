@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Camera, Map, Users, BarChart3, Share2, Shield } from "lucide-react";
+import { Camera, Map, Users, BookOpen, Share2, Shield } from "lucide-react";
 
 const features = [
   {
@@ -21,9 +21,9 @@ const features = [
     color: "text-warning"
   },
   {
-    icon: BarChart3,
-    title: "Analytics Dashboard",
-    description: "Track your impact and view city-wide statistics on issue resolution.",
+    icon: BookOpen,
+    title: "Knowledge Hub",
+    description: "Learn about organizations working on solutions, causes of problems, actions you can take, and more.",
     color: "text-primary"
   },
   {

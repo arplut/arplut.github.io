@@ -7,7 +7,7 @@ const About = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="py-24 bg-gradient-subtle">
+      <section className="py-16 bg-gradient-subtle">
         <div className="container px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-6 max-w-4xl mx-auto">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold">
@@ -27,7 +27,7 @@ const About = () => {
       <FourElements />
 
       {/* What does GEODHA aim to do? */}
-      <section className="py-24">
+      <section className="py-16">
         <div className="container px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-4 mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold">
@@ -111,7 +111,7 @@ const About = () => {
       </section>
 
       {/* How You Can Help Section */}
-      <section className="py-24 bg-gradient-subtle">
+      <section className="py-16 bg-gradient-subtle">
         <div className="container px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-4 mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold">How can you help?</h2>
@@ -120,21 +120,17 @@ const About = () => {
           <div className="max-w-4xl mx-auto space-y-8">
             <div className="prose prose-lg mx-auto text-muted-foreground">
               <p className="text-lg leading-relaxed">
-                <strong>Spread the word!</strong> We are developing an app for everyone to submit reports of community challenges and view statistics for their community on issues such as open dumps, dirty water, garbage collection, electricity blackouts, air quality, and more.
-              </p>
-              
-              <p className="text-lg leading-relaxed">
-                Our primary goal is raising awareness on the extent of these issues in different communities, often unnoticed. Towards solving the challenges, we want to create datasets for researchers, public policy makers, and governments to utilize in crafting more comprehensive and effective solutions.
+                <strong>Spread the word!</strong> We are developing an app for everyone to submit reports of community challenges and view statistics for their community on waste management issues such as open dumps and littering. In the future we aim to track other civic issues like delayed construction, broken footpaths, dirty water, electricity blackouts, air quality, and more.
               </p>
             </div>
             <div className="bg-card p-8 rounded-xl border shadow-soft">
-              <h3 className="text-2xl font-bold mb-6 text-center">Applications & Impact</h3>
+              <h3 className="text-2xl font-bold mb-6 text-center">Potential Applications & Impact</h3>
               <ul className="space-y-4">
                 {[
-                  "Raising awareness on vulnerable communities",
-                  "Understanding causes and types of wastes across different communities", 
+                  "Raising awareness about communities prone to challenges",
+                  "Understanding causes and types of waste across different areas", 
                   "Tracking progress, frequency and movement - identifying critical bottlenecks",
-                  "Consumer perspectives and crowdsourced datasets for electricity and water demand management"
+                  "Consumer perspectives and crowdsourced datasets on civic issues for better planning and management"
                 ].map((item, index) => (
                   <li key={index} className="flex items-start space-x-3">
                     <div className="h-2 w-2 rounded-full bg-primary mt-3 flex-shrink-0"></div>
@@ -143,23 +139,12 @@ const About = () => {
                 ))}
               </ul>
             </div>
-
-            <div className="bg-gradient-primary/10 p-8 rounded-xl border text-center">
-              <p className="text-lg mb-4">
-                <strong>Want to bring GEODHA to your city or contribute to our mission?</strong>
-              </p>
-              <Button variant="hero" size="lg" asChild>
-                <a href="https://forms.gle/K3GGQdBe5k2uH44f7" target="_blank" rel="noopener noreferrer">
-                  Express Your Interest
-                </a>
-              </Button>
-            </div>
           </div>
         </div>
       </section>
 
       {/* Join Our Team Section */}
-      <section className="py-24">
+      <section className="py-16">
         <div className="container px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-4 mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold">Join Our Team</h2>
@@ -176,8 +161,7 @@ const About = () => {
                   <ul className="space-y-3 text-muted-foreground">
                     <li><strong>App Developers</strong> - Help build our platform</li>
                     <li><strong>Content Creators</strong> - Share our story</li>
-                    <li><strong>Kannada Translators</strong> - Localize for Bengaluru</li>
-                    <li><strong>Co-founders</strong> - Lead with us</li>
+                    <li><strong>City Representatives</strong> - Help us scale</li>
                   </ul>
                 </CardContent>
               </Card>
@@ -219,13 +203,16 @@ const About = () => {
               <p className="text-muted-foreground mb-6">
                 Follow us on social media for updates and join the discussion about civic engagement!
               </p>
-              <Button variant="hero" size="lg" onClick={() => {
-                window.history.pushState({}, '', '/');
-                window.dispatchEvent(new PopStateEvent('popstate'));
-              }}>
-                <Camera className="h-5 w-5 mr-2" />
-                Get Started with GEODHA
-              </Button>
+              <div className="bg-gradient-primary/10 p-8 rounded-xl border">
+                <p className="text-lg mb-4">
+                  <strong>Want to bring GEODHA to your city or contribute to our mission?</strong>
+                </p>
+                <Button variant="hero" size="lg" asChild>
+                  <a href="https://forms.gle/K3GGQdBe5k2uH44f7" target="_blank" rel="noopener noreferrer">
+                    Express Your Interest
+                  </a>
+                </Button>
+              </div>
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Camera, MapPin, Users, CheckCircle } from "lucide-react";
+import { Camera, MapPin, Users, CheckCircle, Smartphone } from "lucide-react";
 import heroImage from "@/assets/hero-image.jpg";
 
 const Hero = () => {
@@ -23,19 +23,21 @@ const Hero = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button variant="hero" size="lg" className="flex-1 sm:flex-none" onClick={() => {
-                window.history.pushState({}, '', '/create');
-                window.dispatchEvent(new PopStateEvent('popstate'));
-              }}>
-                <Camera className="h-5 w-5 mr-2" />
-                Start Reporting
-              </Button>
-              <Button variant="outline" size="lg" className="flex-1 sm:flex-none" onClick={() => {
+              <Button variant="hero" size="lg" className="flex-1 sm:flex-none py-4 sm:py-3" onClick={() => {
                 window.history.pushState({}, '', '/reports');
                 window.dispatchEvent(new PopStateEvent('popstate'));
               }}>
                 <MapPin className="h-5 w-5 mr-2" />
                 View Map
+              </Button>
+              <Button 
+                variant="default" 
+                size="lg" 
+                className="flex-1 sm:flex-none py-4 sm:py-3 bg-black text-white hover:bg-black/90" 
+                disabled
+              >
+                <Smartphone className="h-5 w-5 mr-2" />
+                Reporting App - Coming Soon
               </Button>
             </div>
 
@@ -85,8 +87,8 @@ const Hero = () => {
                   <CheckCircle className="h-5 w-5 text-white" />
                 </div>
                 <div>
-                  <div className="font-semibold">Issue Resolved!</div>
-                  <div className="text-sm text-muted-foreground">Garbage cleared in 2 days</div>
+                  <div className="font-semibold">Issue Reported!</div>
+                  {/* <div className="text-sm text-muted-foreground">Garbage cleared in 2 days</div> */}
                 </div>
               </div>
             </div>

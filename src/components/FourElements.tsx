@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -26,6 +26,37 @@ const elementLabels = ["Fire", "Earth", "Water", "Air"];
 
 const FourElements = () => {
   const [currentState, setCurrentState] = useState(0);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+
+  // Preload all images
+  useEffect(() => {
+    const allImages = [...imageSet1, ...imageSet2, ...imageSet3];
+    let loadedCount = 0;
+    
+    const preloadImage = (src: string) => {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          loadedCount++;
+          if (loadedCount === allImages.length) {
+            setImagesLoaded(true);
+          }
+          resolve(true);
+        };
+        img.onerror = () => {
+          loadedCount++;
+          if (loadedCount === allImages.length) {
+            setImagesLoaded(true);
+          }
+          resolve(false);
+        };
+        img.src = src;
+      });
+    };
+
+    // Preload all images
+    allImages.forEach(preloadImage);
+  }, []);
 
   const titles = [
     "Click next to see what they look like today...",
@@ -74,12 +105,15 @@ const FourElements = () => {
           {getImageSet().map((item, index) => (
             <div 
               key={`${currentState}-${index}`}
-              className="relative group overflow-hidden rounded-xl shadow-soft hover:shadow-glow transition-all duration-500 animate-slide-in-right aspect-square"
+              className={`relative group overflow-hidden rounded-xl shadow-soft hover:shadow-glow transition-all duration-500 aspect-square ${
+                imagesLoaded ? 'animate-slide-in-right' : 'opacity-50'
+              }`}
             >
               <img
                 src={item.img}
                 alt={item.label}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                loading="eager"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="absolute bottom-4 left-4 right-4">
@@ -94,6 +128,7 @@ const FourElements = () => {
         <div className="flex justify-center items-center space-x-4 mb-8">
           <Button
             variant="outline"
+            size="lg"
             onClick={handlePrev}
             disabled={currentState === 0}
             className="flex items-center space-x-2"
@@ -103,6 +138,7 @@ const FourElements = () => {
           </Button>
           <Button
             variant="hero"
+            size="lg"
             onClick={handleNext}
             disabled={currentState === 2}
             className="flex items-center space-x-2"

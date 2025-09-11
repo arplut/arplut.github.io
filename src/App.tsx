@@ -11,6 +11,7 @@ import MapPage from "./pages/Map"; // Renamed to avoid conflict with Route 'Map'
 import Blog from "./pages/Blog";
 import About from "./pages/About";
 import Navigation from "./components/Navigation";
+import TopBanner from "./components/TopBanner";
 import Footer from "./components/Footer";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
@@ -28,6 +29,7 @@ const App = () => {
         <AuthProvider>
           <BrowserRouter>
             <div className="min-h-screen bg-background">
+              <TopBanner />
               {/* The Navigation component will now read the route directly from React Router */}
               <Navigation />
               <Routes>

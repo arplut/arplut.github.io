@@ -13,11 +13,11 @@ export const BANGALORE_BOUNDARIES = {
   
   // Optimal zoom levels for different use cases
   zoomLevels: {
-    entireMetroArea: 12,    // Shows full Bangalore metro + surrounding areas (mobile)
-    entireCity: 12,        // Shows full Bangalore metro area
-    cityCenter: 15,        // Shows central Bangalore districts
-    neighborhood: 17,      // Shows local areas/wards
-    streetLevel: 19        // Shows individual streets
+    entireMetroArea: 10,    // Shows full Bangalore metro + surrounding areas (mobile)
+    entireCity: 10,        // Shows full Bangalore metro area
+    cityCenter: 13,        // Shows central Bangalore districts
+    neighborhood: 15,      // Shows local areas/wards
+    streetLevel: 17        // Shows individual streets
   },
   
   // Administrative zones for future ward overlay

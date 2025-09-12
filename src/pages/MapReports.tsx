@@ -337,7 +337,7 @@ const MapReports = () => {
                       selectedReportId={selectedReportId}
                       showHeatmap={showHeatmap}
                       enableClustering={!showHeatmap}
-                      zoom={isMobile ? 7 : undefined} // Even wider zoom on mobile (covers greater Bangalore region)
+                      zoom={isMobile ? 11.5 : undefined} // Optimal mobile zoom for Bangalore metro area
                       className="h-full w-full relative z-0"
                     />
                   </MapErrorBoundary>
@@ -409,7 +409,7 @@ const MapReports = () => {
                       selectedReportId={selectedReportId}
                       showHeatmap={showHeatmap}
                       enableClustering={!showHeatmap}
-                      zoom={isMobile ? 7 : undefined} // Even wider zoom on mobile (covers greater Bangalore region)
+                      zoom={isMobile ? 9 : undefined} // Optimal mobile zoom for Bangalore metro area
                       className="h-full w-full"
                     />
                   </MapErrorBoundary>

@@ -46,7 +46,7 @@ import { formatDistanceToNow } from 'date-fns';
 // ⚠️ DEVELOPMENT MODE FLAG ⚠️
 // Set to true to use sample data for heatmap testing
 // Set to false to use live Firebase data
-const USE_SAMPLE_DATA_FOR_TESTING = true;
+const USE_SAMPLE_DATA_FOR_TESTING = false;
 
 const MapReports = () => {
   const isMobile = useIsMobile();
@@ -81,9 +81,18 @@ const MapReports = () => {
           // Using live Firebase data
           console.log('🔥 PRODUCTION MODE: Using live Firebase data');
           const fetchedReports = await reportsService.getReports();
-          const publicReports = fetchedReports.filter(r => !r.isAnonymous || (r.isAnonymous && r.status !== 'pending'));
-          setReports(publicReports);
-          setFilteredReports(publicReports);
+          console.log('📊 Total fetched reports:', fetchedReports.length);
+          
+          // Log status distribution for debugging
+          const statusCounts = fetchedReports.reduce((acc, r) => {
+            acc[r.status] = (acc[r.status] || 0) + 1;
+            return acc;
+          }, {} as Record<string, number>);
+          console.log('📊 Status distribution:', statusCounts);
+          
+          // Show all reports (including anonymous ones for legacy data)
+          setReports(fetchedReports);
+          setFilteredReports(fetchedReports);
         }
         
         setError(null);
@@ -153,12 +162,17 @@ const MapReports = () => {
 
   const ReportDetailsContent = ({ report }: { report: Report }) => (
     <div className="space-y-4">
-      {report.photos.length > 0 && (
+      {report.status !== 'archived' && report.photos.length > 0 && (
         <PhotoCarousel photos={report.photos} title={report.title} />
       )}
       
       <div>
         <p className="text-sm text-muted-foreground mb-3">{report.description}</p>
+        
+        {/* Add ward info to description if available */}
+        {report.location.ward && (
+          <p className="text-sm text-muted-foreground mb-3">Ward: {report.location.ward}</p>
+        )}
         
         <div className="flex flex-wrap gap-2 mb-3">
           <Badge 
@@ -176,11 +190,11 @@ const MapReports = () => {
         </div>
 
         <div className="space-y-2 text-sm text-muted-foreground">
-          {report.location.ward && (
-            <p>Ward: {report.location.ward}</p>
-          )}
           <p>Reported {formatDistanceToNow(report.createdAt.toDate(), { addSuffix: true })}</p>
           <p>{report.endorsementCount} endorsements</p>
+          {report.status === 'archived' && report.photos.length > 0 && (
+            <p className="text-xs text-amber-600">📷 {report.photos.length} image(s) archived</p>
+          )}
         </div>
       </div>
     </div>
@@ -324,7 +338,7 @@ const MapReports = () => {
                     <Card className="border-0 rounded-none h-full">
                       <CardHeader>
                         <CardTitle>{selectedReportData.title}</CardTitle>
-                        <CardDescription>{selectedReportData.location.address || selectedReportData.location.ward}</CardDescription>
+                        <CardDescription>{selectedReportData.location.address || selectedReportData.location.ward || '-'}</CardDescription>
                       </CardHeader>
                       <CardContent>
                         <ReportDetailsContent report={selectedReportData} />
@@ -385,7 +399,7 @@ const MapReports = () => {
                   <SheetHeader className="text-left mb-4">
                     <SheetTitle className="text-lg">{selectedReportData.title}</SheetTitle>
                     <SheetDescription className="text-sm">
-                      {selectedReportData.location.address || selectedReportData.location.ward}
+                      {selectedReportData.location.address || selectedReportData.location.ward || '-'}
                     </SheetDescription>
                   </SheetHeader>
                   <div className="pb-4">
@@ -421,13 +435,21 @@ const MapReports = () => {
                     {filteredReports.map((report) => (
                       <Card key={report.id} className="overflow-hidden">
                         <div className="relative">
-                          {report.photos.length > 0 && (
+                          {report.status !== 'archived' && report.photos.length > 0 && (
                             <img
                               src={report.photos[0]}
                               alt={report.title}
                               className="w-full h-48 object-cover"
                               loading="lazy"
                             />
+                          )}
+                          {report.status === 'archived' && report.photos.length > 0 && (
+                            <div className="w-full h-48 bg-gray-100 flex items-center justify-center">
+                              <div className="text-center text-gray-500">
+                                <div className="text-2xl mb-2">📷</div>
+                                <div className="text-sm">{report.photos.length} archived image(s)</div>
+                              </div>
+                            </div>
                           )}
                         </div>
                         <CardContent className="p-4 space-y-3">
@@ -457,7 +479,7 @@ const MapReports = () => {
                           <div className="text-xs text-muted-foreground space-y-1">
                             <p className="flex items-center gap-1">
                               <MapPin className="h-3 w-3" />
-                              {report.location.address || report.location.ward || 'Unknown location'}
+                              {report.location.address || report.location.ward || '-'}
                             </p>
                             <p>
                               Reported {formatDistanceToNow(report.createdAt.toDate(), { addSuffix: true })}

@@ -15,6 +15,7 @@ import {
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '@/lib/firebase';
+import { transformToReport } from './dataTransformService';
 
 export interface Report {
   id?: string;
@@ -166,23 +167,7 @@ export default class ReportsService {
       
       return snapshot.docs.map(doc => {
         const data = doc.data();
-        
-        // Transform Firestore data to match our interface
-        return {
-          id: doc.id,
-          ...data,
-          location: {
-            coordinates: {
-              latitude: data.location?.coordinates?.latitude || data.location?.coordinates?._lat || 0,
-              longitude: data.location?.coordinates?.longitude || data.location?.coordinates?._long || 0,
-            },
-            address: data.location?.address,
-            ward: data.location?.ward || data.location?.address?.split(',')[0],
-            city: data.location?.city,
-            state: data.location?.state,
-            postalCode: data.location?.postalCode,
-          }
-        } as Report;
+        return transformToReport(doc.id, data);
       });
     } catch (error) {
       console.error('Error fetching reports:', error);
@@ -196,7 +181,8 @@ export default class ReportsService {
       const reportSnap = await getDoc(reportRef);
 
       if (reportSnap.exists()) {
-        return { id: reportSnap.id, ...reportSnap.data() } as Report;
+        const data = reportSnap.data();
+        return transformToReport(reportSnap.id, data);
       } else {
         return null;
       }

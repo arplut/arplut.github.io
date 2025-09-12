@@ -2,8 +2,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Calendar, ThumbsUp, Eye } from "lucide-react";
-import { Report, categoryColors, statusColors } from "@/data/mockData";
+import { Report } from "@/services/reportsService";
+import { categoryColors, statusColors } from "@/data/mockData";
 import { useToast } from "@/hooks/use-toast";
+import OptimizedImage from './OptimizedImage';
 
 interface ReportCardProps {
   report: Report;
@@ -24,8 +26,15 @@ const ReportCard = ({ report, onViewDetails, onEndorse }: ReportCardProps) => {
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-IN', {
+  const formatDate = (timestamp: any) => {
+    if (timestamp && timestamp.toDate) {
+      return timestamp.toDate().toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      });
+    }
+    return new Date().toLocaleDateString('en-IN', {
       day: 'numeric',
       month: 'short',
       year: 'numeric'
@@ -50,13 +59,12 @@ const ReportCard = ({ report, onViewDetails, onEndorse }: ReportCardProps) => {
       
       <CardContent className="space-y-4">
         {report.photos.length > 0 && (
-          <div className="aspect-video rounded-lg overflow-hidden bg-muted">
-            <img 
-              src={report.photos[0]} 
-              alt={report.title}
-              className="w-full h-full object-cover"
-            />
-          </div>
+          <OptimizedImage
+            src={report.photos[0]}
+            alt={report.title}
+            className="rounded-lg"
+            aspectRatio="video"
+          />
         )}
         
         <p className="text-muted-foreground line-clamp-3">{report.description}</p>
@@ -64,17 +72,17 @@ const ReportCard = ({ report, onViewDetails, onEndorse }: ReportCardProps) => {
         <div className="space-y-2 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
             <MapPin className="h-4 w-4" />
-            <span className="line-clamp-1">{report.location.address}</span>
+            <span className="line-clamp-1">{report.location.address || report.location.ward || '-'}</span>
           </div>
           <div className="flex items-center gap-2">
             <Calendar className="h-4 w-4" />
             <span>Reported on {formatDate(report.createdAt)}</span>
           </div>
           <div className="flex items-center justify-between">
-            <span>By {report.reportedBy}</span>
+            <span>By {report.authorName || (report.isAnonymous ? 'Anonymous' : 'Unknown')}</span>
             <div className="flex items-center gap-1">
               <ThumbsUp className="h-4 w-4" />
-              <span>{report.endorsements}</span>
+              <span>{report.endorsementCount || 0}</span>
             </div>
           </div>
         </div>
@@ -84,21 +92,19 @@ const ReportCard = ({ report, onViewDetails, onEndorse }: ReportCardProps) => {
             variant="outline" 
             size="sm" 
             className="flex-1"
-            onClick={() => onViewDetails(report.id)}
+            onClick={() => onViewDetails(report.id || '')}
           >
             <Eye className="h-4 w-4 mr-2" />
             View Details
           </Button>
-          {!report.hasUserEndorsed && (
-            <Button 
-              variant="default" 
-              size="sm"
-              onClick={handleEndorse}
-            >
-              <ThumbsUp className="h-4 w-4 mr-2" />
-              Endorse
-            </Button>
-          )}
+          <Button 
+            variant="default" 
+            size="sm"
+            onClick={handleEndorse}
+          >
+            <ThumbsUp className="h-4 w-4 mr-2" />
+            Endorse
+          </Button>
         </div>
       </CardContent>
     </Card>

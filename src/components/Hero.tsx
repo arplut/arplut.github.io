@@ -24,7 +24,7 @@ const Hero = () => {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <Button variant="hero" size="lg" className="flex-1 sm:flex-none py-4 sm:py-3" onClick={() => {
-                window.history.pushState({}, '', '/reports');
+                window.history.pushState({}, '', '/map');
                 window.dispatchEvent(new PopStateEvent('popstate'));
               }}>
                 <MapPin className="h-5 w-5 mr-2" />

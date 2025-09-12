@@ -47,6 +47,20 @@ REFERENCE_CODE/src/assets/reality-earth.jpg
 REFERENCE_CODE/src/assets/reality-electricity.jpg
 REFERENCE_CODE/src/assets/reality-water.jpg
 REFERENCE_CODE/src/assets/reality-wind.jpg
+# Reference and documentation files
+REFERENCE_CODE/
+
+# Moved documentation files
+REFERENCE_CODE/SCHEMA_DOCUMENTATION.md
+REFERENCE_CODE/MIGRATION_COMPLETE.md
+REFERENCE_CODE/FIXES_COMPLETE.md
+REFERENCE_CODE/IMAGE_OPTIMIZATION.md
+REFERENCE_CODE/RECENT_CHANGES.md
+REFERENCE_CODE/VIEW_DETAILS_FIX.md
+REFERENCE_CODE/debug/
+REFERENCE_CODE/# Code Citations.md
+
+# Legacy reference code
 REFERENCE_CODE/src/components/Features.tsx
 REFERENCE_CODE/src/components/Footer.tsx
 REFERENCE_CODE/src/components/FourElements.tsx
@@ -147,3 +161,13 @@ REFERENCE_CODE/mapreportlovable.tsx
 REFERENCE_CODE/OpenStreetMap.tsx
 REFERENCE_CODE/PhotoCarousel.tsx
 REFERENCE_CODE/engineering-spec.md
+
+# Temporary scripts and development tools
+scripts/migrate_legacy_reports.ts
+scripts/check_firebase_state.ts
+scripts/setup_heatmap_config.ts
+scripts/debug_database.ts
+scripts/fix_firebase_data.ts
+scripts/fix_firebase_data_v2.ts
+scripts/update_legacy_author_names.ts
+scripts/analyze_missing_images.cjs

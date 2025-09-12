@@ -1,0 +1,54 @@
+/* Performance optimizations for scrolling */
+
+/* Enable hardware acceleration for common elements */
+.transform-gpu {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Optimize scrollable containers */
+.scroll-container {
+  will-change: scroll-position;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Prevent layout thrashing during scroll */
+.scroll-optimized {
+  contain: layout style paint;
+  content-visibility: auto;
+}
+
+/* Optimize image containers */
+.image-container {
+  contain: layout style paint;
+  content-visibility: auto;
+  contain-intrinsic-size: 300px 200px;
+}
+
+/* Reduce paint complexity for cards */
+.report-card {
+  will-change: transform;
+  contain: layout style paint;
+}
+
+/* Optimize grid layouts */
+.report-grid {
+  display: grid;
+  contain: layout style;
+  will-change: scroll-position;
+}
+
+/* Passive event listeners hint */
+.touch-action-pan-y {
+  touch-action: pan-y;
+}
+
+/* Optimize for mobile scrolling */
+@media (max-width: 768px) {
+  .mobile-scroll-optimized {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+}

@@ -25,7 +25,7 @@
 // - Implementation Reference: Leaflet/Mapbox heatmap layers + polygon overlays.
 
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -114,32 +114,54 @@ const MapReports = () => {
     }
   }, [categoryFilter, reports]);
 
-  const handleReportClick = (reportId: string) => {
+  // Memoize expensive computations
+  const mapReports: MapReport[] = useMemo(() => 
+    filteredReports
+      .filter(report => 
+        report.location?.coordinates?.latitude && 
+        report.location?.coordinates?.longitude &&
+        !isNaN(report.location.coordinates.latitude) &&
+        !isNaN(report.location.coordinates.longitude)
+      )
+      .map(report => ({
+        id: report.id!,
+        position: [report.location.coordinates.latitude, report.location.coordinates.longitude],
+        title: report.title,
+        category: report.category,
+        status: report.status as 'pending' | 'verified' | 'resolved' | 'archived',
+        description: report.description,
+        photos: report.photos,
+        endorsementCount: report.endorsementCount,
+        ward: report.location.ward || report.location.address?.split(',')[0], // Extract ward from address
+        createdAt: report.createdAt.toDate().toISOString(),
+      })),
+    [filteredReports]
+  );
+
+  // Memoize status colors to prevent object recreation
+  const statusColors = useMemo(() => ({
+    pending: 'hsl(0 84% 60%)', // red
+    verified: 'hsl(45 93% 47%)', // yellow  
+    resolved: 'hsl(142 71% 45%)', // green
+    archived: 'hsl(215 16% 47%)' // gray
+  }), []);
+
+  // Memoized callback for report click handling
+  const handleReportClick = useCallback((reportId: string) => {
     setSelectedReportId(reportId);
     if (isMobile) {
       setSheetOpen(true);
     }
-  };
+  }, [isMobile]);
 
-  const mapReports: MapReport[] = filteredReports
-    .filter(report => 
-      report.location?.coordinates?.latitude && 
-      report.location?.coordinates?.longitude &&
-      !isNaN(report.location.coordinates.latitude) &&
-      !isNaN(report.location.coordinates.longitude)
-    )
-    .map(report => ({
-      id: report.id!,
-      position: [report.location.coordinates.latitude, report.location.coordinates.longitude],
-      title: report.title,
-      category: report.category,
-      status: report.status as 'pending' | 'verified' | 'resolved' | 'archived',
-      description: report.description,
-      photos: report.photos,
-      endorsementCount: report.endorsementCount,
-      ward: report.location.ward || report.location.address?.split(',')[0], // Extract ward from address
-      createdAt: report.createdAt.toDate().toISOString(),
-    }));
+  // Memoized callback for view details
+  const handleViewDetails = useCallback((reportId: string) => {
+    setSelectedReportId(reportId);
+    setActiveView('map');
+    if (isMobile) {
+      setSheetOpen(true);
+    }
+  }, [isMobile]);
 
   // Debug logging
   console.log('MapReports - Total reports:', reports.length);
@@ -147,18 +169,19 @@ const MapReports = () => {
   console.log('MapReports - Map reports:', mapReports.length);
   console.log('MapReports - Show heatmap:', showHeatmap);
 
-  const selectedReportData = reports.find(r => r.id === selectedReportId);
-  const categoryOptions = ['all', 'garbage', 'sewage', 'burning', 'construction', 'pollution', 'other'];
+  const selectedReportData = useMemo(() => 
+    reports.find(r => r.id === selectedReportId),
+    [reports, selectedReportId]
+  );
+  
+  const categoryOptions = useMemo(() => 
+    ['all', 'garbage', 'sewage', 'burning', 'construction', 'pollution', 'other'],
+    []
+  );
 
-  const getStatusColor = (status: string) => {
-    const colors = {
-      pending: 'hsl(0 84% 60%)', // red
-      verified: 'hsl(45 93% 47%)', // yellow  
-      resolved: 'hsl(142 71% 45%)', // green
-      archived: 'hsl(215 16% 47%)' // gray
-    };
-    return colors[status as keyof typeof colors] || colors.pending;
-  };
+  const getStatusColor = useCallback((status: string) => {
+    return statusColors[status as keyof typeof statusColors] || statusColors.pending;
+  }, [statusColors]);
 
   const ReportDetailsContent = ({ report }: { report: Report }) => (
     <div className="space-y-4">
@@ -249,7 +272,7 @@ const MapReports = () => {
             <h1 className="text-3xl font-bold">Community Reports & Map</h1>
             <p className="text-muted-foreground">Explore civic issues reported by the community</p>
           </div>
-          <div className="flex items-center gap-4">
+          {/*<div className="flex items-center gap-4">
             <Filter className="h-5 w-5 text-muted-foreground" />
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
               <SelectTrigger className="w-[200px]">
@@ -263,7 +286,7 @@ const MapReports = () => {
                 ))}
               </SelectContent>
             </Select>
-          </div>
+          </div>*/}
         </div>
 
         <Tabs value={activeView} onValueChange={setActiveView} className="space-y-6">
@@ -314,6 +337,7 @@ const MapReports = () => {
                       selectedReportId={selectedReportId}
                       showHeatmap={showHeatmap}
                       enableClustering={!showHeatmap}
+                      zoom={isMobile ? 7 : undefined} // Even wider zoom on mobile (covers greater Bangalore region)
                       className="h-full w-full relative z-0"
                     />
                   </MapErrorBoundary>
@@ -385,6 +409,7 @@ const MapReports = () => {
                       selectedReportId={selectedReportId}
                       showHeatmap={showHeatmap}
                       enableClustering={!showHeatmap}
+                      zoom={isMobile ? 7 : undefined} // Even wider zoom on mobile (covers greater Bangalore region)
                       className="h-full w-full"
                     />
                   </MapErrorBoundary>
@@ -419,7 +444,7 @@ const MapReports = () => {
                   {categoryFilter !== 'all' && ` in "${categoryFilter}"`}
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="scroll-container">
                 {filteredReports.length === 0 ? (
                   <div className="text-center py-12">
                     <h3 className="text-lg font-semibold mb-2">No reports found</h3>
@@ -431,9 +456,24 @@ const MapReports = () => {
                     </p>
                   </div>
                 ) : (
-                  <div className={`grid gap-6 ${isMobile ? 'grid-cols-1' : 'md:grid-cols-2 lg:grid-cols-3'}`}>
+                  <div 
+                    className={`grid gap-6 report-grid transform-gpu ${isMobile ? 'grid-cols-1 mobile-scroll-optimized' : 'md:grid-cols-2 lg:grid-cols-3'}`}
+                    style={{
+                      // Optimize for hardware acceleration
+                      transform: 'translateZ(0)',
+                      willChange: 'scroll-position'
+                    }}
+                  >
                     {filteredReports.map((report) => (
-                      <Card key={report.id} className="overflow-hidden">
+                      <Card 
+                        key={report.id} 
+                        className="overflow-hidden report-card transform-gpu" // Hardware acceleration
+                        style={{
+                          // Optimize rendering
+                          contentVisibility: 'auto',
+                          containIntrinsicSize: '300px'
+                        }}
+                      >
                         <div className="relative">
                           {report.status !== 'archived' && report.photos.length > 0 && (
                             <img
@@ -441,6 +481,11 @@ const MapReports = () => {
                               alt={report.title}
                               className="w-full h-48 object-cover"
                               loading="lazy"
+                              decoding="async" // Improve decode performance
+                              style={{
+                                contentVisibility: 'auto',
+                                containIntrinsicSize: '1px 192px'
+                              }}
                             />
                           )}
                           {report.status === 'archived' && report.photos.length > 0 && (
@@ -454,7 +499,7 @@ const MapReports = () => {
                         </div>
                         <CardContent className="p-4 space-y-3">
                           <div className="flex items-start justify-between">
-                            <h3 className="font-semibold text-lg leading-tight">{report.title}</h3>
+                            <h3 className="font-semibold text-lg leading-tight line-clamp-2">{report.title}</h3>
                           </div>
                           
                           <div className="flex flex-wrap gap-2">
@@ -478,8 +523,8 @@ const MapReports = () => {
 
                           <div className="text-xs text-muted-foreground space-y-1">
                             <p className="flex items-center gap-1">
-                              <MapPin className="h-3 w-3" />
-                              {report.location.address || report.location.ward || '-'}
+                              <MapPin className="h-3 w-3 flex-shrink-0" />
+                              <span className="truncate">{report.location.address || report.location.ward || '-'}</span>
                             </p>
                             <p>
                               Reported {formatDistanceToNow(report.createdAt.toDate(), { addSuffix: true })}
@@ -494,13 +539,7 @@ const MapReports = () => {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => {
-                                setSelectedReportId(report.id!);
-                                setActiveView('map');
-                                if (isMobile) {
-                                  setSheetOpen(true);
-                                }
-                              }}
+                              onClick={() => handleViewDetails(report.id!)}
                             >
                               View Details
                             </Button>

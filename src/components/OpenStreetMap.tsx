@@ -2,6 +2,8 @@ import React, { useMemo, useEffect, useRef, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import CustomHeatmapLayer from './CustomHeatmapLayer';
 import { getHeatmapConfig, calculateReportWeight, getNumericGradient, type HeatmapConfig } from '@/services/heatmapConfigService';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { getOptimalZoom, BANGALORE_BOUNDARIES } from '@/config/mapConfig';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
@@ -232,15 +234,27 @@ const MapController: React.FC<{
 
 const OpenStreetMap: React.FC<OpenStreetMapProps> = ({
   reports,
-  center = [12.9716, 77.5946], // Bangalore coordinates
-  zoom = 13,
+  center = BANGALORE_BOUNDARIES.center, // Use configured Bangalore center
+  zoom, // Let default be handled by mobile logic
   onReportClick,
   selectedReportId,
   className = "h-96 w-full",
   showHeatmap = false,
   enableClustering = true
 }) => {
+  const isMobile = useIsMobile();
   const [heatmapConfig, setHeatmapConfig] = useState<HeatmapConfig | null>(null);
+
+  // Determine optimal zoom level based on device and use case
+  const defaultZoom = useMemo(() => {
+    if (zoom !== undefined) return zoom; // Use provided zoom if specified
+    
+    // Use sophisticated zoom calculation
+    // Mobile: Show entire Bangalore city (zoom 10) for better overview and context
+    // Desktop: Show central Bangalore (zoom 13) for better interaction and detail
+    // This ensures mobile users can see the full metropolitan area at first glance
+    return getOptimalZoom(isMobile, 'overview');
+  }, [zoom, isMobile]);
 
   // Load heatmap configuration
   useEffect(() => {
@@ -291,7 +305,7 @@ const OpenStreetMap: React.FC<OpenStreetMapProps> = ({
     <div className={className}>
       <MapContainer 
         center={center as L.LatLngExpression} 
-        zoom={zoom} 
+        zoom={defaultZoom} 
         scrollWheelZoom={true} 
         style={{ height: '100%', width: '100%' }}
       >

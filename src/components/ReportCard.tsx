@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,8 +14,29 @@ interface ReportCardProps {
   onEndorse?: (reportId: string) => void;
 }
 
-const ReportCard = ({ report, onViewDetails, onEndorse }: ReportCardProps) => {
+// Memoized component to prevent unnecessary re-renders
+const ReportCard = React.memo(({ report, onViewDetails, onEndorse }: ReportCardProps) => {
   const { toast } = useToast();
+
+  // Memoize computed values to prevent unnecessary recalculations
+  const formattedDate = useMemo(() => {
+    if (report.createdAt && report.createdAt.toDate) {
+      return report.createdAt.toDate().toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      });
+    }
+    return new Date().toLocaleDateString('en-IN', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
+  }, [report.createdAt]);
+
+  const displayLocation = useMemo(() => {
+    return report.location.address || report.location.ward || '-';
+  }, [report.location.address, report.location.ward]);
 
   const handleEndorse = () => {
     if (onEndorse) {
@@ -26,23 +48,8 @@ const ReportCard = ({ report, onViewDetails, onEndorse }: ReportCardProps) => {
     }
   };
 
-  const formatDate = (timestamp: any) => {
-    if (timestamp && timestamp.toDate) {
-      return timestamp.toDate().toLocaleDateString('en-IN', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric'
-      });
-    }
-    return new Date().toLocaleDateString('en-IN', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric'
-    });
-  };
-
   return (
-    <Card className="hover:shadow-glow transition-all duration-300 cursor-pointer">
+    <Card className="hover:shadow-glow transition-all duration-300 cursor-pointer transform-gpu"> {/* Add hardware acceleration */}
       <CardHeader className="pb-3">
         <div className="flex justify-between items-start">
           <CardTitle className="text-lg line-clamp-2">{report.title}</CardTitle>
@@ -71,15 +78,15 @@ const ReportCard = ({ report, onViewDetails, onEndorse }: ReportCardProps) => {
         
         <div className="space-y-2 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
-            <MapPin className="h-4 w-4" />
-            <span className="line-clamp-1">{report.location.address || report.location.ward || '-'}</span>
+            <MapPin className="h-4 w-4 flex-shrink-0" />
+            <span className="line-clamp-1 truncate">{displayLocation}</span>
           </div>
           <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4" />
-            <span>Reported on {formatDate(report.createdAt)}</span>
+            <Calendar className="h-4 w-4 flex-shrink-0" />
+            <span>Reported on {formattedDate}</span>
           </div>
           <div className="flex items-center justify-between">
-            <span>By {report.authorName || (report.isAnonymous ? 'Anonymous' : 'Unknown')}</span>
+            <span className="truncate">{report.authorName || (report.isAnonymous ? 'Anonymous' : 'Unknown')}</span>
             <div className="flex items-center gap-1">
               <ThumbsUp className="h-4 w-4" />
               <span>{report.endorsementCount || 0}</span>
@@ -109,6 +116,8 @@ const ReportCard = ({ report, onViewDetails, onEndorse }: ReportCardProps) => {
       </CardContent>
     </Card>
   );
-};
+});
+
+ReportCard.displayName = 'ReportCard';
 
 export default ReportCard;

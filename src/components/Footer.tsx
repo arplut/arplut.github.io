@@ -52,20 +52,20 @@ const Footer = () => {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Features</h3>
             <ul className="space-y-2 text-muted-foreground">
-              <li><a href="#" className="hover:text-primary transition-colors">Photo Reporting</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Interactive Maps</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Community Validation</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Analytics</a></li>
+              <li><span className="cursor-default">Photo Reporting</span></li>
+              <li><span className="cursor-default">Interactive Maps</span></li>
+              <li><span className="cursor-default">Community Validation</span></li>
+              <li><span className="cursor-default">Analytics</span></li>
             </ul>
           </div>
 
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Resources</h3>
             <ul className="space-y-2 text-muted-foreground">
-              <li><a href="#" className="hover:text-primary transition-colors">Knowledge Hub</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Community Guidelines</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Success Stories</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Help Center</a></li>
+              <li><span className="cursor-default">Knowledge Hub</span></li>
+              <li><span className="cursor-default">Community Guidelines</span></li>
+              <li><span className="cursor-default">Success Stories</span></li>
+              <li><span className="cursor-default">Help Center</span></li>
             </ul>
           </div>
 
@@ -90,9 +90,9 @@ const Footer = () => {
             © 2025 GEODHA. All rights reserved. Building better communities together.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Privacy Policy</a>
-            <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Terms of Service</a>
-            <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">Contact</a>
+            <span className="text-sm text-muted-foreground cursor-default">Privacy Policy</span>
+            <span className="text-sm text-muted-foreground cursor-default">Terms of Service</span>
+            <span className="text-sm text-muted-foreground cursor-default">Contact</span>
           </div>
         </div>
       </div>

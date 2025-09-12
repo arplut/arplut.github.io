@@ -143,8 +143,19 @@ export const categoryColors = {
   other: 'bg-gray-100 text-gray-800 border-gray-200'
 };
 
+// Hex colors for map badges and pins
+export const categoryColorHex = {
+  garbage: '#f97316', // orange
+  sewage: '#3b82f6', // blue
+  burning: '#ef4444', // red
+  construction: '#eab308', // yellow
+  pollution: '#8b5cf6', // purple
+  other: '#6b7280' // gray
+};
+
 export const statusColors = {
   pending: 'bg-warning text-warning-foreground',
   verified: 'bg-accent text-accent-foreground',
-  resolved: 'bg-primary text-primary-foreground'
+  resolved: 'bg-primary text-primary-foreground',
+  archived: 'bg-muted text-muted-foreground'
 };

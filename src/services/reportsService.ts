@@ -2,6 +2,7 @@ import {
   collection,
   addDoc,
   getDocs,
+  getDoc,
   doc,
   updateDoc,
   query,
@@ -15,18 +16,21 @@ import {
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '@/lib/firebase';
 
-// ... (Keep the Report and CreateReportData interfaces as they are) ...
 export interface Report {
   id?: string;
   title: string;
   description: string;
   category: 'garbage' | 'sewage' | 'burning' | 'construction' | 'pollution' | 'other';
-  status: 'pending' | 'verified' | 'resolved';
+  status: 'pending' | 'verified' | 'resolved' | 'archived';
   location: {
-    coordinates: GeoPoint;
-    address: string;
-    city: string;
-    state: string;
+    coordinates: {
+      latitude: number;
+      longitude: number;
+    };
+    address?: string;
+    ward?: string;
+    city?: string;
+    state?: string;
     postalCode?: string;
   };
   photos: string[];
@@ -142,7 +146,7 @@ export default class ReportsService {
   async getReports(filters: { authorId?: string; category?: string; status?: string; limit?: number } = {}): Promise<Report[]> {
     try {
       const { authorId, category, status, limit: limitCount } = filters;
-      let constraints = [orderBy('createdAt', 'desc')];
+      let constraints: any[] = [orderBy('createdAt', 'desc')];
 
       if (authorId) {
         constraints.push(where('authorId', '==', authorId));
@@ -159,7 +163,27 @@ export default class ReportsService {
 
       const q = query(this.reportsCollection, ...constraints);
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Report));
+      
+      return snapshot.docs.map(doc => {
+        const data = doc.data();
+        
+        // Transform Firestore data to match our interface
+        return {
+          id: doc.id,
+          ...data,
+          location: {
+            coordinates: {
+              latitude: data.location?.coordinates?.latitude || data.location?.coordinates?._lat || 0,
+              longitude: data.location?.coordinates?.longitude || data.location?.coordinates?._long || 0,
+            },
+            address: data.location?.address,
+            ward: data.location?.ward || data.location?.address?.split(',')[0],
+            city: data.location?.city,
+            state: data.location?.state,
+            postalCode: data.location?.postalCode,
+          }
+        } as Report;
+      });
     } catch (error) {
       console.error('Error fetching reports:', error);
       throw error;

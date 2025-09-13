@@ -337,7 +337,7 @@ const MapReports = () => {
                       selectedReportId={selectedReportId}
                       showHeatmap={showHeatmap}
                       enableClustering={!showHeatmap}
-                      zoom={isMobile ? 11.5 : undefined} // Optimal mobile zoom for Bangalore metro area
+                      zoom={isMobile ? 11 : undefined} // Optimal mobile zoom for Bangalore metro area
                       className="h-full w-full relative z-0"
                     />
                   </MapErrorBoundary>

@@ -171,7 +171,7 @@ passwords.txt
 SECURITY-INCIDENT-RESPONSE.md
 bfg-1.15.0.jar
 REFERENCE_CODE/FEATURES.md
-REFERENCE_CODE/mapreportlovable.tsx
+REFERENCE_CODE/MapReportsReference.tsx
 REFERENCE_CODE/OpenStreetMap.tsx
 REFERENCE_CODE/PhotoCarousel.tsx
 REFERENCE_CODE/engineering-spec.md

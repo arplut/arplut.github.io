@@ -12,7 +12,8 @@ GEODHA is a civic engagement platform that empowers communities to report local 
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/5656a31d-a816-4b09-88fe-07d8c55d0502
+**Repository**: https://github.com/arplut/arplut.github.io
+**Live Website**: https://arplut.github.io
 
 ## 📱 GEODHA App – Comprehensive Feature List
 
@@ -208,15 +209,9 @@ The website uses a comprehensive design system built on Tailwind CSS with semant
 
 There are several ways of editing your application.
 
-**Use Lovable**
+**Clone and Edit Locally**
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/5656a31d-a816-4b09-88fe-07d8c55d0502) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+If you want to work locally using your preferred IDE, you can clone this repo and push changes.
 
 The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
@@ -224,10 +219,10 @@ Follow these steps:
 
 ```sh
 # Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+git clone https://github.com/arplut/arplut.github.io.git
 
 # Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+cd arplut.github.io
 
 # Step 3: Install the necessary dependencies.
 npm i
@@ -262,12 +257,34 @@ This project is built with:
 
 ## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/5656a31d-a816-4b09-88fe-07d8c55d0502) and click on Share -> Publish.
+This project can be deployed using GitHub Pages or any static hosting service.
 
-## Can I connect a custom domain to my Lovable project?
+### GitHub Pages Deployment
 
-Yes, you can!
+The project is already configured for GitHub Pages deployment. Simply push your changes to the main branch and GitHub Actions will automatically build and deploy the site.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### Alternative Deployment Options
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+- **Vercel**: Connect your GitHub repository to Vercel for automatic deployments
+- **Netlify**: Deploy directly from GitHub with continuous deployment
+- **Firebase Hosting**: Use Firebase CLI to deploy to Firebase Hosting
+
+## Can I connect a custom domain?
+
+Yes, you can connect a custom domain to your GitHub Pages site.
+
+### Setting up a custom domain
+
+1. **Add your domain to GitHub Pages**:
+   - Go to your repository settings
+   - Scroll down to the "Pages" section
+   - Enter your custom domain in the "Custom domain" field
+
+2. **Configure DNS records**:
+   - Add a CNAME record pointing to `<username>.github.io`
+   - Or add A records pointing to GitHub's IP addresses
+
+3. **Enable HTTPS**:
+   - GitHub Pages will automatically provision an SSL certificate for your custom domain
+
+For detailed instructions, refer to the [GitHub Pages custom domain documentation](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site).

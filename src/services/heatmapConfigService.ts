@@ -1,5 +1,5 @@
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { db, ensureAuth } from '@/lib/firebase';
 
 export interface HeatmapConfig {
   radius: number;
@@ -64,6 +64,9 @@ export async function getHeatmapConfig(): Promise<HeatmapConfig> {
   
   try {
     console.log('🔧 Loading heatmap configuration from Firebase...');
+    
+    // Ensure user is authenticated before querying
+    await ensureAuth();
     
     const configRef = doc(db, 'config', 'heatmap');
     const configSnap = await getDoc(configRef);

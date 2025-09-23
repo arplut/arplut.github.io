@@ -22,8 +22,22 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-src/lib/firebase.ts
+
+# Environment files - NEVER commit these
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Firebase private key files
+**/firebase-adminsdk-*.json
+**/service-account-*.json
+
+# API key files
+**/*-key.json
+**/*-keys.json
+
 REFERENCE_CODE/bun.lockb
 REFERENCE_CODE/components.json
 REFERENCE_CODE/eslint.config.js

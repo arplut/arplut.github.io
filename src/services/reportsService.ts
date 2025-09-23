@@ -14,7 +14,7 @@ import {
   increment
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { db, storage } from '@/lib/firebase';
+import { db, storage, ensureAuth } from '@/lib/firebase';
 import { transformToReport } from './dataTransformService';
 
 export interface Report {
@@ -146,6 +146,9 @@ export default class ReportsService {
   // OPTIMIZED: Get reports with filters
   async getReports(filters: { authorId?: string; category?: string; status?: string; limit?: number } = {}): Promise<Report[]> {
     try {
+      // Ensure user is authenticated before querying
+      await ensureAuth();
+      
       const { authorId, category, status, limit: limitCount } = filters;
       let constraints: any[] = [orderBy('createdAt', 'desc')];
 
@@ -165,18 +168,21 @@ export default class ReportsService {
       const q = query(this.reportsCollection, ...constraints);
       const snapshot = await getDocs(q);
       
+      console.log(`✅ Fetched ${snapshot.docs.length} reports for map`);
       return snapshot.docs.map(doc => {
         const data = doc.data();
         return transformToReport(doc.id, data);
       });
     } catch (error) {
-      console.error('Error fetching reports:', error);
+      console.error('❌ Error fetching reports:', error);
       throw error;
     }
   }
 
   async getReportById(reportId: string): Promise<Report | null> {
     try {
+      await ensureAuth();
+      
       const reportRef = doc(db, 'reports', reportId);
       const reportSnap = await getDoc(reportRef);
 
@@ -240,6 +246,41 @@ export default class ReportsService {
       // It's possible the user document doesn't exist yet.
       // We can choose to create it here or handle it gracefully.
       console.warn('Could not update user report count. User doc might not exist.', error);
+    }
+  }
+
+  // Fetch reports within geographical bounds
+  async getReportsInBounds(bounds: { north: number; south: number; east: number; west: number }): Promise<Report[]> {
+    try {
+      await ensureAuth();
+      
+      // Get all reports and filter by bounds (for simplicity)
+      // In production, you might want to use GeoFirestore for more efficient geographical queries
+      const reportsQuery = query(
+        this.reportsCollection,
+        orderBy('createdAt', 'desc'),
+        limit(100) // Adjust as needed
+      );
+      
+      const querySnapshot = await getDocs(reportsQuery);
+      const reports = querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        return transformToReport(doc.id, data);
+      });
+      
+      // Filter by bounds
+      const filteredReports = reports.filter(report => {
+        const lat = report.location?.coordinates?.latitude;
+        const lng = report.location?.coordinates?.longitude;
+        return lat >= bounds.south && lat <= bounds.north && 
+               lng >= bounds.west && lng <= bounds.east;
+      });
+      
+      console.log(`✅ Fetched ${filteredReports.length} reports in bounds`);
+      return filteredReports;
+    } catch (error) {
+      console.error('❌ Error fetching reports in bounds:', error);
+      throw error;
     }
   }
 }

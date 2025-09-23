@@ -36,6 +36,7 @@ import { MapPin, Filter, ThumbsUp, Loader2, ServerCrash, Layers, Grid, Map, Togg
 import PhotoCarousel from "@/components/PhotoCarousel";
 import MapErrorBoundary from "@/components/MapErrorBoundary";
 import { reportsService, Report } from "@/services/reportsService";
+import { initializeAuth } from "@/lib/firebase";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import OpenStreetMap, { type MapReport } from "@/components/OpenStreetMap";
@@ -53,6 +54,7 @@ const MapReports = () => {
   const [reports, setReports] = useState<Report[]>([]);
   const [filteredReports, setFilteredReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
+  const [authReady, setAuthReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
@@ -61,7 +63,26 @@ const MapReports = () => {
   const [sheetOpen, setSheetOpen] = useState(false);
   const { toast } = useToast();
 
+  // Initialize Firebase authentication when MapReports component loads
   useEffect(() => {
+    const initAuth = async () => {
+      try {
+        await initializeAuth();
+        setAuthReady(true);
+        console.log('🔥 Firebase authentication initialized for map page');
+      } catch (error) {
+        console.error('Failed to initialize Firebase auth:', error);
+        setAuthReady(true); // Still proceed, will fall back to sample data
+      }
+    };
+    
+    initAuth();
+  }, []);
+
+  useEffect(() => {
+    // Only fetch reports after auth is ready
+    if (!authReady) return;
+    
     const fetchReports = async () => {
       try {
         setLoading(true);
@@ -80,19 +101,40 @@ const MapReports = () => {
         } else {
           // Using live Firebase data
           console.log('🔥 PRODUCTION MODE: Using live Firebase data');
-          const fetchedReports = await reportsService.getReports();
-          console.log('📊 Total fetched reports:', fetchedReports.length);
-          
-          // Log status distribution for debugging
-          const statusCounts = fetchedReports.reduce((acc, r) => {
-            acc[r.status] = (acc[r.status] || 0) + 1;
-            return acc;
-          }, {} as Record<string, number>);
-          console.log('📊 Status distribution:', statusCounts);
-          
-          // Show all reports (including anonymous ones for legacy data)
-          setReports(fetchedReports);
-          setFilteredReports(fetchedReports);
+          try {
+            const fetchedReports = await reportsService.getReports();
+            console.log('📊 Total fetched reports:', fetchedReports.length);
+            
+            // Log status distribution for debugging
+            const statusCounts = fetchedReports.reduce((acc, r) => {
+              acc[r.status] = (acc[r.status] || 0) + 1;
+              return acc;
+            }, {} as Record<string, number>);
+            console.log('📊 Status distribution:', statusCounts);
+            
+            // Show all reports (including anonymous ones for legacy data)
+            setReports(fetchedReports);
+            setFilteredReports(fetchedReports);
+          } catch (firebaseError) {
+            console.error('🔥 Firebase Error Details:', firebaseError);
+            console.log('🔧 Falling back to sample data due to Firebase connection issues');
+            
+            // Fallback to sample data if Firebase fails
+            const transformedSampleReports = sampleReports.map(report => ({
+              ...report,
+              createdAt: report.createdAt,
+              updatedAt: report.updatedAt
+            })) as Report[];
+            
+            setReports(transformedSampleReports);
+            setFilteredReports(transformedSampleReports);
+            
+            toast({
+              title: "Using Sample Data",
+              description: "Firebase connection failed. Showing sample data for demonstration.",
+              variant: "default",
+            });
+          }
         }
         
         setError(null);
@@ -104,7 +146,7 @@ const MapReports = () => {
       }
     };
     fetchReports();
-  }, []);
+  }, [authReady]); // Only run when auth is ready
 
   useEffect(() => {
     if (categoryFilter === 'all') {
@@ -222,6 +264,18 @@ const MapReports = () => {
       </div>
     </div>
   );
+
+  // Show Firebase authentication loading screen
+  if (!authReady) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-xl font-semibold mb-2">Loading GEODHA...</div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (

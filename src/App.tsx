@@ -8,6 +8,7 @@ import MapReports from "./pages/MapReports";
 import Blog from "./pages/Blog";
 import About from "./pages/About";
 import GetStarted from "./pages/GetStarted";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Navigation from "./components/Navigation";
 import TopBanner from "./components/TopBanner";
 import Footer from "./components/Footer";
@@ -31,6 +32,7 @@ const App = () => {
               <Route path="/map" element={<MapReports />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/about" element={<About />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/get-started" element={<GetStarted />} />
               {/* The catch-all route for 404 errors */}
               <Route path="*" element={<NotFound />} />

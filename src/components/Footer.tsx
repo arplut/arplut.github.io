@@ -90,9 +90,9 @@ const Footer = () => {
             © 2025 GEODHA. All rights reserved. Building better communities together.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <span className="text-sm text-muted-foreground cursor-default">Privacy Policy</span>
+            <a href="/privacy" className="text-sm text-muted-foreground hover:text-primary transition-colors">Privacy Policy</a>
             <span className="text-sm text-muted-foreground cursor-default">Terms of Service</span>
-            <span className="text-sm text-muted-foreground cursor-default">Contact</span>
+            <a href="mailto:contact@geodha.org" className="text-sm text-muted-foreground hover:text-primary transition-colors">Contact</a>
           </div>
         </div>
       </div>

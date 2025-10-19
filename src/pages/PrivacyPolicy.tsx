@@ -27,10 +27,22 @@ const PrivacyPolicy: React.FC = () => {
         </div>
       </section>
 
+      {/* Linked index */}
+      <section className="py-6">
+        <div className="container px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto text-sm text-muted-foreground">
+            <nav className="flex space-x-4 justify-center">
+              <a href="#privacy-policy" className="hover:text-primary">1. Privacy Policy</a>
+              <a href="#account-deletion" className="hover:text-primary">2. Account Deletion</a>
+            </nav>
+          </div>
+        </div>
+      </section>
+
       <section className="py-16">
         <div className="container px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto prose prose-lg text-muted-foreground">
-            <h2>1. Introduction</h2>
+            <h2 id="privacy-policy">1. Introduction</h2>
             <p>
               GEODHA (“we,” “our,” or “us”) is a civic engagement platform that enables users to report and visualize local
               infrastructure challenges such as littering, water shortages, power outages, and road damage. We value your trust
@@ -114,6 +126,17 @@ const PrivacyPolicy: React.FC = () => {
               If you have any questions or concerns, please contact: GEODHA Team<br />
               <a href="mailto:contact@geodha.org">contact@geodha.org</a><br />
               <a href="https://geodha.org" target="_blank" rel="noopener noreferrer">https://geodha.org</a>
+            </p>
+
+            {/* Account Deletion Section appended as requested */}
+            <h2 id="account-deletion">Account Deletion</h2>
+            <p>
+              If you would like to delete your GEODHA account and all associated data, please email
+              <strong> <a href="mailto:contact@geodha.org">contact@geodha.org</a></strong> from the same email address used to sign in, and title the email as "Account Deletion Request".
+              Your account and any submitted reports will be permanently deleted from our servers within 7 days of receiving your request.
+            </p>
+            <p>
+              You may also contact us for assistance if you cannot access your registered email account.
             </p>
 
             <footer className="mt-12 text-center text-sm text-muted-foreground">

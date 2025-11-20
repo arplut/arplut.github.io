@@ -1,19 +1,21 @@
 const ScrollingBanner = () => {
   const phrases = ["Data for Awareness", "Data for Accountability", "Data for Action"];
-  
+
   return (
-    <div className="relative overflow-hidden bg-primary/5 border-y border-primary/10">
-      <div className="animate-scroll whitespace-nowrap py-3">
+    <div className="relative overflow-hidden bg-primary text-primary-foreground py-4 shadow-inner">
+      <div className="animate-scroll whitespace-nowrap flex items-center">
         {/* Repeat the phrases multiple times to create seamless scrolling */}
-        {[...Array(6)].map((_, i) => (
-          <span key={i} className="inline-block text-sm font-medium text-primary">
+        {[...Array(10)].map((_, i) => (
+          <div key={i} className="flex items-center">
             {phrases.map((phrase, index) => (
-              <span key={index}>
-                {phrase}
-                <span className="mx-6">•</span>
-              </span>
+              <div key={index} className="flex items-center mx-8">
+                <span className="text-sm font-bold tracking-wider uppercase opacity-90">
+                  {phrase}
+                </span>
+                <span className="ml-8 h-1.5 w-1.5 rounded-full bg-white/40" />
+              </div>
             ))}
-          </span>
+          </div>
         ))}
       </div>
     </div>

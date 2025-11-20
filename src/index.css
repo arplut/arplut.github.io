@@ -9,99 +9,95 @@
 
 @layer base {
   :root {
-    --background: 0 0% 99%;
-    --foreground: 147 16% 12%;
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
 
     --card: 0 0% 100%;
-    --card-foreground: 147 16% 12%;
+    --card-foreground: 222 47% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 147 16% 12%;
+    --popover-foreground: 222 47% 11%;
 
-    --primary: 147 78% 35%;
-    --primary-foreground: 0 0% 98%;
-    --primary-glow: 147 65% 45%;
+    --primary: 160 84% 39%;
+    /* Emerald 600 */
+    --primary-foreground: 210 40% 98%;
+    --primary-glow: 160 60% 45%;
 
-    --secondary: 147 20% 95%;
-    --secondary-foreground: 147 16% 12%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222 47% 11.2%;
 
-    --muted: 147 15% 96%;
-    --muted-foreground: 147 10% 45%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 85% 52%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 180 70% 40%;
+    /* Teal 600 */
+    --accent-foreground: 222 47% 11.2%;
 
-    --warning: 35 95% 58%;
-    --warning-foreground: 0 0% 98%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 48 96% 89%;
 
-    --destructive: 0 85% 60%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 147 30% 91%;
-    --input: 147 30% 94%;
-    --ring: 147 78% 35%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 160 84% 39%;
 
     /* Custom GEODHA tokens */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+    --gradient-hero: linear-gradient(135deg, hsl(160 84% 39% / 0.1) 0%, hsl(180 70% 40% / 0.1) 100%);
     --gradient-subtle: linear-gradient(180deg, hsl(var(--background)), hsl(var(--muted)));
-    
+
     --shadow-soft: 0 4px 24px -8px hsl(var(--primary) / 0.15);
     --shadow-glow: 0 0 32px hsl(var(--primary-glow) / 0.3);
-    
+
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
-    --background: 147 25% 6%;
-    --foreground: 147 15% 92%;
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
 
-    --card: 147 25% 8%;
-    --card-foreground: 147 15% 92%;
+    --card: 222 47% 11%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 147 25% 8%;
-    --popover-foreground: 147 15% 92%;
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 147 65% 55%;
-    --primary-foreground: 147 25% 6%;
-    --primary-glow: 147 55% 65%;
+    --primary: 160 84% 39%;
+    --primary-foreground: 210 40% 98%;
+    --primary-glow: 160 60% 45%;
 
-    --secondary: 147 20% 15%;
-    --secondary-foreground: 147 15% 85%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 147 15% 12%;
-    --muted-foreground: 147 10% 65%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 210 75% 62%;
-    --accent-foreground: 147 25% 6%;
+    --accent: 180 70% 40%;
+    --accent-foreground: 210 40% 98%;
 
-    --warning: 35 85% 68%;
-    --warning-foreground: 147 25% 6%;
+    --warning: 48 96% 89%;
+    --warning-foreground: 38 92% 50%;
 
-    --destructive: 0 75% 70%;
-    --destructive-foreground: 147 25% 6%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 147 20% 18%;
-    --input: 147 20% 15%;
-    --ring: 147 65% 55%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 160 84% 39%;
+
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -125,8 +121,13 @@
 
 /* Animation keyframes for custom animations */
 @keyframes scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
 }
 
 /* Animation utility classes */

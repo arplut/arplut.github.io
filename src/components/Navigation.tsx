@@ -21,6 +21,7 @@ const Navigation = () => {
   const handleNavigation = (path: string) => {
     setIsMobileMenuOpen(false);
     navigate(path);
+    window.scrollTo(0, 0);
   };
 
   // Function to handle Get Started button click - temporarily link to pre-register form

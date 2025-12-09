@@ -27,6 +27,7 @@ const Hero = () => {
               <Button variant="hero" size="lg" className="flex-1 sm:flex-none py-4 sm:py-3" onClick={() => {
                 window.history.pushState({}, '', '/map');
                 window.dispatchEvent(new PopStateEvent('popstate'));
+                window.scrollTo(0, 0);
               }}>
                 <MapPin className="h-5 w-5 mr-2" />
                 View Map

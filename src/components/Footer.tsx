@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Camera, MapPin, Users, Mail, Phone, Globe, Linkedin, Instagram, MessageSquare, Smartphone } from "lucide-react";
 import { Link } from "react-router-dom";
 import logoSvg from '@/assets/LOGO_SVG.svg';
+import androidIcon from "@/assets/icons/android-play.svg";
 
 const Footer = () => {
   return (
@@ -74,14 +75,21 @@ const Footer = () => {
             <p className="text-muted-foreground">
               Join thousands of citizens making a difference in their communities.
             </p>
-            <Button 
-              variant="default" 
-              className="w-full bg-black text-white hover:bg-black/90" 
-              disabled
-            >
-              <Smartphone className="h-4 w-4 mr-2" />
-              Reporting App - Coming Soon
-            </Button>
+            <Button
+                variant="default"
+                className="w-full bg-black text-white hover:bg-black/90" 
+                onClick={() => {
+                  window.open(
+                    'https://play.google.com/store/apps/details?id=com.geodha.community',
+                    '_blank',
+                    'noopener,noreferrer'
+                  );
+                }}
+                aria-label="Download Reporting App from Google Play"
+              >
+                <img src={androidIcon} alt="Google Play" className="h-5 w-5" />
+                Download Reporting App
+              </Button>
           </div>
         </div>
 

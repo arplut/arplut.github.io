@@ -28,18 +28,18 @@ const TopBanner = () => {
     <div className="relative z-50 bg-gradient-hero text-white py-2 px-4 shadow-md">
       <div className="container mx-auto flex items-center justify-center relative">
         <p className="text-sm sm:text-base text-center">
-          We are currently developing the app.{' '}
+          We have launched the app for Android devices!{' '}
           <Button 
             variant="link" 
             className="text-white underline p-0 h-auto font-medium hover:text-white/80 sm:text-base"
             asChild
           >
             <a 
-              href="https://forms.gle/K3GGQdBe5k2uH44f7" 
+              href="https://play.google.com/store/apps/details?id=com.geodha.community" 
               target="_blank" 
               rel="noopener noreferrer"
             >
-              Pre-register your interest here.
+              Click here to install the app
             </a>
           </Button>
         </p>

@@ -69,7 +69,7 @@ const Navigation = () => {
         {/* Auth Buttons - Simplified to just Get Started */}
         <div className="hidden md:flex items-center space-x-2">
           <Button variant="hero" size="sm" onClick={handleGetStarted}>
-            Get Started
+            Contact Us
           </Button>
         </div>
 

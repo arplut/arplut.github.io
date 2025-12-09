@@ -67,7 +67,8 @@ const Hero = () => {
             </div>
             */}
 
-            <div className="pt-8">
+            {/* Beta testing text - visible on desktop only */}
+            <div className="hidden lg:block pt-8">
               <p className="text-lg text-muted-foreground">
                 Beta testing in Bangalore, India has been completed. We have identified an area with significant challenges of garbage dumping and open burning.{" "}
                 <button 
@@ -102,6 +103,20 @@ const Hero = () => {
               </div>
             </div>
           </div>
+        </div>
+        {/* Beta testing text - visible on mobile only, below the image */}
+        <div className="lg:hidden pt-12">
+          <p className="text-lg text-muted-foreground">
+            Beta testing in Bangalore, India has been completed. We have identified an area with significant challenges of garbage dumping and open burning.{" "}
+            <button 
+              className="text-primary hover:text-primary-foreground underline underline-offset-4 hover:no-underline transition-all duration-200"
+              onClick={() => {
+                window.open('https://drive.google.com/file/d/1mAYuQQaYTORPAEiC3b8xcQ3jHLebaxVY/view?usp=drive_link', '_blank', 'noopener,noreferrer');
+              }}
+            >
+              Click here to read the report.
+            </button>
+          </p>
         </div>
       </div>
     </section>

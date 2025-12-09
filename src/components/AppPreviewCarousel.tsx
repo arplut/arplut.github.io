@@ -101,13 +101,13 @@ const AppPreviewCarousel = () => {
           >
             <CarouselContent className="-ml-2 md:-ml-4">
               {screenshots.map((screenshot, index) => (
-                <CarouselItem key={index} className="pl-2 md:pl-4 basis-1/3 md:basis-1/3">
+                <CarouselItem key={index} className="pl-2 md:pl-4 basis-3/5 sm:basis-2/5 md:basis-1/3">
                   <div className="p-1">
                     <Card 
                       className={`overflow-hidden border-0 transition-all duration-500 ${
                         index === current 
                           ? "shadow-glow scale-100 opacity-100" 
-                          : "shadow-soft scale-90 opacity-40"
+                          : "shadow-soft scale-[0.65] sm:scale-75 md:scale-90 opacity-40"
                       }`}
                     >
                       <div className="aspect-[9/16] relative">

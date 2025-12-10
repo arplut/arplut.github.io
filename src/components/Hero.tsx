@@ -6,7 +6,7 @@ import androidIcon from "@/assets/icons/android-play.svg";
 const Hero = () => {
   return (
     <section className="relative overflow-hidden bg-gradient-subtle">
-      <div className="container px-4 py-24 sm:px-6 lg:px-8">
+      <div className="container px-4 py-12 sm:py-16 lg:py-24 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
             <div className="space-y-4">
@@ -88,7 +88,7 @@ const Hero = () => {
             <img
               src={heroImage}
               alt="Citizens reporting civic issues in a clean city environment"
-              className="relative rounded-2xl shadow-glow object-cover w-full h-[500px]"
+              className="relative rounded-2xl shadow-glow object-cover w-full h-[280px] sm:h-[400px] lg:h-[500px]"
             />
             
             <div className="absolute -bottom-6 -left-6 bg-card p-4 rounded-xl shadow-soft border">

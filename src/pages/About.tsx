@@ -2,6 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Mail, Linkedin, Instagram, MessageSquare, Camera, Users, Target, BarChart3 } from "lucide-react";
 import FourElements from "@/components/FourElements";
+import HowItWorks from "@/components/HowItWorks";
+import VideoSection from "@/components/VideoSection";
+      
+      
 
 const About = () => {
   return (
@@ -25,7 +29,9 @@ const About = () => {
 
       {/* Four Elements of Nature */}
       <FourElements />
-
+      <HowItWorks />
+      <VideoSection />
+      
       {/* What does GEODHA aim to do? */}
       <section className="py-16">
         <div className="container px-4 sm:px-6 lg:px-8">
@@ -217,6 +223,7 @@ const About = () => {
           </div>
         </div>
       </section>
+      
     </div>
   );
 };

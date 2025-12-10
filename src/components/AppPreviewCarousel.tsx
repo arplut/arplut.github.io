@@ -76,7 +76,7 @@ const AppPreviewCarousel = () => {
   }, [api]);
 
   return (
-    <section className="py-24 bg-gradient-subtle">
+    <section className="py-12 sm:py-16 lg:py-24 bg-gradient-subtle">
       <div className="container px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-4 mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold">
@@ -90,7 +90,7 @@ const AppPreviewCarousel = () => {
           </p> */}
         </div>
 
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <Carousel
             opts={{
               align: "center",
@@ -99,15 +99,16 @@ const AppPreviewCarousel = () => {
             setApi={setApi}
             className="w-full"
           >
-            <CarouselContent className="-ml-2 md:-ml-4">
+            <CarouselContent className="-ml-0.5 md:-ml-2">
               {screenshots.map((screenshot, index) => (
-                <CarouselItem key={index} className="pl-2 md:pl-4 basis-3/5 sm:basis-2/5 md:basis-1/3">
-                  <div className="p-1">
+                <CarouselItem key={index} className="pl-0.5 md:pl-2 basis-[90%] sm:basis-2/5 md:basis-1/3">
+                  <div className="p-0.5">
                     <Card 
                       className={`overflow-hidden border-0 transition-all duration-500 ${
                         index === current 
                           ? "shadow-glow scale-100 opacity-100" 
-                          : "shadow-soft scale-[0.65] sm:scale-75 md:scale-90 opacity-40"
+                          : "shadow-soft scale-[0.7] sm:scale-75 md:scale-90 opacity-50"
+
                       }`}
                     >
                       <div className="aspect-[9/16] relative">

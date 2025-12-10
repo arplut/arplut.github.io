@@ -4,7 +4,7 @@ import { Camera, Map, Users, BookOpen, Share2, Shield } from "lucide-react";
 const features = [
   {
     icon: Camera,
-    title: "Photo-based Reporting",
+    title: "Photo-based Reporting With AI",
     description: "Capture issues with your camera and let AI automatically categorize and geo-tag them.",
     color: "text-primary"
   },

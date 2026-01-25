@@ -43,6 +43,7 @@ import OpenStreetMap, { type MapReport } from "@/components/OpenStreetMap";
 import { categoryColors, categoryColorHex } from "@/data/mockData";
 import { sampleReports } from "@/data/sampleReports";
 import { formatDistanceToNow } from 'date-fns';
+import Dashboard from "./Dashboard";
 
 // ⚠️ DEVELOPMENT MODE FLAG ⚠️
 // Set to true to use sample data for heatmap testing
@@ -321,6 +322,7 @@ const MapReports = () => {
       )}
       
       <div className="container px-4 py-8 space-y-6">
+        {reports.length > 0 ? <Dashboard reports={reports} /> : null}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <h1 className="text-3xl font-bold">Community Reports & Map</h1>

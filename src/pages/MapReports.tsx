@@ -41,9 +41,9 @@ import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import OpenStreetMap, { type MapReport } from "@/components/OpenStreetMap";
 import { categoryColors, categoryColorHex } from "@/data/mockData";
-import { sampleReports } from "@/data/sampleReports";
 import { formatDistanceToNow } from 'date-fns';
 import Dashboard from "./Dashboard";
+import { useFetchReports } from "@/hooks/useFetchReports";
 
 // ⚠️ DEVELOPMENT MODE FLAG ⚠️
 // Set to true to use sample data for heatmap testing
@@ -52,17 +52,15 @@ const USE_SAMPLE_DATA_FOR_TESTING = false;
 
 const MapReports = () => {
   const isMobile = useIsMobile();
+  const {reports:fetchedReports , loading, error } = useFetchReports(USE_SAMPLE_DATA_FOR_TESTING);
   const [reports, setReports] = useState<Report[]>([]);
   const [filteredReports, setFilteredReports] = useState<Report[]>([]);
-  const [loading, setLoading] = useState(true);
   const [authReady, setAuthReady] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
   const [activeView, setActiveView] = useState('map');
   const [showHeatmap, setShowHeatmap] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
-  const { toast } = useToast();
 
   // Initialize Firebase authentication when MapReports component loads
   useEffect(() => {
@@ -82,72 +80,12 @@ const MapReports = () => {
 
   useEffect(() => {
     // Only fetch reports after auth is ready
-    if (!authReady) return;
+    if (!authReady || loading) return;
     
-    const fetchReports = async () => {
-      try {
-        setLoading(true);
-        
-        if (USE_SAMPLE_DATA_FOR_TESTING) {
-          // Using sample data for heatmap testing
-          console.log('🔧 DEVELOPMENT MODE: Using sample data for heatmap testing');
-          const transformedSampleReports = sampleReports.map(report => ({
-            ...report,
-            createdAt: report.createdAt,
-            updatedAt: report.updatedAt
-          })) as Report[];
-          
-          setReports(transformedSampleReports);
-          setFilteredReports(transformedSampleReports);
-        } else {
-          // Using live Firebase data
-          console.log('🔥 PRODUCTION MODE: Using live Firebase data');
-          try {
-            const fetchedReports = await reportsService.getReports();
-            console.log('📊 Total fetched reports:', fetchedReports.length);
-            
-            // Log status distribution for debugging
-            const statusCounts = fetchedReports.reduce((acc, r) => {
-              acc[r.status] = (acc[r.status] || 0) + 1;
-              return acc;
-            }, {} as Record<string, number>);
-            console.log('📊 Status distribution:', statusCounts);
-            
-            // Show all reports (including anonymous ones for legacy data)
-            setReports(fetchedReports);
-            setFilteredReports(fetchedReports);
-          } catch (firebaseError) {
-            console.error('🔥 Firebase Error Details:', firebaseError);
-            console.log('🔧 Falling back to sample data due to Firebase connection issues');
-            
-            // Fallback to sample data if Firebase fails
-            const transformedSampleReports = sampleReports.map(report => ({
-              ...report,
-              createdAt: report.createdAt,
-              updatedAt: report.updatedAt
-            })) as Report[];
-            
-            setReports(transformedSampleReports);
-            setFilteredReports(transformedSampleReports);
-            
-            toast({
-              title: "Using Sample Data",
-              description: "Firebase connection failed. Showing sample data for demonstration.",
-              variant: "default",
-            });
-          }
-        }
-        
-        setError(null);
-      } catch (err) {
-        setError("Failed to load reports and map data.");
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchReports();
-  }, [authReady]); // Only run when auth is ready
+    setReports(fetchedReports);
+    setFilteredReports(fetchedReports);
+
+  }, [authReady, loading, fetchedReports]); // Only run when auth is ready
 
   useEffect(() => {
     if (categoryFilter === 'all') {
@@ -322,7 +260,7 @@ const MapReports = () => {
       )}
       
       <div className="container px-4 py-8 space-y-6">
-        {reports.length > 0 ? <Dashboard reports={reports} /> : null}
+        {reports.length > 0 ? <Dashboard reports={reports} allowCustomDateRange={true} /> : null}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <h1 className="text-3xl font-bold">Community Reports & Map</h1>

@@ -27,7 +27,6 @@ const Hero = () => {
               </p>
             </div>
 
-            {!loading && reports.length > 0 ? <Dashboard reports={reports} allowCustomDateRange={false} /> : null}
             <div className="flex flex-col sm:flex-row gap-4">
               <Button variant="hero" size="lg" className="flex-1 sm:flex-none py-4 sm:py-3" onClick={() => {
                 window.history.pushState({}, '', '/map');
@@ -109,6 +108,11 @@ const Hero = () => {
             </div>
           </div>
         </div>
+        {!loading && reports.length > 0 ?
+          <div className="mt-10 rounded-lg border bg-card p-6">
+            <Dashboard reports={reports} allowCustomDateRange={false} />
+          </div>
+          : null}
         {/* Beta testing text - visible on mobile only, below the image */}
         <div className="lg:hidden pt-12">
           <p className="text-lg text-muted-foreground">

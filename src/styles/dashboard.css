@@ -1,4 +1,12 @@
+.reports-daterange-picker {
+  display: flex;
+  padding-right: 5px;
+  margin-bottom: 1%;
+}
+
 .dashboard-select {
-    margin: 10px;
-    padding: 5px;
+  margin-left: 10px;
+  padding: 5px;
+  background: lightgray;
+  border-radius: 5px;
 }

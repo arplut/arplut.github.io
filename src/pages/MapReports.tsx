@@ -44,16 +44,36 @@ import { categoryColors, categoryColorHex } from "@/data/mockData";
 import { formatDistanceToNow } from 'date-fns';
 import Dashboard from "./Dashboard";
 import { useFetchReports } from "@/hooks/useFetchReports";
+import { useLocation } from "react-router-dom";
+import { getReportsListFromChartDate } from "@/lib/utils";
 
 // ⚠️ DEVELOPMENT MODE FLAG ⚠️
 // Set to true to use sample data for heatmap testing
 // Set to false to use live Firebase data
 const USE_SAMPLE_DATA_FOR_TESTING = false;
 
+// Memoize status colors to prevent object recreation
+const statusColors = {
+  pending: 'hsl(0 84% 60%)', // red
+  verified: 'hsl(45 93% 47%)', // yellow  
+  resolved: 'hsl(142 71% 45%)', // green
+  archived: 'hsl(215 16% 47%)' // gray
+}
+
+const getStatusColor = (status: string) => {
+  return statusColors[status as keyof typeof statusColors] || statusColors.pending;
+};
+
+
+const categoryOptions = ['all', 'garbage', 'sewage', 'burning', 'construction', 'pollution', 'other'];
+
+
 const MapReports = () => {
   const isMobile = useIsMobile();
-  const {reports:fetchedReports , loading, error } = useFetchReports(USE_SAMPLE_DATA_FOR_TESTING);
+  const { reports: fetchedReports, loading, error } = useFetchReports(USE_SAMPLE_DATA_FOR_TESTING);
+  const location = useLocation();
   const [reports, setReports] = useState<Report[]>([]);
+  const [selectedDateFromChart, setSelectedDateFromChart] = useState<string>("")
   const [filteredReports, setFilteredReports] = useState<Report[]>([]);
   const [authReady, setAuthReady] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState('all');
@@ -87,13 +107,38 @@ const MapReports = () => {
 
   }, [authReady, loading, fetchedReports]); // Only run when auth is ready
 
-  useEffect(() => {
-    if (categoryFilter === 'all') {
-      setFilteredReports(reports);
-    } else {
-      setFilteredReports(reports.filter(report => report.category === categoryFilter));
+
+  function scrollTOList() {
+    const element = document.getElementById('reports-tabs-section');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [categoryFilter, reports]);
+  }
+
+  useEffect(() => {
+    // Check if we have a date range passed from the dashboard
+    if (location.state && (location.state).dateRangeSelected) {
+      const dateRangeSelected = (location.state).dateRangeSelected;
+      setSelectedDateFromChart(dateRangeSelected);
+      const filteredReports = getReportsListFromChartDate(dateRangeSelected, reports);
+      setFilteredReports(filteredReports);
+      setActiveView('reports'); // Switch to reports tab to show the filtered list
+      scrollTOList();
+    }
+  }, [location, reports]);
+
+  function resetDateFilterFromChart() {
+    setSelectedDateFromChart("");
+    setFilteredReports(reports);
+  }
+
+  // useEffect(() => {
+  //   if (categoryFilter === 'all') {
+  //     setFilteredReports(reports);
+  //   } else {
+  //     setFilteredReports(reports.filter(report => report.category === categoryFilter));
+  //   }
+  // }, [categoryFilter, reports]);
 
   // Memoize expensive computations
   const mapReports: MapReport[] = useMemo(() => 
@@ -119,13 +164,6 @@ const MapReports = () => {
     [filteredReports]
   );
 
-  // Memoize status colors to prevent object recreation
-  const statusColors = useMemo(() => ({
-    pending: 'hsl(0 84% 60%)', // red
-    verified: 'hsl(45 93% 47%)', // yellow  
-    resolved: 'hsl(142 71% 45%)', // green
-    archived: 'hsl(215 16% 47%)' // gray
-  }), []);
 
   // Memoized callback for report click handling
   const handleReportClick = useCallback((reportId: string) => {
@@ -136,13 +174,9 @@ const MapReports = () => {
   }, [isMobile]);
 
   // Memoized callback for view details
-  const handleViewDetails = useCallback((reportId: string) => {
-    setSelectedReportId(reportId);
+  const handleViewDetails = useCallback(() => {
     setActiveView('map');
-    if (isMobile) {
-      setSheetOpen(true);
-    }
-  }, [isMobile]);
+  }, []);
 
   // Debug logging
   console.log('MapReports - Total reports:', reports.length);
@@ -154,15 +188,6 @@ const MapReports = () => {
     reports.find(r => r.id === selectedReportId),
     [reports, selectedReportId]
   );
-  
-  const categoryOptions = useMemo(() => 
-    ['all', 'garbage', 'sewage', 'burning', 'construction', 'pollution', 'other'],
-    []
-  );
-
-  const getStatusColor = useCallback((status: string) => {
-    return statusColors[status as keyof typeof statusColors] || statusColors.pending;
-  }, [statusColors]);
 
   const ReportDetailsContent = ({ report }: { report: Report }) => (
     <div className="space-y-4">
@@ -283,7 +308,7 @@ const MapReports = () => {
           </div>*/}
         </div>
 
-        <Tabs value={activeView} onValueChange={setActiveView} className="space-y-6">
+        <Tabs id="reports-tabs-section" value={activeView} onValueChange={setActiveView} className="space-y-6">
           <TabsList className="grid w-full grid-cols-2 lg:w-[400px]">
             <TabsTrigger value="map" className="flex items-center gap-2">
               <Map className="h-4 w-4" />
@@ -434,9 +459,18 @@ const MapReports = () => {
               <CardHeader>
                 <CardTitle>Community Reports</CardTitle>
                 <CardDescription>
-                  {filteredReports.length} report{filteredReports.length !== 1 ? 's' : ''} found
+                  {filteredReports.length} report{filteredReports.length !== 1 ? 's' : ''} found 
+                  {selectedDateFromChart !== '' && ` in ${selectedDateFromChart}`}
                   {categoryFilter !== 'all' && ` in "${categoryFilter}"`}
                 </CardDescription>
+                {
+                  selectedDateFromChart !== "" ? <CardDescription>
+                    <Button className="md:flex items-center space-x-2" disabled={selectedDateFromChart === ""} variant="hero" size="sm" onClick={resetDateFilterFromChart}>
+                      Show All Reports
+                    </Button>
+                  </CardDescription> : null
+                }
+
               </CardHeader>
               <CardContent className="scroll-container">
                 {filteredReports.length === 0 ? (
@@ -533,7 +567,10 @@ const MapReports = () => {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => handleViewDetails(report.id!)}
+                              onClick={() => {
+                                handleReportClick(report.id!);
+                                handleViewDetails()
+                              }}
                             >
                               View Details
                             </Button>

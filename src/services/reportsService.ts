@@ -17,12 +17,16 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage, ensureAuth } from '@/lib/firebase';
 import { transformToReport } from './dataTransformService';
 
+
+export type ReportCategory = 'garbage' | 'sewage' | 'burning' | 'construction' | 'pollution' | 'other';
+export type ReportStatus = 'pending' | 'verified' | 'resolved' | 'archived';
+
 export interface Report {
   id?: string;
   title: string;
   description: string;
-  category: 'garbage' | 'sewage' | 'burning' | 'construction' | 'pollution' | 'other';
-  status: 'pending' | 'verified' | 'resolved' | 'archived';
+  category: ReportCategory;
+  status: ReportStatus;
   location: {
     coordinates: {
       latitude: number;

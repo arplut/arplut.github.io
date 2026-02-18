@@ -47,6 +47,7 @@ export const useFetchReports = (isTesting): UseFetchReportsReturn => {
                         return acc;
                     }, {} as Record<string, number>);
                     console.log('📊 Status distribution:', statusCounts);
+                    console.log('📊all reports : ', fetchedReports);
 
                     // Show all reports (including anonymous ones for legacy data)
                     setReports(fetchedReports);

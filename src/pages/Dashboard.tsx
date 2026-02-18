@@ -3,7 +3,7 @@ import { Report } from "@/services/reportsService";
 import { getChartDataFromReports, getMonthlyReportCounts, getReportsByYear, ReducedReport } from '@/lib/utils';
 import '@/styles/dashboard.css';
 import ReportsBarChart from '@/components/ReportsBarChart';
-// import TrashPieChart from '@/components/TrashPieChart';
+import TrashPieChart from '@/components/TrashPieChart';
 
 interface DashboardProps {
     reports: Report[];
@@ -104,9 +104,9 @@ const Dashboard: React.FC<DashboardProps> = ({ reports, allowCustomDateRange }) 
                         <h1 className="text-3xl font-bold px-4 py-4">No reports available to display.</h1>
                 }
             </section>
-            {/* <section>
+            <section>
                 <TrashPieChart reports={reports} />
-            </section> */}
+            </section>
         </div>
     );
 };

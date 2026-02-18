@@ -44,7 +44,7 @@ export const getReportsListFromChartDate = (dateRange: string, reports: Report[]
 }
 
 export const getChartDataFromReports = (reports: Report[]): ReducedReport[] => {
-  // TODO: refactor this to use simple array instead of map
+  // TODO: refactor this to use simple dictionary or object instead of map
   const chartKeys = new Map<string, Record<ReportStatusWithoutArchived, number>>();
   for (const r of reports) {
     if (r.status === "archived") {
@@ -79,9 +79,7 @@ export const getChartDataFromReports = (reports: Report[]): ReducedReport[] => {
   return result;
 }
 
-// TODO: extract filtering logic and chart data generation logic to seperate functions
 export const getMonthlyReportCounts = (reportsParam: Report[], startDate?: DateInput, endDate?: DateInput): Report[] => {
-  // const eachMonth = new Map<string, Record<ReportStatus, number>>();
   const filteredReports = [];
   for (const r of reportsParam) {
     const d = getDateFromTimeStamp((r as Report).createdAt);

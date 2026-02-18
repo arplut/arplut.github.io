@@ -1,15 +1,14 @@
 import React, { useEffect } from 'react';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid, BarRectangleItem } from 'recharts';
 import { Report } from "@/services/reportsService";
 import { getChartDataFromReports, getMonthlyReportCounts, getReportsByYear, ReducedReport } from '@/lib/utils';
 import '@/styles/dashboard.css';
-import { useNavigate } from 'react-router-dom';
+import ReportsBarChart from '@/components/ReportsBarChart';
+// import TrashPieChart from '@/components/TrashPieChart';
 
 interface DashboardProps {
     reports: Report[];
     allowCustomDateRange?: boolean;
 }
-
 
 const options = {
     all: null,
@@ -18,14 +17,13 @@ const options = {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ reports, allowCustomDateRange }) => {
-    const navigate = useNavigate();
     const [chartData, setChartData] = React.useState<ReducedReport[]>([]);
 
     // TODO: add the year range and date range states to a context as its needed in map and reports component to show the same report list as charts
     const [yearRange, setYearRange] = React.useState<string>("all");
     const [dateRange, setDateRange] = React.useState<string[]>(["", ""]);
 
-    {/* TODO: Add get summary button to get the charts date according to selected option instead of dynamically changing the chart */ }
+    {/* TODO: IMPROVISE: Add get summary button to get the charts date according to selected option instead of dynamically changing the chart */ }
 
     useEffect(() => {
         if (reports.length === 0) return;
@@ -50,17 +48,10 @@ const Dashboard: React.FC<DashboardProps> = ({ reports, allowCustomDateRange }) 
         setYearRange(value);
     }
 
-
-    function barClickHandler(bri: BarRectangleItem) {
-        console.log('Bar clicked:', bri["dateRange"]);
-        // navigate to reports list in map page and use the below date range to filter reports
-        navigate('/map', { state: { dateRangeSelected: bri["dateRange"] }});
-    }
-
     return (
         <div>
             <h1 className="text-3xl font-bold py-4">Reports Summary</h1>
-            {/* TODO: remove this selector to a seperate component and move to a seperate component - useHook/context to save selected daterange */}
+            {/* TODO: IMPROVISE: remove this selector to a seperate component - useHook/context to save selected daterange */}
             <section className='reports-daterange-picker'>
                 {
                     allowCustomDateRange ?
@@ -87,6 +78,7 @@ const Dashboard: React.FC<DashboardProps> = ({ reports, allowCustomDateRange }) 
                             className='dashboard-select'
                             type="date"
                             id="start-date"
+                            // error={dateRange[0] !== "" && dateRange[1] !== "" && new Date(dateRange[0]) > new Date(dateRange[1])}
                             onChange={(e) => {
                                 setDateRange([e.target.value, dateRange[1]]);
                             }}
@@ -95,6 +87,7 @@ const Dashboard: React.FC<DashboardProps> = ({ reports, allowCustomDateRange }) 
                             className='dashboard-select'
                             type="date"
                             id="end-date"
+                            // error={dateRange[0] !== "" && dateRange[1] !== "" && new Date(dateRange[0]) > new Date(dateRange[1])}
                             onChange={(e) => {
                                 // Handle end date change
                                 setDateRange([dateRange[0], e.target.value]);
@@ -105,40 +98,15 @@ const Dashboard: React.FC<DashboardProps> = ({ reports, allowCustomDateRange }) 
                 )}
             </section>
             <section>
-                {/* TODO: to refactor this chart to a different component */}
                 {
-                    chartData.length > 0 ? <BarChart
-                        key={'bar-chart-1'}
-                        width={"90%"}
-                        height={300}
-                        data={chartData}
-                        responsive
-                        margin={{
-                            top: 5,
-                            right: 0,
-                            left: 0,
-                            bottom: 5,
-                        }}
-                    >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="dateRange" />
-                        <YAxis label={{ position: 'insideTopLeft', value: 'Number of reports', angle: -90, dy: 200 }} />
-                        <Tooltip />
-                        <Legend />
-                        {/* TODO: remove bar duplicates and map with array of objects */}
-                        <Bar style={{ cursor: "pointer" }} onClick={(bri: BarRectangleItem) => {
-                            barClickHandler(bri)
-                        }} name="Resolved" dataKey="numberOfReports.resolved" stackId="a" maxBarSize={40} fill="#82ca1f" />
-                        <Bar style={{ cursor: "pointer" }} onClick={(bri: BarRectangleItem) => {
-                            barClickHandler(bri)
-                        }} name="Pending" dataKey="numberOfReports.pending" stackId="a" maxBarSize={40} fill="#82caef" />
-                        <Bar style={{ cursor: "pointer" }} onClick={(bri: BarRectangleItem) => {
-                            barClickHandler(bri)
-                        }} name="Verified" dataKey="numberOfReports.verified" stackId="a" maxBarSize={40} fill="#845a9d" />
-
-                    </BarChart> : <h1 className="text-3xl font-bold px-4 py-4">No reports available to display.</h1>
+                    chartData.length > 0 ?
+                        <ReportsBarChart chartData={chartData} /> :
+                        <h1 className="text-3xl font-bold px-4 py-4">No reports available to display.</h1>
                 }
             </section>
+            {/* <section>
+                <TrashPieChart reports={reports} />
+            </section> */}
         </div>
     );
 };

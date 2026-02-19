@@ -50,7 +50,8 @@ const Dashboard: React.FC<DashboardProps> = ({ reports, allowCustomDateRange }) 
 
     return (
         <div>
-            <h1 className="text-3xl font-bold py-4">Reports Summary</h1>
+            <h1 className="text-3xl font-bold py-4">Dashboard</h1>
+
             {/* TODO: IMPROVISE: remove this selector to a seperate component - useHook/context to save selected daterange */}
             <section className='reports-daterange-picker'>
                 {
@@ -98,6 +99,7 @@ const Dashboard: React.FC<DashboardProps> = ({ reports, allowCustomDateRange }) 
                 )}
             </section>
             <section>
+                <h1 className="text-2xl font-bold py-4">Reports Summary</h1>
                 {
                     chartData.length > 0 ?
                         <ReportsBarChart chartData={chartData} /> :
@@ -105,6 +107,7 @@ const Dashboard: React.FC<DashboardProps> = ({ reports, allowCustomDateRange }) 
                 }
             </section>
             <section>
+                <h1 className="text-2xl font-bold py-4">Trash Details</h1>
                 <TrashPieChart reports={reports} />
             </section>
         </div>

@@ -1,9 +1,9 @@
 import { Report } from '@/services/reportsService';
 import { PrimaryWasteType, secondaryWasteMapping, SecondaryWasteTType, TrashValueType, wasteCategorization } from '../data/wasteCategories';
 
-
-type PrimaryCategory = PrimaryWasteType | "category_not_found"
-type SecondaryCategory = SecondaryWasteTType | "category_not_found"
+const UNKNOWN_CATEGORY = "unknown_category";
+type PrimaryCategory = PrimaryWasteType | typeof UNKNOWN_CATEGORY
+type SecondaryCategory = SecondaryWasteTType | typeof UNKNOWN_CATEGORY
 type ValueType = TrashValueType | null
 
 interface MappedTrash {
@@ -26,7 +26,7 @@ function matchTrashItemToSecondaryCategory(trashItem: string, values: string[]):
 
 
 export function categorizeTrashItem(trashItem: string): SecondaryCategory {
-    let matchedCategory: SecondaryCategory = "category_not_found";
+    let matchedCategory: SecondaryCategory = UNKNOWN_CATEGORY;
     for (const [secondaryCategoryKey, secondaryTrashValues] of Object.entries(wasteCategorization)) {
 
         const isMatched = matchTrashItemToSecondaryCategory(trashItem, secondaryTrashValues);
@@ -40,7 +40,7 @@ export function categorizeTrashItem(trashItem: string): SecondaryCategory {
 
 
 export function getPrimaryCategory(secondaryItem: string): PrimaryCategory {
-    return secondaryWasteMapping[secondaryItem] || "category_not_found";
+    return secondaryWasteMapping[secondaryItem] || UNKNOWN_CATEGORY;
 }
 
 

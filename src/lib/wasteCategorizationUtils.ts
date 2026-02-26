@@ -1,5 +1,6 @@
 import { Report } from '@/services/reportsService';
-import { PrimaryWasteType, secondaryWasteMapping, SecondaryWasteTType, TrashValueType, wasteCategorization } from '../data/wasteCategories';
+import { primaryToSecondaryMapping, PrimaryWasteType, secondaryWasteDisplayName, secondaryWasteMapping, SecondaryWasteTType, TrashValueType, wasteCategorization } from '../data/wasteCategories';
+import { trashData } from '@/data/wasteLHBValueType';
 
 const UNKNOWN_CATEGORY = "unknown_category";
 type PrimaryCategory = PrimaryWasteType | typeof UNKNOWN_CATEGORY
@@ -27,7 +28,8 @@ function matchTrashItemToSecondaryCategory(trashItem: string, values: string[]):
 
 export function categorizeTrashItem(trashItem: string): SecondaryCategory {
     let matchedCategory: SecondaryCategory = UNKNOWN_CATEGORY;
-    for (const [secondaryCategoryKey, secondaryTrashValues] of Object.entries(wasteCategorization)) {
+    for (const [secondaryCategoryKey, secondaryTrashValues] of Object.entries(trashData)) {
+        if(secondaryTrashValues.length === 0) continue; // skip if there are no values to match for the category
 
         const isMatched = matchTrashItemToSecondaryCategory(trashItem, secondaryTrashValues);
         if (isMatched) {
@@ -61,47 +63,92 @@ const extractDetectedItemsFromReports = (reports: Report[]) => {
 
 export function printItemsDetectedArray(reports: Report[]) {
     const items = extractDetectedItemsFromReports(reports);
-    // console.log("Items detected in reports:", items);
     return items;
 }
 
 export function mapTrash(reports: Report[]): MappedTrash[] {
     const detectedItems = extractDetectedItemsFromReports(reports);
+
     const categorizedItems = detectedItems.map(item => {
-        const secondaryCategory = categorizeTrashItem(item);
+        const secCategoryKey= categorizeTrashItem(item);
+        const splitKeys = secCategoryKey.split(".")
+        const secondaryCategory =splitKeys[0] as SecondaryCategory; // Extract the primary category from the secondary category key
+        const trashType = splitKeys[1] as TrashValueType; // Extract the trash type from the secondary category key
         const primaryCategory = getPrimaryCategory(secondaryCategory);
         return {
             name: item,
             secondaryCategory,
-            primaryCategory
+            primaryCategory,
+            valueType: trashType
         }
     });
-    console.log("Categorized items:", categorizedItems);
+
     return categorizedItems;
+}
+
+export function filterMatchedPrimaryCategory(primaryCategory: PrimaryCategory, mappedTrash:MappedTrash[]) {
+    return mappedTrash.filter(item => item.primaryCategory === primaryCategory)
 }
 
 export interface PieChartData {
     primaryChart: Record<string, number>
-    secondaryChart: Record<string, number>
+    clubbedData: Record<string, Record<string, number>>
 }
 
-export function getChartData(mappedTrash: MappedTrash[]): PieChartData {
+export type PieChart = {
+    [key in PrimaryCategory]: Record<SecondaryCategory, number>;
+};
+
+export function getPieChartData(mappedTrash: MappedTrash[]): PieChartData {
     const primaryChart = {}
-    const secondaryChart = {}
+
+    const clubbedData = {      
+    }
 
     mappedTrash.forEach(item => {
+        if(item.primaryCategory === UNKNOWN_CATEGORY || item.secondaryCategory === UNKNOWN_CATEGORY) {
+            return; // skip uncategorized items
+        }
+        clubbedData[item.secondaryCategory] = clubbedData[item.secondaryCategory] || {};
+        if (clubbedData[item.secondaryCategory][item.valueType]) {
+            clubbedData[item.secondaryCategory][item.valueType] += 1;
+        } else {
+            clubbedData[item.secondaryCategory][item.valueType] = 1;
+        }
+
         if (primaryChart[item.primaryCategory]) {
             primaryChart[item.primaryCategory] += 1;
         } else {
             primaryChart[item.primaryCategory] = 1;
         }
 
-        if (secondaryChart[item.secondaryCategory]) {
-            secondaryChart[item.secondaryCategory] += 1;
-        } else {
-            secondaryChart[item.secondaryCategory] = 1;
-        }
     })
 
-    return { primaryChart, secondaryChart }
+    return { primaryChart, clubbedData };
+}
+
+
+export function filterPrimaryCategory(primaryCategory: string, clubbedData: Record<string, Record<string, number>>) {
+    const secondaryCategoriesArray = primaryToSecondaryMapping[primaryCategory];
+    const secondaryChartData = {};
+
+
+    secondaryCategoriesArray.forEach(secondaryCategory => {
+        if (clubbedData[secondaryCategory])
+            secondaryChartData[secondaryCategory] = clubbedData[secondaryCategory];
+    });
+
+    return secondaryChartData;
+}
+
+
+export function getSecondaryChartData(selectedSecondaryData: Record<string, Record<string, number>>) {
+    const secondaryChartData = [];
+    Object.entries(selectedSecondaryData).forEach((item) => {
+        const key = item[0];
+        const totalValue = Object.values(item[1]).reduce((acc, curr) => acc + curr, 0);
+        secondaryChartData.push({ name:key, display_name: secondaryWasteDisplayName[key], value: totalValue });
+    })
+    
+    return secondaryChartData;
 }

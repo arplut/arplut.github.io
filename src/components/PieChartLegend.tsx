@@ -1,7 +1,7 @@
 import { secondaryWasteDisplayName } from '@/data/wasteCategories';
 import React from 'react';
+import { COLORS } from './TrashPieChart';
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2'];
 const getColor = (i) => COLORS[i % COLORS.length]
 
 const PieChartLegend = (props: { secondaryCategories: string[] }) => {

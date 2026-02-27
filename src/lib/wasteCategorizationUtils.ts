@@ -1,6 +1,6 @@
 import { Report } from '@/services/reportsService';
-import { primaryToSecondaryMapping, PrimaryWasteType, secondaryWasteDisplayName, secondaryWasteMapping, SecondaryWasteTType, TrashValueType, wasteCategorization } from '../data/wasteCategories';
-import { trashData } from '@/data/wasteLHBValueType';
+import { primaryToSecondaryMapping, PrimaryWasteType, secondaryWasteDisplayName, secondaryWasteMapping, SecondaryWasteTType, TrashValueType } from '../data/wasteCategories';
+import { trashData } from '@/data/wasteCategories';
 
 const UNKNOWN_CATEGORY = "unknown_category";
 type PrimaryCategory = PrimaryWasteType | typeof UNKNOWN_CATEGORY

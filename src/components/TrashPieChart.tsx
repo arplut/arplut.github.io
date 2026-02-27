@@ -4,19 +4,21 @@ import { mapTrash, getPieChartData, filterPrimaryCategory, getSecondaryChartData
 
 import { Legend, Pie, PieChart, PieSectorShapeProps, Sector, Tooltip } from 'recharts';
 import PieChartLegend from './PieChartLegend';
-import { primaryWasteDisplayName, secondaryWasteDisplayName, trashValueDisplayName } from '@/data/wasteCategories';
-
+import { primaryWasteDisplayName, secondaryWasteDisplayName, trashValueChartMetaDetails } from '@/data/wasteCategories';
+import "@/styles/trashpiechart.css";
 
 interface TrashPieChartProps {
     reports: Report[];
 }
 
 // TODO: can be moved to a shared utility
-export const COLORS = ["#82ca1f", "#82caef","#845a9d", '#82ca1f', '#FFBB28', '#FF8042', '#FF6B6B', '#82caef', '#FFA07A', '#98D8C8', '#F7DC6F'];
+export const COLORS = ["#82ca1f", "#82caef", "#845a9d", '#82ca1f', '#FFBB28', '#FF8042', '#FF6B6B', '#82caef', '#FFA07A', '#98D8C8', '#F7DC6F'];
 
 // TODO: fill color must match the piechartlegend colors
-const MyCustomPie = (props: PieSectorShapeProps, nameKey?: string) => {
-    return <Sector name={nameKey} {...props} fill={COLORS[props.index % COLORS.length]} />;
+const MyCustomPie = (props: PieSectorShapeProps, nameKey?: string, fill?: string) => {
+    console.log("props for pie section ", props)
+    console.log("fill", fill)
+    return <Sector name={nameKey} {...props} fill={fill || COLORS[props.index % COLORS.length]} />;
 };
 
 
@@ -28,30 +30,26 @@ const TrashPieChart: React.FC<TrashPieChartProps> = ({ reports }) => {
     const [secondaryChartData, setSeconadaryChartData] = useState([]);
     const [selectedSecondaryCategory, setSelectedSecondaryCategory] = useState<string>(null);
     const [trashValueChartData, setTrashValueChartData] = useState([]);
-    const [legendKeys, setLegendKeys] = useState([]); // TODO: IMPROVISE in remove the state and create a mapped object for colors for secondary categories
 
     function onSecondaryPieSectionClick(secondaryCategory: string) {
         setSelectedSecondaryCategory(secondaryCategory)
     }
 
-    function resetTrashChart() {
+    const resetTrashChart = useCallback(() => {
         setSelectedSecondaryCategory(null)
         setTrashValueChartData([])
-    }
+    }, [])
 
-    function resetEverything() {
-        setLegendKeys([]);
+    const resetEverything = useCallback(() => {
         setSeconadaryChartData([])
         resetTrashChart()
-    }
+    }, [resetTrashChart])
 
     const trashValuePieChart = useCallback(() => {
         const chartData = []
         Object.entries(clubbedData[selectedSecondaryCategory]).forEach((item) => {
-            console.log(trashValueDisplayName, item[0])
-            chartData.push({ name: item[0], value: item[1], display_name: trashValueDisplayName[item[0]] })
+            chartData.push({ name: item[0], value: item[1], display_name: trashValueChartMetaDetails[item[0]]?.display_name })
         })
-        console.log(chartData)
         return chartData
     }, [clubbedData, selectedSecondaryCategory])
 
@@ -74,13 +72,12 @@ const TrashPieChart: React.FC<TrashPieChartProps> = ({ reports }) => {
         if (selectedPrimaryCategory) {
             const secondaryData = filterPrimaryCategory(selectedPrimaryCategory, clubbedData);
             setSeconadaryChartData(getSecondaryChartData(secondaryData));
-            setLegendKeys(Object.keys(secondaryData));
             resetTrashChart()
         } else {
             resetEverything()
         }
 
-    }, [selectedPrimaryCategory, clubbedData])
+    }, [selectedPrimaryCategory, clubbedData, resetEverything, resetTrashChart])
 
     useEffect(() => {
         if (selectedSecondaryCategory) {
@@ -94,7 +91,7 @@ const TrashPieChart: React.FC<TrashPieChartProps> = ({ reports }) => {
     }, [reports, categorizeTrash])
 
     return (
-        <div className="trach-pie-chart">
+        <div className="trash-pie-chart">
             {
                 primaryChart.length > 0 ?
                     <><div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
@@ -116,6 +113,7 @@ const TrashPieChart: React.FC<TrashPieChartProps> = ({ reports }) => {
 
                     <div className="pie-charts-container">
                         <div>
+                            <h1 className="text-xl font-bold py-4">{primaryWasteDisplayName[selectedPrimaryCategory]}</h1>
                             <PieChart
                                 width={"90%"}
                                 height={300}
@@ -123,24 +121,16 @@ const TrashPieChart: React.FC<TrashPieChartProps> = ({ reports }) => {
                             >
                                 <Pie
                                     onClick={(e) => {
-                                        console.log(e.payload.name)
                                         onSecondaryPieSectionClick(e.payload.name)
                                     }}
                                     data={secondaryChartData}
                                     dataKey="value"
                                     nameKey="display_name"
-                                    // fill="#82ca9d"
                                     label
                                     isAnimationActive={true}
-                                    shape={(props) => MyCustomPie(props, props.payload.nameKey)}
-                                // cx="50%"
-                                // cy="50%"
-                                // innerRadius="60%"
-                                // outerRadius="80%"
+                                    shape={(props) => MyCustomPie(props, props.payload.name)}
                                 />
-                                {/* TODO: fix legend to match the fill colors */}
-                                <Legend itemSorter={"dataKey"} content={<PieChartLegend secondaryCategories={legendKeys} />} />
-                                {/* <Legend payloadUniqBy={{dataKey: "name"}} /> */}
+                                <Legend content={(props) => { return <PieChartLegend legendItems={props.payload} /> }} />
                                 <Tooltip />
                             </PieChart>
 
@@ -148,23 +138,28 @@ const TrashPieChart: React.FC<TrashPieChartProps> = ({ reports }) => {
                         <div>
                             {
                                 trashValueChartData.length > 0 && selectedSecondaryCategory ?
-                                    < PieChart
-                                        width={"90%"}
-                                        height={300}
-                                        responsive
-                                    >
-                                        <Pie
-                                            data={trashValueChartData}
-                                            dataKey="value"
-                                            nameKey="display_name"
-                                            label
-                                            isAnimationActive={true}
-                                            shape={(props) => MyCustomPie(props, props.payload.nameKey)}
-                                        />
-                                        {/* TODO: fix legend to match the fill colors */}
-                                        <Legend />
-                                        <Tooltip />
-                                    </PieChart> : null
+                                    <div>
+                                        <h1 className="text-xl font-bold py-4">{secondaryWasteDisplayName[selectedSecondaryCategory]}</h1>
+                                        < PieChart
+                                            width={"90%"}
+                                            height={300}
+                                            responsive
+                                        >
+                                            <Pie
+                                                data={trashValueChartData}
+                                                dataKey="value"
+                                                nameKey="display_name"
+                                                label
+                                                isAnimationActive={true}
+                                                shape={(props) => MyCustomPie(props, props.payload.name, trashValueChartMetaDetails[props.payload.name]?.fill_color)}
+                                            />
+                                            <Legend content={(props) => {
+                                                console.log("legend items for trash value chart", props)
+                                                return <PieChartLegend legendItems={props.payload} />
+                                            }} />
+
+                                            <Tooltip />
+                                        </PieChart></div> : null
                             }
 
                         </div>

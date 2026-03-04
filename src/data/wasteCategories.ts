@@ -4,6 +4,8 @@ export const LOW_VALUE = "low_value";
 export const HIGH_VALUE = "high_value";
 export const BIO_DEGRADABLE = "bio_degradable";
 
+export const COLORS = ["#82ca1f", "#82caef", "#bf97d7", '#82ca1f', '#FFBB28', '#f0aa87', '#e18282', '#82caef', '#FFA07A', '#98D8C8', '#F7DC6F'];
+
 
 export const trashValueChartMetaDetails = {
     low_value: {

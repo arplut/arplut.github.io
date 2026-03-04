@@ -1,5 +1,5 @@
 import { Report } from '@/services/reportsService';
-import { primaryToSecondaryMapping, PrimaryWasteType, secondaryWasteDisplayName, secondaryWasteMapping, SecondaryWasteTType, TrashValueType } from '../data/wasteCategories';
+import { COLORS, primaryToSecondaryMapping, PrimaryWasteType, secondaryWasteDisplayName, secondaryWasteMapping, SecondaryWasteTType, TrashValueType } from '../data/wasteCategories';
 import { trashData } from '@/data/wasteCategories';
 
 const UNKNOWN_CATEGORY = "unknown_category";
@@ -144,10 +144,10 @@ export function filterPrimaryCategory(primaryCategory: string, clubbedData: Reco
 
 export function getSecondaryChartData(selectedSecondaryData: Record<string, Record<string, number>>) {
     const secondaryChartData = [];
-    Object.entries(selectedSecondaryData).forEach((item) => {
+    Object.entries(selectedSecondaryData).forEach((item, index,) => {
         const key = item[0];
         const totalValue = Object.values(item[1]).reduce((acc, curr) => acc + curr, 0);
-        secondaryChartData.push({ name:key, display_name: secondaryWasteDisplayName[key], value: totalValue });
+        secondaryChartData.push({ name:key, display_name: secondaryWasteDisplayName[key], value: totalValue, fill: COLORS[index % COLORS.length] });
     })
     
     return secondaryChartData;

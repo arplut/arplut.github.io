@@ -12,7 +12,6 @@ interface TrashPieChartProps {
 }
 
 
-// TODO: fill color must match the piechartlegend colors
 const MyCustomPie = (props: PieSectorShapeProps, nameKey: string, fill: string) => {
     return <Sector name={nameKey} {...props} fill={fill} />;
 };
@@ -60,7 +59,7 @@ const TrashPieChart: React.FC<TrashPieChartProps> = ({ reports }) => {
             setPrimaryChart(Object.entries(primaryChart).map(([key, value]) => ({ name: key, value, display_name: primaryWasteDisplayName[key] })));
             setClubbedData(clubbedData);
         } catch (error) {
-            console.error("Error mapping trash items:", error);
+            console.error("Error categorizing trash items:", error);
         }
     }, [reports])
 
@@ -90,17 +89,20 @@ const TrashPieChart: React.FC<TrashPieChartProps> = ({ reports }) => {
         <div className="trash-pie-chart">
             {
                 primaryChart.length > 0 ?
-                    <><div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-                        <p className="text-sm text-green-700">
-                            <span className="font-semibold">Info:</span> Click on below categories to view waste breakdown
-                        </p>
-                    </div>
-                        {primaryChart.map(category => (
-                            <div key={category.name} className={`mb-2 p-3 border ${selectedPrimaryCategory === category.name ? "border-blue-500 bg-blue-100" : "border-gray-300 bg-white"} rounded-lg cursor-pointer`}
-                                onClick={() => setSelectedPrimaryCategory(category.name)}>
-                                {category.display_name} : {category.value} items
-                            </div>
-                        ))}
+                    <>
+                        <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                            <p className="text-sm text-green-700">
+                                <span className="font-semibold">Info:</span> Click on below categories to view waste breakdown
+                            </p>
+                        </div>
+                        <div className='primary-items-container'>
+                            {primaryChart.map(category => (
+                                <div key={category.name} className={`primary-item mb-2 p-3 ${selectedPrimaryCategory === category.name ? "bg-green-100 text-green-700" : "bg-white"}`}
+                                    onClick={() => setSelectedPrimaryCategory(category.name)}>
+                                    {category.display_name} : {category.value} items
+                                </div>
+                            ))}
+                        </div>
                     </> : null
             }
             {
@@ -108,10 +110,10 @@ const TrashPieChart: React.FC<TrashPieChartProps> = ({ reports }) => {
                     <p className='text-center'>Trash details can be viewed once the trash is detected/categorized in the reports.</p> :
 
                     <div className="pie-charts-container">
-                        <div>
+                        <div className='grid-item'>
                             <h1 className="text-xl font-bold py-4">{primaryWasteDisplayName[selectedPrimaryCategory]}</h1>
                             <PieChart
-                                width={"90%"}
+                                width={"100%"}
                                 height={300}
                                 responsive
                             >
@@ -134,13 +136,13 @@ const TrashPieChart: React.FC<TrashPieChartProps> = ({ reports }) => {
                             </PieChart>
 
                         </div>
-                        <div>
+                        <div className='grid-item'>
                             {
                                 trashValueChartData.length > 0 && selectedSecondaryCategory ?
                                     <div>
                                         <h1 className="text-xl font-bold py-4">{secondaryWasteDisplayName[selectedSecondaryCategory]}</h1>
                                         < PieChart
-                                            width={"90%"}
+                                            width={"100%"}
                                             height={300}
                                             responsive
                                         >

@@ -7,7 +7,7 @@ import TrashPieChart from '@/components/TrashPieChart';
 
 interface DashboardProps {
     reports: Report[];
-    allowCustomDateRange?: boolean;
+    allowCustomDateRange?: boolean;// turn it off if the parent component doesn't want to allow custom date range selection i.e - on landing page
 }
 
 const options = {
@@ -41,8 +41,9 @@ const Dashboard: React.FC<DashboardProps> = ({ reports, allowCustomDateRange }) 
 
     }, [reports, yearRange, dateRange]);
 
-    function rangeSelectHandler(value: string) {
+    function dropDownHandler(value: string) {
         if (value !== "custom") {
+            // Reset start and end dates when not in custom mode
             setDateRange(["", ""]);
         }
         setYearRange(value);
@@ -62,7 +63,7 @@ const Dashboard: React.FC<DashboardProps> = ({ reports, allowCustomDateRange }) 
                             value={yearRange}
                             onChange={(e) => {
                                 const v = (e.target as HTMLSelectElement).value;
-                                rangeSelectHandler(v);
+                                dropDownHandler(v);
                             }}
                         >
                             <option value={"all"}>All reports</option>

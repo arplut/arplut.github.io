@@ -1,0 +1,24 @@
+.pie-charts-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.grid-item {
+  text-align: center;
+}
+
+.primary-items-container {
+  display: flex;
+}
+
+.primary-item {
+  width: fit-content;
+  margin: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  border-radius: 5px;
+}
+
+.primary-item:hover {
+    box-shadow: 0 6px 10px 0 rgba(0,0,0,0.3);
+}

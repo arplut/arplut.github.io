@@ -41,27 +41,49 @@ import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import OpenStreetMap, { type MapReport } from "@/components/OpenStreetMap";
 import { categoryColors, categoryColorHex } from "@/data/mockData";
-import { sampleReports } from "@/data/sampleReports";
 import { formatDistanceToNow } from 'date-fns';
+import Dashboard from "./Dashboard";
+import { useFetchReports } from "@/hooks/useFetchReports";
+import { useLocation } from "react-router-dom";
+import { getDisplayDate, getReportsListFromChartDate } from "@/lib/utils";
+import { secondaryWasteDisplayName, SecondaryWasteType, } from "@/data/wasteCategories";
+import { filterReportsBySecondaryCategory } from "@/lib/wasteCategorizationUtils";
 
 // ⚠️ DEVELOPMENT MODE FLAG ⚠️
 // Set to true to use sample data for heatmap testing
 // Set to false to use live Firebase data
 const USE_SAMPLE_DATA_FOR_TESTING = false;
 
+// Memoize status colors to prevent object recreation
+const statusColors = {
+  pending: 'hsl(0 84% 60%)', // red
+  verified: 'hsl(45 93% 47%)', // yellow  
+  resolved: 'hsl(142 71% 45%)', // green
+  archived: 'hsl(215 16% 47%)' // gray
+}
+
+const getStatusColor = (status: string) => {
+  return statusColors[status as keyof typeof statusColors] || statusColors.pending;
+};
+
+
+const categoryOptions = ['all', 'garbage', 'sewage', 'burning', 'construction', 'pollution', 'other'];
+
+
 const MapReports = () => {
   const isMobile = useIsMobile();
+  const { reports: fetchedReports, loading, error } = useFetchReports(USE_SAMPLE_DATA_FOR_TESTING);
+  const location = useLocation();
   const [reports, setReports] = useState<Report[]>([]);
+  const [selectedDateFromChart, setSelectedDateFromChart] = useState<string>("")
+  const [secondaryCategoryFilter, setSecondaryCategoryFilter] = useState<SecondaryWasteType | null>(null);
   const [filteredReports, setFilteredReports] = useState<Report[]>([]);
-  const [loading, setLoading] = useState(true);
   const [authReady, setAuthReady] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
   const [activeView, setActiveView] = useState('map');
   const [showHeatmap, setShowHeatmap] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
-  const { toast } = useToast();
 
   // Initialize Firebase authentication when MapReports component loads
   useEffect(() => {
@@ -81,86 +103,64 @@ const MapReports = () => {
 
   useEffect(() => {
     // Only fetch reports after auth is ready
-    if (!authReady) return;
+    if (!authReady || loading) return;
     
-    const fetchReports = async () => {
-      try {
-        setLoading(true);
-        
-        if (USE_SAMPLE_DATA_FOR_TESTING) {
-          // Using sample data for heatmap testing
-          console.log('🔧 DEVELOPMENT MODE: Using sample data for heatmap testing');
-          const transformedSampleReports = sampleReports.map(report => ({
-            ...report,
-            createdAt: report.createdAt,
-            updatedAt: report.updatedAt
-          })) as Report[];
-          
-          setReports(transformedSampleReports);
-          setFilteredReports(transformedSampleReports);
-        } else {
-          // Using live Firebase data
-          console.log('🔥 PRODUCTION MODE: Using live Firebase data');
-          try {
-            const fetchedReports = await reportsService.getReports();
-            console.log('📊 Total fetched reports:', fetchedReports.length);
-            
-            // Log status distribution for debugging
-            const statusCounts = fetchedReports.reduce((acc, r) => {
-              acc[r.status] = (acc[r.status] || 0) + 1;
-              return acc;
-            }, {} as Record<string, number>);
-            console.log('📊 Status distribution:', statusCounts);
-            
-            // Show all reports (including anonymous ones for legacy data)
-            setReports(fetchedReports);
-            setFilteredReports(fetchedReports);
-          } catch (firebaseError) {
-            console.error('🔥 Firebase Error Details:', firebaseError);
-            console.log('🔧 Falling back to sample data due to Firebase connection issues');
-            
-            // Fallback to sample data if Firebase fails
-            const transformedSampleReports = sampleReports.map(report => ({
-              ...report,
-              createdAt: report.createdAt,
-              updatedAt: report.updatedAt
-            })) as Report[];
-            
-            setReports(transformedSampleReports);
-            setFilteredReports(transformedSampleReports);
-            
-            toast({
-              title: "Using Sample Data",
-              description: "Firebase connection failed. Showing sample data for demonstration.",
-              variant: "default",
-            });
-          }
-        }
-        
-        setError(null);
-      } catch (err) {
-        setError("Failed to load reports and map data.");
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchReports();
-  }, [authReady]); // Only run when auth is ready
+    setReports(fetchedReports);
+    setFilteredReports(fetchedReports);
+
+  }, [authReady, loading, fetchedReports]); // Only run when auth is ready
+
+
+  const scrollToReportsList = useCallback(() => {
+    const element = document.getElementById('reports-tabs-section');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, []);
+
+  const seeReports = useCallback(() => {
+    setActiveView('reports'); // Switch to reports tab to show the filtered list
+    scrollToReportsList();
+  }, [scrollToReportsList]);
 
   useEffect(() => {
-    if (categoryFilter === 'all') {
-      setFilteredReports(reports);
-    } else {
-      setFilteredReports(reports.filter(report => report.category === categoryFilter));
+    // Check if we have a date range passed from the dashboard
+    if (location.state && (location.state).dateRangeSelected) {
+      const dateRangeSelected = (location.state).dateRangeSelected;
+      setSelectedDateFromChart(dateRangeSelected);
+      setSecondaryCategoryFilter(null)
+      const filteredReports = getReportsListFromChartDate(dateRangeSelected, reports);
+      setFilteredReports(filteredReports);
+      seeReports();
+    } else if (location.state && (location.state).secondaryCategoryFilter) {
+      const secondaryCategoryFilter = location.state?.secondaryCategoryFilter as SecondaryWasteType;
+      const result = filterReportsBySecondaryCategory(reports, secondaryCategoryFilter)
+      setSecondaryCategoryFilter(secondaryCategoryFilter);
+      setSelectedDateFromChart("")
+      setFilteredReports(result);
+      seeReports();
     }
-  }, [categoryFilter, reports]);
+  }, [location, reports, seeReports]);
+
+  function resetDateFilterFromChart() {
+    setSelectedDateFromChart("");
+    setSecondaryCategoryFilter(null)
+    setFilteredReports(reports);
+  }
+
+  // useEffect(() => {
+  //   if (categoryFilter === 'all') {
+  //     setFilteredReports(reports);
+  //   } else {
+  //     setFilteredReports(reports.filter(report => report.category === categoryFilter));
+  //   }
+  // }, [categoryFilter, reports]);
 
   // Memoize expensive computations
-  const mapReports: MapReport[] = useMemo(() => 
+  const mapReports: MapReport[] = useMemo(() =>
     filteredReports
-      .filter(report => 
-        report.location?.coordinates?.latitude && 
+      .filter(report =>
+        report.location?.coordinates?.latitude &&
         report.location?.coordinates?.longitude &&
         !isNaN(report.location.coordinates.latitude) &&
         !isNaN(report.location.coordinates.longitude)
@@ -180,13 +180,6 @@ const MapReports = () => {
     [filteredReports]
   );
 
-  // Memoize status colors to prevent object recreation
-  const statusColors = useMemo(() => ({
-    pending: 'hsl(0 84% 60%)', // red
-    verified: 'hsl(45 93% 47%)', // yellow  
-    resolved: 'hsl(142 71% 45%)', // green
-    archived: 'hsl(215 16% 47%)' // gray
-  }), []);
 
   // Memoized callback for report click handling
   const handleReportClick = useCallback((reportId: string) => {
@@ -197,13 +190,9 @@ const MapReports = () => {
   }, [isMobile]);
 
   // Memoized callback for view details
-  const handleViewDetails = useCallback((reportId: string) => {
-    setSelectedReportId(reportId);
+  const handleViewDetails = useCallback(() => {
     setActiveView('map');
-    if (isMobile) {
-      setSheetOpen(true);
-    }
-  }, [isMobile]);
+  }, []);
 
   // Debug logging
   console.log('MapReports - Total reports:', reports.length);
@@ -211,19 +200,10 @@ const MapReports = () => {
   console.log('MapReports - Map reports:', mapReports.length);
   console.log('MapReports - Show heatmap:', showHeatmap);
 
-  const selectedReportData = useMemo(() => 
+  const selectedReportData = useMemo(() =>
     reports.find(r => r.id === selectedReportId),
     [reports, selectedReportId]
   );
-  
-  const categoryOptions = useMemo(() => 
-    ['all', 'garbage', 'sewage', 'burning', 'construction', 'pollution', 'other'],
-    []
-  );
-
-  const getStatusColor = useCallback((status: string) => {
-    return statusColors[status as keyof typeof statusColors] || statusColors.pending;
-  }, [statusColors]);
 
   const ReportDetailsContent = ({ report }: { report: Report }) => (
     <div className="space-y-4">
@@ -312,7 +292,7 @@ const MapReports = () => {
             </div>
             <div className="ml-3">
               <p className="text-sm">
-                <strong>Development Mode:</strong> Using sample data for heatmap testing. 
+                <strong>Development Mode:</strong> Using sample data for heatmap testing.
                 Set <code>USE_SAMPLE_DATA_FOR_TESTING = false</code> in MapReports.tsx to restore live Firebase data.
               </p>
             </div>
@@ -321,6 +301,7 @@ const MapReports = () => {
       )}
       
       <div className="container px-4 py-8 space-y-6">
+        {reports.length > 0 ? <Dashboard reports={reports} allowCustomDateRange={true} /> : null}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <h1 className="text-3xl font-bold">Community Reports & Map</h1>
@@ -343,7 +324,7 @@ const MapReports = () => {
           </div>*/}
         </div>
 
-        <Tabs value={activeView} onValueChange={setActiveView} className="space-y-6">
+        <Tabs id="reports-tabs-section" value={activeView} onValueChange={setActiveView} className="space-y-6">
           <TabsList className="grid w-full grid-cols-2 lg:w-[400px]">
             <TabsTrigger value="map" className="flex items-center gap-2">
               <Map className="h-4 w-4" />
@@ -494,9 +475,24 @@ const MapReports = () => {
               <CardHeader>
                 <CardTitle>Community Reports</CardTitle>
                 <CardDescription>
-                  {filteredReports.length} report{filteredReports.length !== 1 ? 's' : ''} found
+                  {filteredReports.length} report{filteredReports.length !== 1 ? 's' : ''}
+                  {selectedDateFromChart !== '' && ` found in ${getDisplayDate(selectedDateFromChart)}`}
+                  {secondaryCategoryFilter !== null && ` had "${secondaryWasteDisplayName[secondaryCategoryFilter]}" in trash`}
                   {categoryFilter !== 'all' && ` in "${categoryFilter}"`}
                 </CardDescription>
+                {
+                  selectedDateFromChart !== "" || secondaryCategoryFilter !== null ? <CardDescription>
+                    <Button
+                      className="md:flex items-center space-x-2"
+                      disabled={selectedDateFromChart === "" && secondaryCategoryFilter === null}
+                      variant="hero"
+                      size="sm"
+                      onClick={resetDateFilterFromChart}>
+                      Show All Reports
+                    </Button>
+                  </CardDescription> : null
+                }
+
               </CardHeader>
               <CardContent className="scroll-container">
                 {filteredReports.length === 0 ? (
@@ -593,7 +589,10 @@ const MapReports = () => {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => handleViewDetails(report.id!)}
+                              onClick={() => {
+                                handleReportClick(report.id!);
+                                handleViewDetails()
+                              }}
                             >
                               View Details
                             </Button>

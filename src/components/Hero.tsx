@@ -2,9 +2,13 @@ import { Button } from "@/components/ui/button";
 import { Camera, MapPin, Users, CheckCircle } from "lucide-react";
 import heroImage from "@/assets/hero-image.jpg";
 import androidIcon from "@/assets/icons/android-play.svg";
+// import { useFetchReports } from "@/hooks/useFetchReports";
+// import Dashboard from "@/pages/Dashboard";
 
 const Hero = () => {
+  // const { reports, loading, error } = useFetchReports(false);
   return (
+
     <section className="relative overflow-hidden bg-gradient-subtle">
       <div className="container px-4 py-12 sm:py-16 lg:py-24 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -18,7 +22,7 @@ const Hero = () => {
                 Your City
               </h1>
               <p className="text-xl text-muted-foreground max-w-2xl">
-                GEODHA empowers citizens to report civic issues, track their resolution, 
+                GEODHA empowers citizens to report civic issues, track their resolution,
                 and build cleaner, safer communities through collective action.
               </p>
             </div>
@@ -50,7 +54,7 @@ const Hero = () => {
               </Button>
             </div>
 
-          {/* 
+            {/* 
             <div className="grid grid-cols-3 gap-8 </p>pt-8">
               <div className="text-center">
                 <div className="text-2xl font-bold text-primary">10K+</div>
@@ -71,7 +75,7 @@ const Hero = () => {
             <div className="hidden lg:block pt-8">
               <p className="text-lg text-muted-foreground">
                 Beta testing in Bangalore, India has been completed. We have identified an area with significant challenges of garbage dumping and open burning.{" "}
-                <button 
+                <button
                   className="text-primary hover:text-primary-foreground underline underline-offset-4 hover:no-underline transition-all duration-200"
                   onClick={() => {
                     window.open('https://drive.google.com/file/d/1mAYuQQaYTORPAEiC3b8xcQ3jHLebaxVY/view?usp=drive_link', '_blank', 'noopener,noreferrer');
@@ -90,7 +94,7 @@ const Hero = () => {
               alt="Citizens reporting civic issues in a clean city environment"
               className="relative rounded-2xl shadow-glow object-cover w-full h-[280px] sm:h-[400px] lg:h-[500px]"
             />
-            
+
             <div className="absolute -bottom-6 -left-6 bg-card p-4 rounded-xl shadow-soft border">
               <div className="flex items-center space-x-3">
                 <div className="h-10 w-10 bg-gradient-primary rounded-full flex items-center justify-center">
@@ -104,11 +108,16 @@ const Hero = () => {
             </div>
           </div>
         </div>
+        {/* {!loading && reports.length > 0 ?
+          <div className="mt-10 rounded-lg border bg-card p-6">
+            <Dashboard reports={reports} allowCustomDateRange={false} />
+          </div>
+          : null} */}
         {/* Beta testing text - visible on mobile only, below the image */}
         <div className="lg:hidden pt-12">
           <p className="text-lg text-muted-foreground">
             Beta testing in Bangalore, India has been completed. We have identified an area with significant challenges of garbage dumping and open burning.{" "}
-            <button 
+            <button
               className="text-primary hover:text-primary-foreground underline underline-offset-4 hover:no-underline transition-all duration-200"
               onClick={() => {
                 window.open('https://drive.google.com/file/d/1mAYuQQaYTORPAEiC3b8xcQ3jHLebaxVY/view?usp=drive_link', '_blank', 'noopener,noreferrer');

@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 
 const VideoSection = () => {
   return (
-    <section className="py-24 bg-gradient-subtle">
+    <section className="py-12 sm:py-16 lg:py-24 bg-gradient-subtle">
       <div className="container px-4 sm:px-6 lg:px-8">
         {/* 
         <div className="text-center space-y-4 mb-16">
@@ -32,7 +32,7 @@ const VideoSection = () => {
           </div>
           
           {/* Learn More Button */}
-          <div className="text-center">
+          {/* <div className="text-center">
             <Button variant="hero" size="lg" onClick={() => {
               window.history.pushState({}, '', '/about');
               window.dispatchEvent(new PopStateEvent('popstate'));
@@ -41,7 +41,7 @@ const VideoSection = () => {
             }}>
               Learn more about GEODHA
             </Button>
-          </div>
+          </div> */}
         </div>
       </div>
     </section>

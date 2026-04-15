@@ -6,29 +6,33 @@ import screenshot2 from '@/assets/screenshot2.png';
 import screenshot4 from '@/assets/screenshot4.png';
 import ScrollingBanner from '@/components/ScrollingBanner';
 
-// Problem empathy cards — icon-forward, light card style (like Features.tsx)
+// Problem empathy cards — per-card colored icon boxes (matching UI_REFERENCE feature card style)
 const problemCards = [
   {
     icon: Truck,
-    color: 'text-primary',
+    iconBg: 'bg-blue-100',
+    iconColor: 'text-blue-600',
     title: 'Garbage truck not arriving',
     description: 'Truck skips your street for days. Waste overflows.',
   },
   {
     icon: Bug,
-    color: 'text-accent',
+    iconBg: 'bg-orange-100',
+    iconColor: 'text-orange-600',
     title: 'Mosquito breeding near your home',
     description: 'Stagnant waste water turns into breeding grounds.',
   },
   {
     icon: Flame,
-    color: 'text-warning',
+    iconBg: 'bg-purple-100',
+    iconColor: 'text-purple-600',
     title: 'Open burning and smoke',
     description: 'Illegal burning chokes neighbourhoods. Children and elderly most at risk.',
   },
   {
     icon: Wind,
-    color: 'text-primary',
+    iconBg: 'bg-teal-100',
+    iconColor: 'text-teal-600',
     title: 'Foul smell from an illegal dump',
     description: 'Persistent stench from an unauthorised dumping site.',
   },
@@ -175,10 +179,10 @@ const Index = () => {
             {problemCards.map((card) => (
               <div
                 key={card.title}
-                className="bg-card border-0 shadow-soft hover:shadow-glow transition-all duration-300 rounded-xl p-6 group"
+                className="group p-6 rounded-2xl bg-slate-50 hover:bg-white border border-slate-100 hover:border-primary/20 shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all duration-300"
               >
-                <div className="h-12 w-12 rounded-lg bg-gradient-subtle flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                  <card.icon className={`h-6 w-6 ${card.color}`} />
+                <div className={`w-14 h-14 rounded-xl ${card.iconBg} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                  <card.icon className={`h-6 w-6 ${card.iconColor}`} />
                 </div>
                 <h3
                   className="font-bold text-foreground mb-2"
@@ -256,51 +260,67 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ── REPORTING APP COMING SOON ── */}
-      <section className="py-16 sm:py-20 bg-gradient-subtle border-t border-border">
-        <div className="container px-4 sm:px-6 lg:px-8">
+      {/* ── REPORTING APP COMING SOON — dark section matching UI_REFERENCE ── */}
+      <section className="py-16 sm:py-20 bg-slate-900 relative overflow-hidden">
+        {/* Subtle green tint on right */}
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/10 to-transparent pointer-events-none" />
+
+        <div className="relative container px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
 
             {/* Left: copy */}
             <div className="space-y-6">
-              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold uppercase tracking-widest">
-                <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-                Launching Soon
+              <span className="inline-block px-4 py-1 rounded-full bg-primary/20 text-primary text-sm font-semibold border border-primary/30">
+                Coming Soon
               </span>
               <h2
-                className="text-3xl sm:text-4xl font-bold text-foreground"
+                className="text-4xl sm:text-5xl font-bold text-white"
                 style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
               >
-                The GEODHA Reporting App
-                <br />
-                <span className="bg-gradient-primary bg-clip-text text-transparent">
-                  is on its way.
-                </span>
+                Reporting App
               </h2>
-              <p className="text-muted-foreground leading-relaxed max-w-lg">
-                Submit reports, arrange cleanups, and track resolution — all in under 30 seconds. Built for Bengaluru's wards, designed for every resident.
+              <p className="text-xl text-slate-400 leading-relaxed max-w-lg">
+                We are currently developing the mobile app to make reporting even easier. Pre-register your interest to get early access.
               </p>
               <div className="space-y-3">
                 {appFeatures.map(({ icon: Icon, text }) => (
-                  <div key={text} className="flex items-center gap-3 text-sm text-muted-foreground">
-                    <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                  <div key={text} className="flex items-center gap-3 text-sm text-slate-400">
+                    <div className="h-8 w-8 rounded-lg bg-primary/20 flex items-center justify-center shrink-0">
                       <Icon className="h-4 w-4 text-primary" />
                     </div>
                     {text}
                   </div>
                 ))}
               </div>
+              {/* Email interest form */}
+              <form
+                className="flex flex-col sm:flex-row gap-3 max-w-md"
+                onSubmit={(e) => e.preventDefault()}
+              >
+                <input
+                  type="email"
+                  placeholder="Enter your email address"
+                  className="flex-1 px-5 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm"
+                />
+                <button
+                  type="submit"
+                  className="px-6 py-3 font-bold rounded-xl text-white text-sm transition-opacity hover:opacity-90"
+                  style={{ background: 'var(--gradient-hero)' }}
+                >
+                  Notify Me
+                </button>
+              </form>
             </div>
 
             {/* Right: 3 phone screenshots, staggered heights */}
             <div className="flex justify-center items-end gap-3">
-              <div className="overflow-hidden rounded-2xl border border-border shadow-soft opacity-80 w-[28%] max-w-[120px] h-[220px] sm:h-[280px]">
+              <div className="overflow-hidden rounded-2xl border border-slate-700 shadow-soft opacity-70 w-[28%] max-w-[120px] h-[220px] sm:h-[280px]">
                 <img src={screenshot4} alt="App list view" className="w-full h-full object-cover object-top" loading="lazy" />
               </div>
-              <div className="overflow-hidden rounded-2xl border border-border shadow-glow w-[34%] max-w-[148px] h-[280px] sm:h-[340px] -mb-4">
+              <div className="overflow-hidden rounded-2xl border border-slate-600 shadow-glow w-[34%] max-w-[148px] h-[280px] sm:h-[340px] -mb-4">
                 <img src={screenshot1} alt="App map view" className="w-full h-full object-cover object-top" loading="lazy" />
               </div>
-              <div className="overflow-hidden rounded-2xl border border-border shadow-soft opacity-80 w-[28%] max-w-[120px] h-[220px] sm:h-[280px]">
+              <div className="overflow-hidden rounded-2xl border border-slate-700 shadow-soft opacity-70 w-[28%] max-w-[120px] h-[220px] sm:h-[280px]">
                 <img src={screenshot2} alt="App report view" className="w-full h-full object-cover object-top" loading="lazy" />
               </div>
             </div>

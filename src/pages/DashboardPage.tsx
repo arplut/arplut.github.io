@@ -113,7 +113,7 @@ const DashboardPage = () => {
             </div>
             <Link
               to="/report"
-              className="text-sm font-semibold text-[#F59E0B] hover:underline shrink-0"
+              className="text-sm font-semibold text-primary hover:underline shrink-0"
               onClick={() => window.scrollTo(0, 0)}
             >
               + Report a problem in your ward
@@ -151,8 +151,8 @@ const DashboardPage = () => {
                   onClick={() => setActiveFilter(f.key)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium border transition-all ${
                     activeFilter === f.key
-                      ? 'bg-[#1B4332] text-white border-[#1B4332]'
-                      : 'bg-card text-foreground border-border hover:border-[#1B4332]/40'
+                      ? 'bg-primary text-white border-primary'
+                      : 'bg-card text-foreground border-border hover:border-primary/40'
                   }`}
                 >
                   <f.icon className="h-4 w-4" />
@@ -263,7 +263,7 @@ const DashboardPage = () => {
                   <ol className="space-y-2">
                     {TOP_PROBLEMS_PLACEHOLDER.map((problem, i) => (
                       <li key={problem} className="flex items-center gap-3">
-                        <span className="text-xs font-bold text-[#1B4332] w-5 shrink-0">#{i + 1}</span>
+                        <span className="text-xs font-bold text-primary w-5 shrink-0">#{i + 1}</span>
                         <span className="text-sm text-foreground">{problem}</span>
                       </li>
                     ))}
@@ -288,7 +288,7 @@ const DashboardPage = () => {
                 </div>
 
                 {/* Card 4 — Shareable Report Card */}
-                <div className="rounded-xl border-2 border-[#1B4332]/20 bg-card p-5">
+                <div className="rounded-xl border-2 border-primary/20 bg-card p-5">
                   <div className="flex items-start justify-between gap-2 mb-4">
                     <div>
                       <h3
@@ -364,13 +364,13 @@ const DashboardPage = () => {
         </div>
 
         {/* Bottom CTA */}
-        <div className="mt-10 py-8 px-6 rounded-xl bg-[#1B4332]/5 border border-[#1B4332]/15 text-center">
+        <div className="mt-10 py-8 px-6 rounded-xl bg-primary/5 border border-primary/15 text-center">
           <p className="text-foreground font-medium mb-2">
             See a problem around you? Tell us more about it.
           </p>
           <Link
             to="/report"
-            className="inline-block px-5 py-2.5 bg-[#1B4332] text-white text-sm font-semibold rounded-md hover:bg-[#14532D] transition-colors"
+            className="inline-block px-5 py-2.5 bg-primary text-white text-sm font-semibold rounded-md hover:bg-primary/90 transition-colors"
             onClick={() => window.scrollTo(0, 0)}
           >
             Report a Problem →

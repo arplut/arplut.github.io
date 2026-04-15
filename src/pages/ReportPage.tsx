@@ -62,7 +62,7 @@ const ReportPage = () => {
       <div className="min-h-screen bg-background flex items-center justify-center px-4">
         <div className="max-w-md w-full text-center py-16">
           <div className="flex justify-center mb-6">
-            <CheckCircle className="h-16 w-16 text-[#1B4332]" />
+            <CheckCircle className="h-16 w-16 text-primary" />
           </div>
           <h2
             className="text-3xl font-bold text-foreground mb-3"
@@ -75,7 +75,7 @@ const ReportPage = () => {
           </p>
           <button
             onClick={() => { setSubmitted(false); setPhotoPreview(null); setPhotoFile(null); setLocation(''); setProblemType(''); setDescription(''); setContact(''); }}
-            className="px-5 py-2.5 bg-[#1B4332] text-white text-sm font-semibold rounded-md hover:bg-[#14532D] transition-colors"
+            className="px-5 py-2.5 bg-primary text-white text-sm font-semibold rounded-md hover:bg-primary/90 transition-colors"
           >
             Submit another report
           </button>
@@ -115,7 +115,7 @@ const ReportPage = () => {
               <div
                 onClick={() => fileInputRef.current?.click()}
                 className={`relative flex flex-col items-center justify-center gap-3 p-8 rounded-xl border-2 border-dashed cursor-pointer transition-colors ${
-                  photoError ? 'border-[#EF4444] bg-red-50/40' : 'border-border hover:border-[#1B4332]/40 hover:bg-muted/40'
+                  photoError ? 'border-[#EF4444] bg-red-50/40' : 'border-border hover:border-primary/40 hover:bg-muted/40'
                 }`}
               >
                 {photoPreview ? (
@@ -156,7 +156,7 @@ const ReportPage = () => {
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   placeholder="e.g. Near Konanakunte Circle, Bannerghatta Road"
-                  className="w-full pl-9 pr-4 py-2.5 rounded-md border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#1B4332]/30 focus:border-[#1B4332]"
+                  className="w-full pl-9 pr-4 py-2.5 rounded-md border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
                 />
               </div>
               {/* PLACEHOLDER — wire map pin drop (LocationPicker component) when Firebase pipeline confirmed */}
@@ -172,7 +172,7 @@ const ReportPage = () => {
                   id="problem-type"
                   value={problemType}
                   onChange={(e) => { setProblemType(e.target.value); setTypeError(false); }}
-                  className={`w-full appearance-none px-4 py-2.5 rounded-md border bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-[#1B4332]/30 focus:border-[#1B4332] ${
+                  className={`w-full appearance-none px-4 py-2.5 rounded-md border bg-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary ${
                     typeError ? 'border-[#EF4444]' : 'border-border'
                   } ${!problemType ? 'text-muted-foreground' : ''}`}
                 >
@@ -197,7 +197,7 @@ const ReportPage = () => {
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
                 placeholder="Describe what you see — how long has it been there? How bad is it?"
-                className="w-full px-4 py-2.5 rounded-md border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#1B4332]/30 focus:border-[#1B4332] resize-none"
+                className="w-full px-4 py-2.5 rounded-md border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-none"
               />
             </div>
 
@@ -213,14 +213,14 @@ const ReportPage = () => {
                 value={contact}
                 onChange={(e) => setContact(e.target.value)}
                 placeholder="Phone number or email"
-                className="w-full px-4 py-2.5 rounded-md border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#1B4332]/30 focus:border-[#1B4332]"
+                className="w-full px-4 py-2.5 rounded-md border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
               />
             </div>
 
             {/* Submit */}
             <button
               type="submit"
-              className="w-full py-3.5 bg-[#1B4332] text-white font-semibold rounded-md hover:bg-[#14532D] active:bg-[#0F3524] transition-colors text-sm"
+              className="w-full py-3.5 bg-primary text-white font-semibold rounded-md hover:bg-primary/90 active:bg-primary/80 transition-colors text-sm"
             >
               Submit Report
             </button>

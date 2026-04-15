@@ -157,7 +157,7 @@ const DataPage = () => {
         <section>
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-2">
-              <BookOpen className="h-5 w-5 text-[#1B4332]" />
+              <BookOpen className="h-5 w-5 text-primary" />
               <h2
                 className="text-2xl font-bold text-foreground"
                 style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
@@ -215,9 +215,9 @@ const DataPage = () => {
                 </h3>
                 {/* PLACEHOLDER — replace with confirmed data insights when Samaajdata dataset published */}
                 <ul className="space-y-3 text-sm text-foreground">
-                  <li className="flex gap-2"><span className="text-[#1B4332] font-bold">→</span> Significant recyclable materials (metals, paper, plastics) are being lost to open burning at illegal dump sites.</li>
-                  <li className="flex gap-2"><span className="text-[#1B4332] font-bold">→</span> Wards with the highest open-burning severity overlap with areas where BBMP vehicle coverage is lowest.</li>
-                  <li className="flex gap-2"><span className="text-[#1B4332] font-bold">→</span> Informal waste pickers in these wards are exposed to the highest health risk from burning fumes.</li>
+                  <li className="flex gap-2"><span className="text-primary font-bold">→</span> Significant recyclable materials (metals, paper, plastics) are being lost to open burning at illegal dump sites.</li>
+                  <li className="flex gap-2"><span className="text-primary font-bold">→</span> Wards with the highest open-burning severity overlap with areas where BBMP vehicle coverage is lowest.</li>
+                  <li className="flex gap-2"><span className="text-primary font-bold">→</span> Informal waste pickers in these wards are exposed to the highest health risk from burning fumes.</li>
                 </ul>
                 <p className="text-xs text-muted-foreground mt-4 italic">
                   {/* PLACEHOLDER — replace with Samaajdata dataset link when published */}
@@ -229,7 +229,7 @@ const DataPage = () => {
                 {/* PLACEHOLDER — replace with Samaajdata dataset link when published */}
                 <a
                   href="mailto:contact@geodha.org?subject=Data access request"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-[#1B4332] text-white text-sm font-semibold hover:bg-[#14532D] transition-colors"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors"
                 >
                   <Mail className="h-4 w-4" />
                   Request Data Access
@@ -262,7 +262,7 @@ const DataPage = () => {
           <p className="text-muted-foreground text-sm mb-4">Want to see problem locations on the map?</p>
           <Link
             to="/dashboard"
-            className="inline-block px-5 py-2.5 bg-[#1B4332] text-white text-sm font-semibold rounded-md hover:bg-[#14532D] transition-colors"
+            className="inline-block px-5 py-2.5 bg-primary text-white text-sm font-semibold rounded-md hover:bg-primary/90 transition-colors"
             onClick={() => window.scrollTo(0, 0)}
           >
             View Ward Dashboard →

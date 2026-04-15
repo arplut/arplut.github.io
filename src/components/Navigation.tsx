@@ -82,7 +82,7 @@ const Navigation = () => {
               className={cn(
                 'px-4 py-2 text-sm font-medium rounded-md transition-colors',
                 currentPath === item.path
-                  ? 'bg-[#1B4332]/10 text-[#1B4332]'
+                  ? 'bg-primary/10 text-primary'
                   : 'text-foreground/70 hover:text-foreground hover:bg-muted'
               )}
             >
@@ -123,7 +123,7 @@ const Navigation = () => {
                 className={cn(
                   'text-left px-4 py-3 rounded-md text-sm font-medium transition-colors',
                   currentPath === item.path
-                    ? 'bg-[#1B4332]/10 text-[#1B4332]'
+                    ? 'bg-primary/10 text-primary'
                     : 'text-foreground/70 hover:text-foreground hover:bg-muted'
                 )}
               >

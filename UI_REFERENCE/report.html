@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Annual Reports | GEODHA</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <!-- Custom Config for Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        heading: ['"Outfit"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                            950: '#052e16',
+                        },
+                        dark: {
+                            900: '#0f172a',
+                            800: '#1e293b',
+                            700: '#334155',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="font-sans text-slate-800 bg-slate-50 antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- Navigation -->
+    <nav id="navbar"
+        class="fixed w-full z-50 transition-all duration-300 bg-white/80 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <a href="index.html" class="flex-shrink-0 flex items-center cursor-pointer">
+                    <img src="logo.png" alt="GEODHA Logo" class="h-12 w-auto">
+                </a>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html#home"
+                        class="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors">Home</a>
+                    <a href="index.html#reports"
+                        class="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors">Live Map</a>
+                    <a href="impact.html"
+                        class="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors">Impact</a>
+                    <a href="report.html" class="text-sm font-medium text-brand-600 transition-colors">Reports</a>
+                    <a href="index.html#features"
+                        class="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors">Features</a>
+                    <a href="#"
+                        class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold rounded-full transition-all shadow-lg shadow-slate-900/20 hover:shadow-slate-900/40 transform hover:-translate-y-0.5">
+                        Get Started
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-slate-600 hover:text-slate-900 focus:outline-none">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-100">
+            <div class="px-4 pt-2 pb-6 space-y-1">
+                <a href="index.html#home"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-brand-600 hover:bg-slate-50">Home</a>
+                <a href="index.html#reports"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-brand-600 hover:bg-slate-50">Live
+                    Map</a>
+                <a href="impact.html"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-brand-600 hover:bg-slate-50">Impact</a>
+                <a href="report.html"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-brand-600 bg-brand-50">Reports</a>
+                <a href="index.html#features"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-brand-600 hover:bg-slate-50">Features</a>
+                <div class="pt-4">
+                    <a href="#"
+                        class="block w-full text-center px-5 py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-lg shadow-md">Get
+                        Started</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <section class="pt-32 pb-12 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="font-heading text-4xl md:text-5xl font-bold text-slate-900 mb-6">Annual Reports & Documents</h1>
+            <p class="text-xl text-slate-600 max-w-2xl mx-auto">Detailed insights into our data, methodology, and
+                community impact.</p>
+        </div>
+    </section>
+
+    <!-- Reports Grid -->
+    <section class="py-16 bg-slate-50 min-h-screen">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Main Report Card -->
+                <div
+                    class="group p-8 rounded-2xl bg-white border border-slate-200 hover:border-brand-200 hover:shadow-xl transition-all duration-300 flex flex-col items-start relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i class="fa-solid fa-file-pdf text-9xl text-brand-500"></i>
+                    </div>
+
+                    <div
+                        class="w-14 h-14 rounded-xl bg-red-100 text-red-600 flex items-center justify-center text-2xl mb-6 z-10">
+                        <i class="fa-solid fa-file-pdf"></i>
+                    </div>
+                    <h3 class="font-heading text-2xl font-bold text-slate-900 mb-3 z-10">GEODHA Impact Report</h3>
+                    <p class="text-slate-600 mb-8 flex-1 z-10 leading-relaxed">
+                        Comprehensive analysis of civic issues reported and resolved in the past year. Includes detailed
+                        statistics, community stories, and future roadmap.
+                    </p>
+
+                    <a href="https://drive.google.com/file/d/1mAYuQQaYTORPAEiC3b8xcQ3jHLebaxVY/view" target="_blank"
+                        class="inline-flex items-center gap-2 px-6 py-3 bg-brand-600 text-white font-semibold rounded-xl hover:bg-brand-700 shadow-lg shadow-brand-500/30 transition-all w-full justify-center z-10">
+                        <span>View Full Report</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-sm"></i>
+                    </a>
+                </div>
+
+                <!-- Placeholder Report 1 -->
+                <div
+                    class="group p-8 rounded-2xl bg-white border border-slate-200 hover:border-brand-200 hover:shadow-xl transition-all duration-300 flex flex-col items-start opacity-70">
+                    <div
+                        class="w-14 h-14 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center text-2xl mb-6">
+                        <i class="fa-solid fa-chart-pie"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-bold text-slate-900 mb-3">Q3 2025 Progress Update</h3>
+                    <p class="text-slate-600 mb-8 flex-1">Upcoming report on our expansion into new neighborhoods and
+                        feature updates.</p>
+
+                    <button disabled
+                        class="inline-flex items-center gap-2 px-6 py-3 bg-slate-100 text-slate-400 font-semibold rounded-xl cursor-not-allowed w-full justify-center">
+                        <span>Coming Soon</span>
+                    </button>
+                </div>
+
+                <!-- Placeholder Report 2 -->
+                <div
+                    class="group p-8 rounded-2xl bg-white border border-slate-200 hover:border-brand-200 hover:shadow-xl transition-all duration-300 flex flex-col items-start opacity-70">
+                    <div
+                        class="w-14 h-14 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center text-2xl mb-6">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-bold text-slate-900 mb-3">Transparency Report</h3>
+                    <p class="text-slate-600 mb-8 flex-1">Annual review of our data handling, privacy practices, and
+                        open data initiatives.</p>
+
+                    <button disabled
+                        class="inline-flex items-center gap-2 px-6 py-3 bg-slate-100 text-slate-400 font-semibold rounded-xl cursor-not-allowed w-full justify-center">
+                        <span>Coming Soon</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                <div>
+                    <div class="flex items-center gap-2 mb-6">
+                        <img src="logo.png" alt="GEODHA Logo" class="h-10 w-auto">
+                    </div>
+                    <p class="text-slate-500 text-sm leading-relaxed mb-6">
+                        Empowering citizens to create cleaner, safer communities through transparent civic engagement.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="https://www.linkedin.com/company/geodha/" target="_blank"
+                            class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-brand-100 hover:text-brand-600 transition-colors"><i
+                                class="fa-brands fa-linkedin-in"></i></a>
+                        <a href="https://www.instagram.com/geodha_org" target="_blank"
+                            class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-brand-100 hover:text-brand-600 transition-colors"><i
+                                class="fa-brands fa-instagram"></i></a>
+                        <a href="https://www.reddit.com/r/geodha/" target="_blank"
+                            class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-brand-100 hover:text-brand-600 transition-colors"><i
+                                class="fa-brands fa-reddit"></i></a>
+                        <a href="https://youtu.be/6Edat2kJj6A" target="_blank"
+                            class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-brand-100 hover:text-brand-600 transition-colors"><i
+                                class="fa-brands fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-slate-900 mb-6">Features</h4>
+                    <ul class="space-y-3 text-sm text-slate-600">
+                        <li><a href="#" class="hover:text-brand-600 transition-colors">Photo Reporting</a></li>
+                        <li><a href="#" class="hover:text-brand-600 transition-colors">Interactive Maps</a></li>
+                        <li><a href="#" class="hover:text-brand-600 transition-colors">Community Validation</a></li>
+                        <li><a href="#" class="hover:text-brand-600 transition-colors">Analytics</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-slate-900 mb-6">Resources</h4>
+                    <ul class="space-y-3 text-sm text-slate-600">
+                        <li><a href="#" class="hover:text-brand-600 transition-colors">Knowledge Hub</a></li>
+                        <li><a href="#" class="hover:text-brand-600 transition-colors">Community Guidelines</a></li>
+                        <li><a href="#" class="hover:text-brand-600 transition-colors">Success Stories</a></li>
+                        <li><a href="#" class="hover:text-brand-600 transition-colors">Help Center</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-slate-900 mb-6">Contact</h4>
+                    <ul class="space-y-3 text-sm text-slate-600">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-regular fa-envelope mt-1 text-brand-500"></i>
+                            <span>contact@geodha.org</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-location-dot mt-1 text-brand-500"></i>
+                            <span>Bengaluru, Karnataka, India</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-slate-400">© 2025 GEODHA. All rights reserved.</p>
+                <div class="flex gap-6 text-sm text-slate-500">
+                    <a href="#" class="hover:text-slate-900">Privacy Policy</a>
+                    <a href="#" class="hover:text-slate-900">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+    </script>
+</body>
+
+</html>

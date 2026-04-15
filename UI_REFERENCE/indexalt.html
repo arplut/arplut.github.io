@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GEODHA | Elements of the City</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        heading: ['"Outfit"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            earth: '#22c55e', // Green
+                            water: '#3b82f6', // Blue
+                            air: '#0ea5e9',   // Sky
+                            fire: '#ef4444',  // Red
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #f8fafc;
+            color: #0f172a;
+            overflow-x: hidden;
+        }
+
+        /* Smooth Step Transitions */
+        .step {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: 100vh;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .step.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            position: relative;
+        }
+
+        /* Interactive Grid Cards */
+        .element-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .element-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Dynamic Backgrounds for Issue Pages */
+        .bg-earth-subtle { background: linear-gradient(to bottom right, #f0fdf4, #dcfce7); }
+        .bg-water-subtle { background: linear-gradient(to bottom right, #eff6ff, #dbeafe); }
+        .bg-air-subtle { background: linear-gradient(to bottom right, #f0f9ff, #e0f2fe); }
+        .bg-fire-subtle { background: linear-gradient(to bottom right, #fef2f2, #fee2e2); }
+    </style>
+</head>
+<body class="antialiased">
+
+    <main id="app-container" class="relative w-full min-h-screen">
+
+        <section id="step-intro" class="step active text-center max-w-4xl mx-auto">
+            <div class="mb-8 animate-pulse">
+                <div class="w-20 h-20 mx-auto bg-slate-900 rounded-full flex items-center justify-center text-white text-3xl font-bold font-heading mb-4 shadow-xl">G</div>
+            </div>
+            
+            <h1 class="font-heading text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-8 text-slate-800">
+                GEODHA is a non-profit initiative to solve civic issues in urban cities in India by bringing people together and supporting data analytics.
+            </h1>
+            
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
+                <button onclick="goToStep('step-selector')" class="px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-full font-semibold text-lg transition-colors shadow-lg shadow-slate-900/20 flex items-center gap-2">
+                    Interested to learn more? <i class="fa-solid fa-arrow-right"></i>
+                </button>
+                <button onclick="goToStep('step-skip')" class="px-8 py-4 bg-transparent border-2 border-slate-300 hover:border-slate-800 text-slate-600 hover:text-slate-900 rounded-full font-semibold text-lg transition-colors">
+                    Skip
+                </button>
+            </div>
+        </section>
+
+        <section id="step-selector" class="step max-w-5xl mx-auto">
+            <div class="text-center mb-12">
+                <p class="text-slate-500 uppercase tracking-widest font-semibold text-sm mb-2">The Balance of the City</p>
+                <h2 class="font-heading text-4xl md:text-5xl font-bold text-slate-900">Choose your element...</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
+                <div onclick="selectElement('earth')" class="element-card bg-white p-8 rounded-3xl border-2 border-green-100 flex flex-col items-center justify-center text-center group">
+                    <div class="w-20 h-20 rounded-full bg-green-100 text-green-500 flex items-center justify-center text-4xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-leaf"></i>
+                    </div>
+                    <h3 class="font-heading text-2xl font-bold text-slate-800 mb-2">Earth</h3>
+                    <p class="text-slate-500 text-sm">Land, Waste & Soil Health</p>
+                </div>
+
+                <div onclick="selectElement('water')" class="element-card bg-white p-8 rounded-3xl border-2 border-blue-100 flex flex-col items-center justify-center text-center group">
+                    <div class="w-20 h-20 rounded-full bg-blue-100 text-blue-500 flex items-center justify-center text-4xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-droplet"></i>
+                    </div>
+                    <h3 class="font-heading text-2xl font-bold text-slate-800 mb-2">Water</h3>
+                    <p class="text-slate-500 text-sm">Lakes, Drains & Waterlogging</p>
+                </div>
+
+                <div onclick="selectElement('air')" class="element-card bg-white p-8 rounded-3xl border-2 border-sky-100 flex flex-col items-center justify-center text-center group">
+                    <div class="w-20 h-20 rounded-full bg-sky-100 text-sky-500 flex items-center justify-center text-4xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-wind"></i>
+                    </div>
+                    <h3 class="font-heading text-2xl font-bold text-slate-800 mb-2">Air</h3>
+                    <p class="text-slate-500 text-sm">Dust, Emissions & AQI</p>
+                </div>
+
+                <div onclick="selectElement('fire')" class="element-card bg-white p-8 rounded-3xl border-2 border-red-100 flex flex-col items-center justify-center text-center group">
+                    <div class="w-20 h-20 rounded-full bg-red-100 text-red-500 flex items-center justify-center text-4xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-fire"></i>
+                    </div>
+                    <h3 class="font-heading text-2xl font-bold text-slate-800 mb-2">Fire</h3>
+                    <p class="text-slate-500 text-sm">Open Burning & Hazards</p>
+                </div>
+            </div>
+            
+            <button onclick="goToStep('step-intro')" class="mt-12 text-slate-400 hover:text-slate-800 flex items-center gap-2 transition-colors">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </button>
+        </section>
+
+        <section id="step-issue" class="step w-full !justify-start !pt-20">
+            <div class="max-w-4xl mx-auto w-full">
+                <button onclick="goToStep('step-selector')" class="mb-8 px-4 py-2 bg-white/50 backdrop-blur-md border border-slate-200 rounded-full text-slate-600 hover:text-slate-900 flex items-center gap-2 shadow-sm transition-all hover:-translate-x-1">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Elements
+                </button>
+
+                <div class="flex flex-col md:flex-row gap-8 items-start">
+                    <div id="issue-icon-container" class="w-32 h-32 shrink-0 rounded-3xl flex items-center justify-center text-6xl shadow-xl">
+                        <i id="issue-icon" class="fa-solid fa-leaf"></i>
+                    </div>
+
+                    <div class="flex-1">
+                        <h2 id="issue-title" class="font-heading text-5xl font-bold text-slate-900 mb-4">Earth</h2>
+                        <p id="issue-description" class="text-xl text-slate-600 mb-8 leading-relaxed">
+                            Description goes here.
+                        </p>
+
+                        <h3 class="font-bold text-lg text-slate-800 mb-4">Common Civic Issues:</h3>
+                        <div id="issue-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            </div>
+
+                        <div class="mt-10">
+                            <button class="px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-semibold transition-all shadow-md flex items-center gap-2">
+                                Report an Issue <i class="fa-solid fa-camera"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="step-skip" class="step">
+            <div class="text-center">
+                <h2 class="font-heading text-3xl font-bold mb-4">Going straight to the map...</h2>
+                <div class="animate-spin text-4xl text-slate-400 my-8">
+                    <i class="fa-solid fa-circle-notch"></i>
+                </div>
+                <button onclick="goToStep('step-intro')" class="text-slate-500 hover:text-slate-800 underline">Go Back</button>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Data for the elements
+        const elementsData = {
+            earth: {
+                title: "Earth",
+                icon: "fa-leaf",
+                bgClass: "bg-earth-subtle",
+                iconBg: "bg-green-500",
+                iconColor: "text-white",
+                description: "The foundation of our cities. When land is mismanaged, it leads to hygiene crises, loss of public space, and contamination of soil.",
+                issues: [
+                    { title: "Garbage Dumping", icon: "fa-trash-can", desc: "Illegal dumping of mixed waste on roadsides." },
+                    { title: "Construction Debris", icon: "fa-trowel-bricks", desc: "C&D waste blocking footpaths and drains." },
+                    { title: "Loss of Green Cover", icon: "fa-tree", desc: "Illegal felling of trees and destruction of parks." },
+                    { title: "Potholes", icon: "fa-road", desc: "Damaged road infrastructure affecting mobility." }
+                ]
+            },
+            water: {
+                title: "Water",
+                icon: "fa-droplet",
+                bgClass: "bg-water-subtle",
+                iconBg: "bg-blue-500",
+                iconColor: "text-white",
+                description: "The lifeline of urban areas. Poor drainage and polluted water bodies lead to flooding and severe health hazards.",
+                issues: [
+                    { title: "Waterlogging", icon: "fa-water", desc: "Flooded streets during rains due to blocked drains." },
+                    { title: "Sewage Overflow", icon: "fa-toilet", desc: "Open or overflowing underground drainage." },
+                    { title: "Lake Pollution", icon: "fa-smog", desc: "Industrial effluents or garbage in water bodies." },
+                    { title: "Broken Pipes", icon: "fa-faucet-drip", desc: "Wastage of drinking water from municipal lines." }
+                ]
+            },
+            air: {
+                title: "Air",
+                icon: "fa-wind",
+                bgClass: "bg-air-subtle",
+                iconBg: "bg-sky-500",
+                iconColor: "text-white",
+                description: "The unseen necessity. Poor air quality directly impacts the respiratory health of millions of urban residents daily.",
+                issues: [
+                    { title: "Construction Dust", icon: "fa-building", desc: "Uncovered construction sites releasing PM2.5." },
+                    { title: "Vehicular Emissions", icon: "fa-car-side", desc: "Heavy exhaust in high-density traffic zones." },
+                    { title: "Industrial Smoke", icon: "fa-industry", desc: "Factories releasing untreated smoke into residential areas." }
+                ]
+            },
+            fire: {
+                title: "Fire",
+                icon: "fa-fire",
+                bgClass: "bg-fire-subtle",
+                iconBg: "bg-red-500",
+                iconColor: "text-white",
+                description: "Hazardous energy out of control. Open burning is a primary contributor to toxic local air pollution and safety risks.",
+                issues: [
+                    { title: "Garbage Burning", icon: "fa-dumpster-fire", desc: "Setting fire to mixed waste to clear dumps." },
+                    { title: "Leaf Litter Burning", icon: "fa-fire-leaf", desc: "Burning dry leaves instead of composting." },
+                    { title: "Exposed Wires", icon: "fa-bolt", desc: "Electrical hazards risking fire outbreaks." }
+                ]
+            }
+        };
+
+        // Navigation Function
+        function goToStep(stepId) {
+            // Remove active class from all steps
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active');
+            });
+            
+            // Remove any background classes from body
+            document.body.className = "antialiased transition-colors duration-700";
+
+            // Add active class to target step
+            const target = document.getElementById(stepId);
+            if(target) {
+                target.classList.add('active');
+            }
+        }
+
+        // Handle Element Selection
+        function selectElement(elementKey) {
+            const data = elementsData[elementKey];
+            
+            // Apply background color to body for immersion
+            document.body.className = `antialiased transition-colors duration-700 ${data.bgClass}`;
+
+            // Populate Issue Page
+            document.getElementById('issue-title').innerText = data.title;
+            document.getElementById('issue-description').innerText = data.description;
+            
+            const iconContainer = document.getElementById('issue-icon-container');
+            iconContainer.className = `w-32 h-32 shrink-0 rounded-3xl flex items-center justify-center text-6xl shadow-xl ${data.iconBg} ${data.iconColor}`;
+            document.getElementById('issue-icon').className = `fa-solid ${data.icon}`;
+
+            // Populate sub-issues
+            const listContainer = document.getElementById('issue-list');
+            listContainer.innerHTML = ''; // clear old
+            
+            data.issues.forEach(issue => {
+                listContainer.innerHTML += `
+                    <div class="bg-white/60 backdrop-blur-sm p-4 rounded-2xl border border-white/50 shadow-sm flex items-start gap-4 hover:bg-white/80 transition-colors">
+                        <div class="w-10 h-10 shrink-0 rounded-full bg-slate-900 text-white flex items-center justify-center mt-1">
+                            <i class="fa-solid ${issue.icon}"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-900">${issue.title}</h4>
+                            <p class="text-sm text-slate-600">${issue.desc}</p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Transition to the issue step
+            goToStep('step-issue');
+        }
+    </script>
+</body>
+</html>

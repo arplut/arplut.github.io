@@ -1,10 +1,8 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Flame, Bug, Truck, Wind, BarChart2, Database, FileText, Smartphone, CheckCircle, MapPin, Camera, Shield } from 'lucide-react';
+import { Flame, Bug, Truck, Wind, BarChart2, Database, FileText, Smartphone, CheckCircle, MapPin, Trash2 } from 'lucide-react';
 import heroImage from '@/assets/hero-image.jpg';
-import screenshot1 from '@/assets/screenshot1.png';
-import screenshot2 from '@/assets/screenshot2.png';
-import screenshot4 from '@/assets/screenshot4.png';
 import ScrollingBanner from '@/components/ScrollingBanner';
+import HeroParticles from '@/components/HeroParticles';
 
 // Problem empathy cards — per-card colored icon boxes (matching UI_REFERENCE feature card style)
 const problemCards = [
@@ -74,30 +72,16 @@ const services = [
   },
 ];
 
-// Reporting App feature list
-const appFeatures = [
-  { icon: Camera, text: 'Photo-based reporting with AI categorisation' },
-  { icon: MapPin, text: 'GPS auto-tagging for precise ward-level data' },
-  { icon: CheckCircle, text: 'Track status from report to resolution' },
-  { icon: Shield, text: 'Anonymous reporting option for sensitive issues' },
-];
-
 const Index = () => {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-background">
 
-      {/* ── HERO — gradient-subtle bg + grid pattern, two-column layout ── */}
+      {/* ── HERO — gradient-subtle bg + animated particles (UI_REFERENCE Three.js effect) ── */}
       <section className="relative overflow-hidden bg-gradient-subtle">
-        {/* Subtle grid pattern */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            backgroundImage:
-              'repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(0,0,0,0.04) 39px, rgba(0,0,0,0.04) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(0,0,0,0.04) 39px, rgba(0,0,0,0.04) 40px)',
-          }}
-        />
+        {/* Particle animation replaces static grid */}
+        <HeroParticles />
 
         <div className="relative container px-4 py-8 sm:py-10 lg:py-14 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 items-center">
@@ -132,19 +116,33 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Right: hero image + "Status Update" floating badge */}
-            <div className="relative">
+            {/* Right: hero image + two floating badges (matching UI_REFERENCE) */}
+            <div className="relative mt-6 lg:mt-0">
               <div className="absolute inset-0 bg-gradient-primary opacity-20 rounded-2xl" />
               <img
                 src={heroImage}
                 alt="Citizens reporting civic issues"
                 className="relative rounded-2xl shadow-glow object-cover w-full h-[280px] sm:h-[380px] lg:h-[420px]"
               />
-              {/* "Status Update: Cleaned & Verified" floating tile */}
-              <div className="absolute -bottom-5 -left-4 sm:-bottom-6 sm:-left-6 bg-card p-4 rounded-xl shadow-soft border">
+
+              {/* Bottom-left: "Issue Reported!" badge (red trash icon, UI_REFERENCE style) */}
+              <div className="absolute -bottom-5 -left-4 sm:-bottom-6 sm:-left-6 bg-card p-4 rounded-xl shadow-soft border hidden sm:block">
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 bg-gradient-primary rounded-full flex items-center justify-center shrink-0">
-                    <CheckCircle className="h-5 w-5 text-white" />
+                  <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+                    <Trash2 className="h-5 w-5 text-red-600" />
+                  </div>
+                  <div>
+                    <div className="text-xs text-muted-foreground font-medium">Issue Reported</div>
+                    <div className="font-semibold text-foreground text-sm">Garbage Dump</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Top-right: "Status Update: Cleaned & Verified" badge (green check icon) */}
+              <div className="absolute -top-4 -right-4 sm:-top-6 sm:-right-6 bg-card p-4 rounded-xl shadow-soft border hidden sm:block">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center shrink-0">
+                    <CheckCircle className="h-5 w-5 text-green-600" />
                   </div>
                   <div>
                     <div className="text-xs text-muted-foreground font-medium">Status Update</div>
@@ -160,7 +158,7 @@ const Index = () => {
       {/* ── SCROLLING BANNER ── */}
       <ScrollingBanner />
 
-      {/* ── PROBLEM EMPATHY — light shadow cards with colored icons (Features.tsx style) ── */}
+      {/* ── PROBLEM EMPATHY — light shadow cards with colored icons ── */}
       <section className="py-16 sm:py-20 bg-background">
         <div className="container px-4 sm:px-6 lg:px-8">
           <div className="mb-10">
@@ -260,74 +258,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ── REPORTING APP COMING SOON — dark section matching UI_REFERENCE ── */}
-      <section className="py-16 sm:py-20 bg-slate-900 relative overflow-hidden">
-        {/* Subtle green tint on right */}
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/10 to-transparent pointer-events-none" />
-
-        <div className="relative container px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-
-            {/* Left: copy */}
-            <div className="space-y-6">
-              <span className="inline-block px-4 py-1 rounded-full bg-primary/20 text-primary text-sm font-semibold border border-primary/30">
-                Coming Soon
-              </span>
-              <h2
-                className="text-4xl sm:text-5xl font-bold text-white"
-                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
-              >
-                Reporting App
-              </h2>
-              <p className="text-xl text-slate-400 leading-relaxed max-w-lg">
-                We are currently developing the mobile app to make reporting even easier. Pre-register your interest to get early access.
-              </p>
-              <div className="space-y-3">
-                {appFeatures.map(({ icon: Icon, text }) => (
-                  <div key={text} className="flex items-center gap-3 text-sm text-slate-400">
-                    <div className="h-8 w-8 rounded-lg bg-primary/20 flex items-center justify-center shrink-0">
-                      <Icon className="h-4 w-4 text-primary" />
-                    </div>
-                    {text}
-                  </div>
-                ))}
-              </div>
-              {/* Email interest form */}
-              <form
-                className="flex flex-col sm:flex-row gap-3 max-w-md"
-                onSubmit={(e) => e.preventDefault()}
-              >
-                <input
-                  type="email"
-                  placeholder="Enter your email address"
-                  className="flex-1 px-5 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm"
-                />
-                <button
-                  type="submit"
-                  className="px-6 py-3 font-bold rounded-xl text-white text-sm transition-opacity hover:opacity-90"
-                  style={{ background: 'var(--gradient-hero)' }}
-                >
-                  Notify Me
-                </button>
-              </form>
-            </div>
-
-            {/* Right: 3 phone screenshots, staggered heights */}
-            <div className="flex justify-center items-end gap-3">
-              <div className="overflow-hidden rounded-2xl border border-slate-700 shadow-soft opacity-70 w-[28%] max-w-[120px] h-[220px] sm:h-[280px]">
-                <img src={screenshot4} alt="App list view" className="w-full h-full object-cover object-top" loading="lazy" />
-              </div>
-              <div className="overflow-hidden rounded-2xl border border-slate-600 shadow-glow w-[34%] max-w-[148px] h-[280px] sm:h-[340px] -mb-4">
-                <img src={screenshot1} alt="App map view" className="w-full h-full object-cover object-top" loading="lazy" />
-              </div>
-              <div className="overflow-hidden rounded-2xl border border-slate-700 shadow-soft opacity-70 w-[28%] max-w-[120px] h-[220px] sm:h-[280px]">
-                <img src={screenshot2} alt="App report view" className="w-full h-full object-cover object-top" loading="lazy" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ── BOTTOM CTA ── */}
       <section className="py-16 sm:py-20 bg-background border-t border-border">
         <div className="container px-4 sm:px-6 lg:px-8 text-center">
@@ -348,14 +278,79 @@ const Index = () => {
             >
               View the Dashboard
             </button>
-            <a
-              href="https://drive.google.com/file/d/1mAYuQQaYTORPAEiC3b8xcQ3jHLebaxVY/view?usp=drive_link"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-6 py-3 border border-border text-foreground font-semibold rounded-md hover:bg-muted transition-colors text-sm"
-            >
-              Read the Beta Report →
-            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ── REPORTING APP COMING SOON — dark section, very last, UI_REFERENCE style ── */}
+      <section className="py-16 sm:py-20 bg-slate-900 relative overflow-hidden">
+        {/* Subtle green tint gradient on right */}
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/10 to-transparent pointer-events-none" />
+
+        <div className="relative container px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+
+            {/* Left: copy + email form */}
+            <div className="space-y-6">
+              <span className="inline-block px-4 py-1 rounded-full bg-primary/20 text-primary text-sm font-semibold border border-primary/30">
+                Coming Soon
+              </span>
+              <h2
+                className="text-4xl sm:text-5xl font-bold text-white"
+                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+              >
+                Reporting App
+              </h2>
+              <p className="text-xl text-slate-400 leading-relaxed max-w-lg">
+                We are currently developing the mobile app to make reporting even easier. Pre-register your interest to get early access.
+              </p>
+              {/* Email interest form */}
+              <form
+                className="flex flex-col sm:flex-row gap-3 max-w-md"
+                onSubmit={(e) => e.preventDefault()}
+              >
+                <input
+                  type="email"
+                  placeholder="Enter your email address"
+                  className="flex-1 px-5 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm"
+                />
+                <button
+                  type="submit"
+                  className="px-6 py-3 font-bold rounded-xl text-white text-sm transition-opacity hover:opacity-90"
+                  style={{ background: 'var(--gradient-hero)' }}
+                >
+                  Notify Me
+                </button>
+              </form>
+            </div>
+
+            {/* Right: CSS phone mockup from UI_REFERENCE (no screenshots) */}
+            <div className="flex justify-center">
+              {/* Phone shell */}
+              <div className="relative w-56 h-[460px] bg-slate-800 rounded-[2.8rem] border-8 border-slate-700 shadow-2xl overflow-hidden">
+                {/* Notch */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-5 bg-slate-700 rounded-b-xl z-20" />
+                {/* Screen */}
+                <div className="w-full h-full bg-slate-900 flex flex-col items-center justify-center text-center px-6 pt-6 pb-4">
+                  {/* App icon */}
+                  <div
+                    className="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-2xl font-bold mb-4"
+                    style={{ background: 'var(--gradient-hero)', boxShadow: '0 8px 24px rgba(34,197,94,0.3)' }}
+                  >
+                    G
+                  </div>
+                  <h3 className="text-white font-bold text-xl mb-2">GEODHA</h3>
+                  <p className="text-slate-400 text-sm leading-relaxed">
+                    Building better communities together.
+                  </p>
+                  {/* Loading bar */}
+                  <div className="mt-8 w-full h-1 bg-slate-800 rounded-full overflow-hidden">
+                    <div className="w-2/3 h-full bg-primary rounded-full" />
+                  </div>
+                  <p className="text-xs text-slate-500 mt-2">Launching soon...</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

@@ -2,7 +2,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Flame, Bug, Truck, Wind, BarChart2, Database, FileText, Smartphone, CheckCircle, MapPin, Trash2 } from 'lucide-react';
 import heroImage from '@/assets/hero-image.jpg';
 import ScrollingBanner from '@/components/ScrollingBanner';
-import HeroParticles from '@/components/HeroParticles';
 
 // Problem empathy cards — per-card colored icon boxes (matching UI_REFERENCE feature card style)
 const problemCards = [
@@ -78,10 +77,16 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
 
-      {/* ── HERO — gradient-subtle bg + animated particles (UI_REFERENCE Three.js effect) ── */}
+      {/* ── HERO — gradient-subtle bg + subtle grid pattern ── */}
       <section className="relative overflow-hidden bg-gradient-subtle">
-        {/* Particle animation replaces static grid */}
-        <HeroParticles />
+        {/* Subtle grid pattern */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage:
+              'repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(0,0,0,0.04) 39px, rgba(0,0,0,0.04) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(0,0,0,0.04) 39px, rgba(0,0,0,0.04) 40px)',
+          }}
+        />
 
         <div className="relative container px-4 py-8 sm:py-10 lg:py-14 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 items-center">
@@ -177,7 +182,7 @@ const Index = () => {
             {problemCards.map((card) => (
               <div
                 key={card.title}
-                className="group p-6 rounded-2xl bg-slate-50 hover:bg-white border border-slate-100 hover:border-primary/20 shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all duration-300"
+                className="group p-6 rounded-2xl bg-slate-100 hover:bg-slate-50 border border-slate-200 hover:border-primary/20 shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all duration-300"
               >
                 <div className={`w-14 h-14 rounded-xl ${card.iconBg} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                   <card.icon className={`h-6 w-6 ${card.iconColor}`} />
@@ -202,7 +207,7 @@ const Index = () => {
               onClick={() => window.scrollTo(0, 0)}
               className="inline-block px-6 py-3.5 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-colors text-sm text-center"
             >
-              Tell us more about the problem you are facing and learn more about the solutions →
+              Tell us more about the problem you are facing and learn about real solutions →
             </Link>
           </div>
         </div>
@@ -267,18 +272,9 @@ const Index = () => {
           >
             Bengaluru's waste problem is visible. So is the data.
           </h2>
-          <p className="text-muted-foreground max-w-lg mx-auto mb-8">
-            Your report adds to the map. The map builds the case. The case drives action.
-            Be part of the most detailed ward-level waste record Bengaluru has ever had.
+          <p className="text-muted-foreground max-w-lg mx-auto">
+            Be a part of the movement to make our cities clean and more livable.
           </p>
-          <div className="flex flex-wrap gap-3 justify-center">
-            <button
-              onClick={() => { navigate('/dashboard'); window.scrollTo(0, 0); }}
-              className="px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-colors text-sm"
-            >
-              View the Dashboard
-            </button>
-          </div>
         </div>
       </section>
 

@@ -1,27 +1,34 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Flame, Bug, Truck, Wind, BarChart2, Database, FileText, Smartphone, CheckCircle, MapPin } from 'lucide-react';
+import { Flame, Bug, Truck, Wind, BarChart2, Database, FileText, Smartphone, CheckCircle, MapPin, Camera, Shield } from 'lucide-react';
 import heroImage from '@/assets/hero-image.jpg';
+import screenshot1 from '@/assets/screenshot1.png';
+import screenshot2 from '@/assets/screenshot2.png';
+import screenshot4 from '@/assets/screenshot4.png';
 import ScrollingBanner from '@/components/ScrollingBanner';
 
-// Problem empathy cards — gradient border wrapper, no per-card links
+// Problem empathy cards — icon-forward, light card style (like Features.tsx)
 const problemCards = [
   {
     icon: Truck,
+    color: 'text-primary',
     title: 'Garbage truck not arriving',
     description: 'Truck skips your street for days. Waste overflows.',
   },
   {
     icon: Bug,
+    color: 'text-accent',
     title: 'Mosquito breeding near your home',
     description: 'Stagnant waste water turns into breeding grounds.',
   },
   {
     icon: Flame,
+    color: 'text-warning',
     title: 'Open burning and smoke',
     description: 'Illegal burning chokes neighbourhoods. Children and elderly most at risk.',
   },
   {
     icon: Wind,
+    color: 'text-primary',
     title: 'Foul smell from an illegal dump',
     description: 'Persistent stench from an unauthorised dumping site.',
   },
@@ -63,25 +70,33 @@ const services = [
   },
 ];
 
+// Reporting App feature list
+const appFeatures = [
+  { icon: Camera, text: 'Photo-based reporting with AI categorisation' },
+  { icon: MapPin, text: 'GPS auto-tagging for precise ward-level data' },
+  { icon: CheckCircle, text: 'Track status from report to resolution' },
+  { icon: Shield, text: 'Anonymous reporting option for sensitive issues' },
+];
+
 const Index = () => {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-background">
 
-      {/* ── HERO — light gray + subtle grid pattern, two-column layout ── */}
-      <section className="relative overflow-hidden bg-gray-100">
+      {/* ── HERO — gradient-subtle bg + grid pattern, two-column layout ── */}
+      <section className="relative overflow-hidden bg-gradient-subtle">
         {/* Subtle grid pattern */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             backgroundImage:
-              'repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(0,0,0,0.06) 39px, rgba(0,0,0,0.06) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(0,0,0,0.06) 39px, rgba(0,0,0,0.06) 40px)',
+              'repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(0,0,0,0.04) 39px, rgba(0,0,0,0.04) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(0,0,0,0.04) 39px, rgba(0,0,0,0.04) 40px)',
           }}
         />
 
         <div className="relative container px-4 py-8 sm:py-10 lg:py-14 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 items-center">
 
             {/* Left: text */}
             <div className="space-y-6">
@@ -113,7 +128,7 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Right: hero image + "Issue Reported!" tile */}
+            {/* Right: hero image + "Status Update" floating badge */}
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-primary opacity-20 rounded-2xl" />
               <img
@@ -121,14 +136,15 @@ const Index = () => {
                 alt="Citizens reporting civic issues"
                 className="relative rounded-2xl shadow-glow object-cover w-full h-[280px] sm:h-[380px] lg:h-[420px]"
               />
-              {/* "Issue Reported!" floating tile */}
+              {/* "Status Update: Cleaned & Verified" floating tile */}
               <div className="absolute -bottom-5 -left-4 sm:-bottom-6 sm:-left-6 bg-card p-4 rounded-xl shadow-soft border">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 bg-gradient-primary rounded-full flex items-center justify-center shrink-0">
                     <CheckCircle className="h-5 w-5 text-white" />
                   </div>
                   <div>
-                    <div className="font-semibold text-foreground text-sm">Issue Reported!</div>
+                    <div className="text-xs text-muted-foreground font-medium">Status Update</div>
+                    <div className="font-semibold text-foreground text-sm">Cleaned &amp; Verified</div>
                   </div>
                 </div>
               </div>
@@ -140,7 +156,7 @@ const Index = () => {
       {/* ── SCROLLING BANNER ── */}
       <ScrollingBanner />
 
-      {/* ── PROBLEM EMPATHY — gradient-border cards ── */}
+      {/* ── PROBLEM EMPATHY — light shadow cards with colored icons (Features.tsx style) ── */}
       <section className="py-16 sm:py-20 bg-background">
         <div className="container px-4 sm:px-6 lg:px-8">
           <div className="mb-10">
@@ -155,28 +171,24 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             {problemCards.map((card) => (
-              /* Gradient border wrapper */
               <div
                 key={card.title}
-                className="p-[2px] rounded-xl hover:shadow-md transition-shadow duration-200"
-                style={{ background: 'var(--gradient-hero)' }}
+                className="bg-card border-0 shadow-soft hover:shadow-glow transition-all duration-300 rounded-xl p-6 group"
               >
-                <div className="bg-card rounded-[10px] p-6 h-full">
-                  <div className="mb-4">
-                    <card.icon className="h-8 w-8 text-primary" />
-                  </div>
-                  <h3
-                    className="font-bold text-foreground mb-2"
-                    style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '1.1rem' }}
-                  >
-                    {card.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {card.description}
-                  </p>
+                <div className="h-12 w-12 rounded-lg bg-gradient-subtle flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <card.icon className={`h-6 w-6 ${card.color}`} />
                 </div>
+                <h3
+                  className="font-bold text-foreground mb-2"
+                  style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '1.1rem' }}
+                >
+                  {card.title}
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {card.description}
+                </p>
               </div>
             ))}
           </div>
@@ -240,6 +252,58 @@ const Index = () => {
                 )}
               </Link>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── REPORTING APP COMING SOON ── */}
+      <section className="py-16 sm:py-20 bg-gradient-subtle border-t border-border">
+        <div className="container px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+
+            {/* Left: copy */}
+            <div className="space-y-6">
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold uppercase tracking-widest">
+                <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+                Launching Soon
+              </span>
+              <h2
+                className="text-3xl sm:text-4xl font-bold text-foreground"
+                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+              >
+                The GEODHA Reporting App
+                <br />
+                <span className="bg-gradient-primary bg-clip-text text-transparent">
+                  is on its way.
+                </span>
+              </h2>
+              <p className="text-muted-foreground leading-relaxed max-w-lg">
+                Submit reports, arrange cleanups, and track resolution — all in under 30 seconds. Built for Bengaluru's wards, designed for every resident.
+              </p>
+              <div className="space-y-3">
+                {appFeatures.map(({ icon: Icon, text }) => (
+                  <div key={text} className="flex items-center gap-3 text-sm text-muted-foreground">
+                    <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                      <Icon className="h-4 w-4 text-primary" />
+                    </div>
+                    {text}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right: 3 phone screenshots, staggered heights */}
+            <div className="flex justify-center items-end gap-3">
+              <div className="overflow-hidden rounded-2xl border border-border shadow-soft opacity-80 w-[28%] max-w-[120px] h-[220px] sm:h-[280px]">
+                <img src={screenshot4} alt="App list view" className="w-full h-full object-cover object-top" loading="lazy" />
+              </div>
+              <div className="overflow-hidden rounded-2xl border border-border shadow-glow w-[34%] max-w-[148px] h-[280px] sm:h-[340px] -mb-4">
+                <img src={screenshot1} alt="App map view" className="w-full h-full object-cover object-top" loading="lazy" />
+              </div>
+              <div className="overflow-hidden rounded-2xl border border-border shadow-soft opacity-80 w-[28%] max-w-[120px] h-[220px] sm:h-[280px]">
+                <img src={screenshot2} alt="App report view" className="w-full h-full object-cover object-top" loading="lazy" />
+              </div>
+            </div>
           </div>
         </div>
       </section>

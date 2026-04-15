@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import logoSvg from '@/assets/LOGO_SVG.svg';
 
 const navigationItems = [
+  { path: '/',          label: 'Home' },
   { path: '/dashboard', label: 'Dashboard' },
   { path: '/data',      label: 'Data' },
   { path: '/blog',      label: 'Blog' },

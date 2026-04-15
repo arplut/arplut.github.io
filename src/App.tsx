@@ -13,6 +13,7 @@ import About from "./pages/About";
 import GetStarted from "./pages/GetStarted";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Navigation from "./components/Navigation";
+import TopBanner from "./components/TopBanner";
 import Footer from "./components/Footer";
 import NotFound from "./pages/NotFound";
 
@@ -26,6 +27,7 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <div className="min-h-screen bg-background">
+            <TopBanner />
             <Navigation />
             <Routes>
               {/* Main v2 pages */}

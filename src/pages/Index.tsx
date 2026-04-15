@@ -3,31 +3,27 @@ import { Flame, Bug, Truck, Wind, BarChart2, Database, FileText, Smartphone, Che
 import heroImage from '@/assets/hero-image.jpg';
 import ScrollingBanner from '@/components/ScrollingBanner';
 
-// Problem empathy cards — no per-card links; single CTA at bottom
+// Problem empathy cards — gradient border wrapper, no per-card links
 const problemCards = [
   {
     icon: Truck,
     title: 'Garbage truck not arriving',
     description: 'Truck skips your street for days. Waste overflows.',
-    color: 'border-orange-400/40 hover:border-orange-400',
   },
   {
     icon: Bug,
     title: 'Mosquito breeding near your home',
     description: 'Stagnant waste water turns into breeding grounds.',
-    color: 'border-yellow-400/40 hover:border-yellow-400',
   },
   {
     icon: Flame,
     title: 'Open burning and smoke',
     description: 'Illegal burning chokes neighbourhoods. Children and elderly most at risk.',
-    color: 'border-red-400/40 hover:border-red-400',
   },
   {
     icon: Wind,
     title: 'Foul smell from an illegal dump',
     description: 'Persistent stench from an unauthorised dumping site.',
-    color: 'border-red-600/40 hover:border-red-600',
   },
 ];
 
@@ -36,9 +32,10 @@ const services = [
   {
     icon: Smartphone,
     title: 'Reporting App',
-    description: 'Camera-first, AI-assisted reports submitted directly to BBMP Sahaaya.',
+    description: 'Powerful tools to submit reports and arrange for cleanups in less than 30 seconds.',
     href: '/report',
-    cta: 'Report a problem →',
+    cta: 'Launching soon',
+    launchingSoon: true,
   },
   {
     icon: BarChart2,
@@ -46,6 +43,7 @@ const services = [
     description: 'Ward-level heatmaps and report cards for Bengaluru wards.',
     href: '/dashboard',
     cta: 'View the dashboard →',
+    launchingSoon: false,
   },
   {
     icon: Database,
@@ -53,6 +51,7 @@ const services = [
     description: 'Open burning cross-referenced with vulnerable communities.',
     href: '/data',
     cta: 'Explore the data →',
+    launchingSoon: false,
   },
   {
     icon: FileText,
@@ -60,6 +59,7 @@ const services = [
     description: "Disposal guides, what to do when the truck doesn't come, and more.",
     href: '/blog',
     cta: 'Read the blog →',
+    launchingSoon: false,
   },
 ];
 
@@ -80,7 +80,7 @@ const Index = () => {
           }}
         />
 
-        <div className="relative container px-4 py-12 sm:py-16 lg:py-24 sm:px-6 lg:px-8">
+        <div className="relative container px-4 py-8 sm:py-10 lg:py-14 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
 
             {/* Left: text */}
@@ -111,11 +111,6 @@ const Index = () => {
                   View the Dashboard →
                 </button>
               </div>
-
-              <p className="text-sm text-gray-400 flex items-center gap-1.5 pt-1">
-                <span>↓</span>
-                <span>Scroll down to learn more</span>
-              </p>
             </div>
 
             {/* Right: hero image + "Issue Reported!" tile */}
@@ -124,7 +119,7 @@ const Index = () => {
               <img
                 src={heroImage}
                 alt="Citizens reporting civic issues"
-                className="relative rounded-2xl shadow-glow object-cover w-full h-[280px] sm:h-[400px] lg:h-[480px]"
+                className="relative rounded-2xl shadow-glow object-cover w-full h-[280px] sm:h-[380px] lg:h-[420px]"
               />
               {/* "Issue Reported!" floating tile */}
               <div className="absolute -bottom-5 -left-4 sm:-bottom-6 sm:-left-6 bg-card p-4 rounded-xl shadow-soft border">
@@ -145,7 +140,7 @@ const Index = () => {
       {/* ── SCROLLING BANNER ── */}
       <ScrollingBanner />
 
-      {/* ── PROBLEM EMPATHY — light background, coloured card borders ── */}
+      {/* ── PROBLEM EMPATHY — gradient-border cards ── */}
       <section className="py-16 sm:py-20 bg-background">
         <div className="container px-4 sm:px-6 lg:px-8">
           <div className="mb-10">
@@ -162,22 +157,26 @@ const Index = () => {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             {problemCards.map((card) => (
+              /* Gradient border wrapper */
               <div
                 key={card.title}
-                className={`p-6 rounded-xl border-2 bg-card transition-all duration-200 hover:shadow-md ${card.color}`}
+                className="p-[2px] rounded-xl hover:shadow-md transition-shadow duration-200"
+                style={{ background: 'var(--gradient-hero)' }}
               >
-                <div className="mb-4">
-                  <card.icon className="h-8 w-8 text-primary" />
+                <div className="bg-card rounded-[10px] p-6 h-full">
+                  <div className="mb-4">
+                    <card.icon className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3
+                    className="font-bold text-foreground mb-2"
+                    style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '1.1rem' }}
+                  >
+                    {card.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {card.description}
+                  </p>
                 </div>
-                <h3
-                  className="font-bold text-foreground mb-2"
-                  style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '1.1rem' }}
-                >
-                  {card.title}
-                </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {card.description}
-                </p>
               </div>
             ))}
           </div>
@@ -230,9 +229,15 @@ const Index = () => {
                 <p className="text-sm text-muted-foreground leading-relaxed mb-4">
                   {svc.description}
                 </p>
-                <span className="text-xs font-semibold text-primary group-hover:underline">
-                  {svc.cta}
-                </span>
+                {svc.launchingSoon ? (
+                  <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-secondary text-muted-foreground">
+                    Launching soon
+                  </span>
+                ) : (
+                  <span className="text-xs font-semibold text-primary group-hover:underline">
+                    {svc.cta}
+                  </span>
+                )}
               </Link>
             ))}
           </div>
@@ -249,7 +254,8 @@ const Index = () => {
             Bengaluru's waste problem is visible. So is the data.
           </h2>
           <p className="text-muted-foreground max-w-lg mx-auto mb-8">
-            Beta testing complete. Ward-level grievance patterns identified. The dashboard is open to all residents, journalists, and policymakers.
+            Your report adds to the map. The map builds the case. The case drives action.
+            Be part of the most detailed ward-level waste record Bengaluru has ever had.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <button

@@ -91,15 +91,15 @@ const Navigation = () => {
           ))}
         </div>
 
-        {/* Report a Problem CTA — right side */}
+        {/* Report a Problem CTA — right side, green→blue gradient */}
         <div className="hidden md:flex items-center ml-auto">
-          <Button
-            size="sm"
-            className="bg-[#F59E0B] hover:bg-[#D97706] text-black font-semibold shadow-none"
+          <button
             onClick={() => handleNavigation('/report')}
+            className="px-4 py-2 text-sm font-semibold text-white rounded-md shadow-none transition-opacity hover:opacity-90"
+            style={{ background: 'var(--gradient-hero)' }}
           >
             Report a Problem
-          </Button>
+          </button>
         </div>
 
         {/* Mobile menu button */}
@@ -138,13 +138,13 @@ const Navigation = () => {
                 <Languages className="h-3.5 w-3.5" /> EN ▾
               </button>
             </div>
-            <Button
-              size="sm"
-              className="mt-2 bg-[#F59E0B] hover:bg-[#D97706] text-black font-semibold"
+            <button
               onClick={() => handleNavigation('/report')}
+              className="mt-2 px-4 py-2.5 text-sm font-semibold text-white rounded-md w-full text-left hover:opacity-90 transition-opacity"
+              style={{ background: 'var(--gradient-hero)' }}
             >
               Report a Problem
-            </Button>
+            </button>
           </div>
         </div>
       )}

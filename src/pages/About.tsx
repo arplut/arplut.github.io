@@ -32,7 +32,7 @@ const About = () => {
       <FourElements />
 
       {/* What does GEODHA aim to do? */}
-      <section className="py-16">
+      <section className="py-16 bg-muted/40">
         <div className="container px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-4 mb-16">
             <h2
@@ -121,7 +121,7 @@ const About = () => {
       <HowItWorks />
 
       {/* How You Can Help Section */}
-      <section className="py-16 bg-gradient-subtle">
+      <section className="py-16 bg-background">
         <div className="container px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-4 mb-16">
             <h2
@@ -159,7 +159,7 @@ const About = () => {
       </section>
 
       {/* Join Our Team Section */}
-      <section className="py-16">
+      <section className="py-16 bg-muted/40">
         <div className="container px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-4 mb-16">
             <h2

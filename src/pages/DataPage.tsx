@@ -237,9 +237,6 @@ const DataPage = () => {
                 Get in touch: contact@geodha.org
               </a>
             </div>
-            <p className="text-slate-500 text-xs mt-4">
-              All published data uses pre-aggregated, non-reversible summaries. No raw records or personal data is ever shared.
-            </p>
           </div>
         </section>
 

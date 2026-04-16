@@ -34,14 +34,21 @@ const DashboardPage = () => {
               Coming Soon
             </h1>
 
-            {/* Supporting tagline */}
-            <p className="text-xl sm:text-2xl text-foreground font-medium leading-relaxed max-w-2xl mx-auto mb-12">
+            {/* Supporting headline */}
+            <h2
+              className="text-2xl sm:text-3xl font-bold text-foreground leading-snug max-w-2xl mx-auto mb-4"
+              style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+            >
               Learn about top challenges, problem hotspots and solutions for every neighbourhood of Bengaluru.
+            </h2>
+
+            {/* Sub-copy */}
+            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto mb-12">
+              The civic dashboard is being built. It will show you ward-level heatmaps, the top issues facing each area, and clear pathways to solutions — all in one place.
             </p>
 
             {/* CTA card */}
             <div className="bg-card border border-border rounded-2xl px-8 py-8 max-w-lg mx-auto shadow-soft">
-              <p className="text-foreground font-semibold text-lg mb-2">Help us build it</p>
               <p className="text-muted-foreground text-sm leading-relaxed mb-6">
                 In the meantime, learn how to address garbage problems or tell us about a challenge you are facing in your community.
               </p>

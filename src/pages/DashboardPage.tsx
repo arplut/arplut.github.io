@@ -20,15 +20,9 @@ const DashboardPage = () => {
         <div className="relative container px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center">
 
-            {/* Pulsing dot + label */}
-            <div className="flex items-center justify-center gap-2 mb-6">
-              <span className="h-2.5 w-2.5 rounded-full bg-primary animate-pulse" />
-              <span className="text-sm font-semibold text-primary uppercase tracking-widest">In Development</span>
-            </div>
-
-            {/* Large "Coming Soon" headline */}
+            {/* "Coming Soon" headline */}
             <h1
-              className="text-7xl sm:text-8xl lg:text-9xl font-bold leading-none mb-8 bg-gradient-primary bg-clip-text text-transparent"
+              className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-none mb-8 bg-gradient-primary bg-clip-text text-transparent"
               style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
             >
               Coming Soon
@@ -36,7 +30,7 @@ const DashboardPage = () => {
 
             {/* Supporting headline */}
             <h2
-              className="text-2xl sm:text-3xl font-bold text-foreground leading-snug max-w-2xl mx-auto mb-4"
+              className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-snug max-w-3xl mx-auto mb-4"
               style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
             >
               Learn about top challenges, problem hotspots and solutions for every neighbourhood of Bengaluru.

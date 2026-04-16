@@ -27,8 +27,8 @@ const Navigation = () => {
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-border bg-white shadow-sm">
-      <div className="container flex h-16 items-center gap-4">
-        {/* Logo — normal colours */}
+      <div className="container flex h-16 items-center gap-2 sm:gap-4">
+        {/* Logo */}
         <Link to="/" className="flex items-center shrink-0 group" onClick={() => window.scrollTo(0, 0)}>
           <img
             src={logoSvg}
@@ -39,26 +39,33 @@ const Navigation = () => {
           />
         </Link>
 
-        {/* City & Language selectors */}
-        <div className="hidden md:flex items-center gap-2 ml-2">
+        {/* City & Language selectors — visible on all screen sizes */}
+        <div className="flex items-center gap-1 ml-1">
           {/* City selector */}
           <div className="relative group">
             <button className="flex items-center gap-1 text-sm font-medium text-foreground/70 hover:text-foreground px-2 py-1 rounded transition-colors">
-              <MapPin className="h-3.5 w-3.5" />
-              Bengaluru
+              <MapPin className="h-3.5 w-3.5 shrink-0" />
+              <span className="hidden xs:inline sm:inline">Bengaluru</span>
               <ChevronDown className="h-3 w-3" />
             </button>
-            <div className="absolute top-full left-0 mt-1 w-44 rounded-md border border-border bg-white shadow-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
+            <div className="absolute top-full left-0 mt-1 w-48 rounded-md border border-border bg-white shadow-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
               <div className="p-2">
                 <div className="px-3 py-2 text-sm text-foreground font-medium rounded bg-muted">Bengaluru</div>
-                <div className="px-3 py-2 text-sm text-muted-foreground/50 cursor-not-allowed">Other cities — Coming Soon</div>
+                <a
+                  href="https://forms.gle/K3GGQdBe5k2uH44f7"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors"
+                >
+                  Other cities <span className="text-xs text-muted-foreground/60">(coming soon)</span>
+                </a>
               </div>
             </div>
           </div>
 
           <div className="w-px h-4 bg-border" />
 
-          {/* Language selector with icon */}
+          {/* Language selector */}
           <div className="relative group">
             <button className="flex items-center gap-1.5 text-sm font-medium text-foreground/70 hover:text-foreground px-2 py-1 rounded transition-colors" aria-label="Select language">
               <Languages className="h-4 w-4" />
@@ -67,8 +74,8 @@ const Navigation = () => {
             <div className="absolute top-full left-0 mt-1 w-44 rounded-md border border-border bg-white shadow-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
               <div className="p-2">
                 <div className="px-3 py-2 text-sm text-foreground font-medium rounded bg-muted">English</div>
-                <div className="px-3 py-2 text-sm text-muted-foreground/50 cursor-not-allowed">ಕನ್ನಡ — Coming Soon</div>
-                <div className="px-3 py-2 text-sm text-muted-foreground/50 cursor-not-allowed">हिन्दी — Coming Soon</div>
+                <div className="px-3 py-2 text-sm text-muted-foreground/50 cursor-not-allowed">ಕನ್ನಡ <span className="text-xs">(coming soon)</span></div>
+                <div className="px-3 py-2 text-sm text-muted-foreground/50 cursor-not-allowed">हिन्दी <span className="text-xs">(coming soon)</span></div>
               </div>
             </div>
           </div>
@@ -92,7 +99,7 @@ const Navigation = () => {
           ))}
         </div>
 
-        {/* Report a Problem CTA — right side, green→blue gradient */}
+        {/* Report a Problem CTA — desktop only */}
         <div className="hidden md:flex items-center ml-auto">
           <button
             onClick={() => handleNavigation('/report')}
@@ -103,7 +110,7 @@ const Navigation = () => {
           </button>
         </div>
 
-        {/* Mobile menu button */}
+        {/* Mobile hamburger */}
         <button
           className="md:hidden ml-auto p-2 rounded-md text-foreground/70 hover:text-foreground hover:bg-muted"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -131,14 +138,6 @@ const Navigation = () => {
                 {item.label}
               </button>
             ))}
-            <div className="mt-2 pt-2 border-t border-border flex gap-2">
-              <button className="flex items-center gap-1 px-4 py-2 text-xs text-foreground/60">
-                <MapPin className="h-3 w-3" /> Bengaluru ▾
-              </button>
-              <button className="flex items-center gap-1 px-4 py-2 text-xs text-foreground/60">
-                <Languages className="h-3.5 w-3.5" /> EN ▾
-              </button>
-            </div>
             <button
               onClick={() => handleNavigation('/report')}
               className="mt-2 px-4 py-2.5 text-sm font-semibold text-white rounded-md w-full text-left hover:opacity-90 transition-opacity"

@@ -9,7 +9,7 @@ const analyses = [
     iconColor: 'text-emerald-600',
     title: 'Waste Value Recovery',
     summary:
-      'How much recoverable material — metals, paper, plastics — is being lost to open burning and illegal dumping across Bengaluru wards each year? This analysis models the economic and environmental value of waste being destroyed rather than recycled, and identifies the wards with the highest recovery potential.',
+      'How much recoverable material (metals, paper, plastics) is being lost to open burning and illegal dumping across Bengaluru wards each year? This analysis models the economic and environmental value of waste being destroyed rather than recycled, and identifies the wards with the highest recovery potential.',
     preview: 'Mapping value loss by ward · Material type breakdown · Recovery opportunity index',
   },
   {
@@ -18,7 +18,7 @@ const analyses = [
     iconColor: 'text-red-600',
     title: 'Open Burning × Vulnerable Populations',
     summary:
-      'Open burning disproportionately affects communities living near illegal dump sites — particularly children, the elderly, and residents of dense informal housing. This analysis cross-references burning complaint patterns with proximity to schools, healthcare facilities, and high-density residential zones.',
+      'Open burning disproportionately affects communities living near illegal dump sites, particularly children, the elderly, and residents of dense informal housing. This analysis cross-references burning complaint patterns with proximity to schools, healthcare facilities, and high-density residential zones.',
     preview: 'Ward-level exposure index · Proximity to schools & clinics · Seasonal burn patterns',
   },
   {
@@ -27,7 +27,7 @@ const analyses = [
     iconColor: 'text-blue-600',
     title: 'Vehicle Route Optimisation',
     summary:
-      'Garbage collection vehicles often miss streets or arrive unpredictably. By analysing complaint data alongside image evidence from GEODHA reports, we can predict the resources and manpower needed per ward — and model more efficient route coverage to eliminate chronic blind spots.',
+      'Garbage collection vehicles often miss streets or arrive unpredictably. By analysing complaint data alongside image evidence from GEODHA reports, we can predict the resources and manpower needed per ward and model more efficient route coverage to eliminate chronic blind spots.',
     preview: 'Image-based load estimation · Route coverage gaps · Manpower demand modelling',
   },
   {
@@ -36,7 +36,7 @@ const analyses = [
     iconColor: 'text-teal-600',
     title: 'Accessibility to Waste Infrastructure',
     summary:
-      'How far are Bengaluru residents from the nearest landfill, waste processing centre, or recycling point? This analysis maps physical accessibility to waste infrastructure alongside problem hotspot density — revealing where service gaps and population need align most critically.',
+      'How far are Bengaluru residents from the nearest landfill, waste processing centre, or recycling point? This analysis maps physical accessibility to waste infrastructure alongside problem hotspot density, revealing where service gaps and population need align most critically.',
     preview: 'Distance-to-facility mapping · Hotspot overlay · Underserved zone identification',
   },
   {
@@ -45,7 +45,7 @@ const analyses = [
     iconColor: 'text-purple-600',
     title: 'Road Quality × Truck Reliability',
     summary:
-      'Poor road conditions — narrow lanes, unpaved surfaces, high-density traffic — correlate strongly with irregular garbage truck coverage. This analysis examines whether road quality and network density can predict which wards are most likely to experience chronic collection failures.',
+      'Poor road conditions (narrow lanes, unpaved surfaces, high-density traffic) correlate strongly with irregular garbage truck coverage. This analysis examines whether road quality and network density can predict which wards are most likely to experience chronic collection failures.',
     preview: 'Road density index · Collection failure correlation · Infrastructure risk scoring',
   },
 ];
@@ -55,7 +55,7 @@ const analyses = [
 const narrativePoints = [
   {
     label: 'Civic reports',
-    detail: 'Ground-truth data submitted by residents — location, category, photo evidence.',
+    detail: 'Ground-truth data submitted by residents: location, category, and photo evidence.',
   },
   {
     label: 'Cross-referenced datasets',
@@ -124,9 +124,8 @@ const DataPage = () => {
           <div className="mt-8 rounded-xl bg-primary/5 border border-primary/15 px-6 py-5">
             <p className="text-foreground leading-relaxed max-w-3xl">
               The analyses below represent the <strong>data explorations we are building towards.</strong>{' '}
-              As GEODHA collects more reports and as we integrate additional public datasets, each of these
-              tiles will expand into full interactive analyses available to all. For now, they are
-              previews of what is possible — and an open invitation to researchers and organisations
+              As we integrate additional datasets, more interactive analyses will be available. For now, they are
+              previews of what is possible, and an open invitation to researchers and organisations
               who want to collaborate.
             </p>
           </div>
@@ -225,7 +224,7 @@ const DataPage = () => {
             </h2>
             <p className="text-slate-400 leading-relaxed mb-6 max-w-lg">
               If you are a researcher, urban planner, public health organisation, or NGO working on
-              waste management, air quality, or civic infrastructure — we want to hear from you.
+              waste management, air quality, or civic infrastructure, we want to hear from you.
               These analyses are more powerful with your expertise and datasets.
             </p>
             <div className="flex flex-wrap gap-4">
@@ -235,7 +234,7 @@ const DataPage = () => {
                 style={{ background: 'var(--gradient-hero)' }}
               >
                 <Mail className="h-4 w-4" />
-                Get in touch — contact@geodha.org
+                Get in touch: contact@geodha.org
               </a>
             </div>
             <p className="text-slate-500 text-xs mt-4">

@@ -11,7 +11,7 @@ const TopBanner = () => {
     <div className="relative z-50 bg-gradient-hero text-white py-2.5 px-4 shadow-md">
       <div className="container mx-auto flex items-center justify-center relative">
         <p className="text-sm sm:text-base text-center pr-8">
-          A new version of our website and app with powerful visualizations and reporting tools is coming soon!{' '}
+          A new version of our app with powerful reporting tools is coming soon!{' '}
           <span className="font-semibold">Stay tuned for updates.</span>
         </p>
         <Button

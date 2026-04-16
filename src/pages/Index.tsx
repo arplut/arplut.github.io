@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Flame, Bug, Truck, Wind, BarChart2, Database, FileText, Smartphone, CheckCircle, MapPin, Trash2 } from 'lucide-react';
 import heroImage from '@/assets/hero-image.jpg';
+import logoSquare from '@/assets/LOGO-SquareSVG.svg';
 import ScrollingBanner from '@/components/ScrollingBanner';
 
 // Problem empathy cards — per-card colored icon boxes (matching UI_REFERENCE feature card style)
@@ -131,7 +132,7 @@ const Index = () => {
               />
 
               {/* Bottom-left: "Issue Reported!" badge (red trash icon, UI_REFERENCE style) */}
-              <div className="absolute -bottom-5 -left-4 sm:-bottom-6 sm:-left-6 bg-card p-4 rounded-xl shadow-soft border hidden sm:block">
+              <div className="absolute -bottom-5 -left-4 sm:-bottom-6 sm:-left-6 bg-card p-4 rounded-xl shadow-soft border">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
                     <Trash2 className="h-5 w-5 text-red-600" />
@@ -144,7 +145,7 @@ const Index = () => {
               </div>
 
               {/* Top-right: "Status Update: Cleaned & Verified" badge (green check icon) */}
-              <div className="absolute -top-4 -right-4 sm:-top-6 sm:-right-6 bg-card p-4 rounded-xl shadow-soft border hidden sm:block">
+              <div className="absolute -top-4 -right-4 sm:-top-6 sm:-right-6 bg-card p-4 rounded-xl shadow-soft border">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center shrink-0">
                     <CheckCircle className="h-5 w-5 text-green-600" />
@@ -182,7 +183,7 @@ const Index = () => {
             {problemCards.map((card) => (
               <div
                 key={card.title}
-                className="group p-6 rounded-2xl bg-slate-100 hover:bg-slate-50 border border-slate-200 hover:border-primary/20 shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all duration-300"
+                className="group p-6 rounded-2xl bg-muted/40 hover:bg-muted/60 border border-border hover:border-primary/20 shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all duration-300"
               >
                 <div className={`w-14 h-14 rounded-xl ${card.iconBg} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                   <card.icon className={`h-6 w-6 ${card.iconColor}`} />
@@ -224,7 +225,7 @@ const Index = () => {
               Our Services
             </h2>
             <p className="text-muted-foreground max-w-xl">
-              GEODHA connects citizen evidence to institutional accountability — from street-level reporting to ward-level data.
+              GEODHA connects citizen evidence to institutional accountability, from street-level reporting to ward-level data.
             </p>
           </div>
 
@@ -272,8 +273,8 @@ const Index = () => {
           >
             Bengaluru's waste problem is visible. So is the data.
           </h2>
-          <p className="text-muted-foreground max-w-lg mx-auto">
-            Be a part of the movement to make our cities clean and more livable.
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            Our philosophy is using data to solve problems, raise awareness on challenges and connect people to organizations and solutions. Be a part of the movement to make our cities clean and more livable.
           </p>
         </div>
       </section>
@@ -330,10 +331,10 @@ const Index = () => {
                 <div className="w-full h-full bg-slate-900 flex flex-col items-center justify-center text-center px-6 pt-6 pb-4">
                   {/* App icon */}
                   <div
-                    className="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-2xl font-bold mb-4"
-                    style={{ background: 'var(--gradient-hero)', boxShadow: '0 8px 24px rgba(34,197,94,0.3)' }}
+                    className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4 bg-white overflow-hidden"
+                    style={{ boxShadow: '0 8px 24px rgba(34,197,94,0.3)' }}
                   >
-                    G
+                    <img src={logoSquare} alt="GEODHA" className="w-12 h-12 object-contain" />
                   </div>
                   <h3 className="text-white font-bold text-xl mb-2">GEODHA</h3>
                   <p className="text-slate-400 text-sm leading-relaxed">

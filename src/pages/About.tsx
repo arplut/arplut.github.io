@@ -31,8 +31,6 @@ const About = () => {
       {/* Four Elements of Nature */}
       <FourElements />
 
-      <HowItWorks />
-
       {/* What does GEODHA aim to do? */}
       <section className="py-16">
         <div className="container px-4 sm:px-6 lg:px-8">
@@ -119,6 +117,8 @@ const About = () => {
           </div>
         </div>
       </section>
+
+      <HowItWorks />
 
       {/* How You Can Help Section */}
       <section className="py-16 bg-gradient-subtle">

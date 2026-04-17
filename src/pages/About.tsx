@@ -1,20 +1,21 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Mail, Linkedin, Instagram, MessageSquare, Camera, Users, Target, BarChart3 } from "lucide-react";
+import { Mail, Linkedin, Instagram, MessageSquare, Users, Target, BarChart3 } from "lucide-react";
 import FourElements from "@/components/FourElements";
 import HowItWorks from "@/components/HowItWorks";
-import VideoSection from "@/components/VideoSection";
-      
-      
 
 const About = () => {
   return (
     <div className="min-h-screen bg-background">
+
       {/* Hero Section */}
       <section className="py-16 bg-gradient-subtle">
         <div className="container px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-6 max-w-4xl mx-auto">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold">
+            <h1
+              className="text-4xl sm:text-5xl lg:text-6xl font-bold"
+              style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+            >
               About{" "}
               <span className="bg-gradient-primary bg-clip-text text-transparent">
                 GEODHA
@@ -29,14 +30,15 @@ const About = () => {
 
       {/* Four Elements of Nature */}
       <FourElements />
-      <HowItWorks />
-      <VideoSection />
-      
+
       {/* What does GEODHA aim to do? */}
-      <section className="py-16">
+      <section className="py-16 bg-muted/40">
         <div className="container px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-4 mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold">
+            <h2
+              className="text-3xl sm:text-4xl font-bold"
+              style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+            >
               What does GEODHA{" "}
               <span className="bg-gradient-primary bg-clip-text text-transparent">
                 aim to do?
@@ -116,11 +118,18 @@ const About = () => {
         </div>
       </section>
 
+      <HowItWorks />
+
       {/* How You Can Help Section */}
-      <section className="py-16 bg-gradient-subtle">
+      <section className="py-16 bg-background">
         <div className="container px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-4 mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold">How can you help?</h2>
+            <h2
+              className="text-3xl sm:text-4xl font-bold"
+              style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+            >
+              How can you help?
+            </h2>
           </div>
 
           <div className="max-w-4xl mx-auto space-y-8">
@@ -130,11 +139,11 @@ const About = () => {
               </p>
             </div>
             <div className="bg-card p-8 rounded-xl border shadow-soft">
-              <h3 className="text-2xl font-bold mb-6 text-center">Potential Applications & Impact</h3>
+              <h3 className="text-2xl font-bold mb-6 text-center">Potential Applications &amp; Impact</h3>
               <ul className="space-y-4">
                 {[
                   "Raising awareness about communities prone to challenges",
-                  "Understanding causes and types of waste across different areas", 
+                  "Understanding causes and types of waste across different areas",
                   "Tracking progress, frequency and movement - identifying critical bottlenecks",
                   "Consumer perspectives and crowdsourced datasets on civic issues for better planning and management"
                 ].map((item, index) => (
@@ -150,10 +159,15 @@ const About = () => {
       </section>
 
       {/* Join Our Team Section */}
-      <section className="py-16">
+      <section className="py-16 bg-muted/40">
         <div className="container px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-4 mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold">Join Our Team</h2>
+            <h2
+              className="text-3xl sm:text-4xl font-bold"
+              style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+            >
+              Join Our Team
+            </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               We're looking for passionate individuals to help realize this mission!
             </p>
@@ -182,7 +196,7 @@ const About = () => {
                         contact@geodha.org
                       </a>
                     </Button>
-                    
+
                     <div className="flex space-x-2">
                       <Button variant="outline" size="icon" asChild>
                         <a href="https://www.linkedin.com/company/geodha" target="_blank" rel="noopener noreferrer">
@@ -223,7 +237,7 @@ const About = () => {
           </div>
         </div>
       </section>
-      
+
     </div>
   );
 };

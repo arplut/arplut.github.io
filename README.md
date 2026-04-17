@@ -1,19 +1,90 @@
 # GEODHA
 
+**Civic accountability for Bengaluru's 198 wards.** Citizen-generated reports → documented evidence → institutions act.
+
 ## About GEODHA
 
-GEODHA is a civic engagement platform that empowers communities to report local issues and create data-driven solutions for urban challenges. 
+GEODHA is a civic accountability platform piloting in Bengaluru, India. The website functions as an insights engine and reporting interface while the GEODHA mobile app is in development.
 
 ### Mission
-- Engage communities to submit reports of problems they are facing
-- Create maps of reports to raise awareness on big problems
-- Facilitate data analytics towards solving these challenges
-- Initially launching as a pilot program in Bengaluru, India
+- Empower citizens to report solid waste problems (open burning, illegal dumps, truck non-arrival)
+- Surface ward-level accountability data for residents, journalists, and RWAs
+- Make grievance patterns visible — without exposing raw individual records
 
 ## Project info
 
-**Repository**: https://github.com/arplut/arplut.github.io
-**Live Website**: https://arplut.github.io
+**Repository**: https://github.com/arplut/arplut.github.io  
+**Live Website**: https://geodha.org  
+**Active branch**: `claude/geodha-website-upgrade-CRw1d`
+
+---
+
+## Pages
+
+| Route | Description |
+|---|---|
+| `/` | Homepage — hero, problem empathy section, services |
+| `/dashboard` | Ward-level heatmap dashboard (198 wards, 3 filter toggles) |
+| `/data` | Data & analysis — open burning × vulnerable communities |
+| `/report` | Report a Problem — mobile-optimised form |
+| `/blog` | Blog (Notion embed) |
+| `/map` | Legacy map/reports view — preserved |
+| `/about` | About GEODHA |
+| `/privacy` | Privacy policy |
+
+---
+
+## Environment Variables
+
+Copy `.env.example` to `.env` and fill in real values. **Never commit `.env`.**
+
+| Variable | Description | Required |
+|---|---|---|
+| `VITE_FIREBASE_API_KEY` | Firebase API key | Yes |
+| `VITE_FIREBASE_AUTH_DOMAIN` | Firebase auth domain | Yes |
+| `VITE_FIREBASE_PROJECT_ID` | Firebase project ID | Yes |
+| `VITE_FIREBASE_STORAGE_BUCKET` | Firebase storage bucket | Yes |
+| `VITE_FIREBASE_MESSAGING_SENDER_ID` | Firebase messaging sender ID | Yes |
+| `VITE_FIREBASE_APP_ID` | Firebase app ID | Yes |
+| `VITE_FIREBASE_MEASUREMENT_ID` | Firebase Analytics measurement ID | Yes |
+| `VITE_FIREBASE_VAPID_KEY` | Firebase VAPID key (push notifications) | Yes |
+| `VITE_BLOG_NOTION_URL` | Notion embed URL for `/blog` page | No (has default) |
+| `VITE_REPORT_FORM_URL` | External form URL for `/report` submissions | No |
+
+---
+
+## Data Files
+
+All data files live in `/data/`. **No raw grievance records are exposed publicly.**
+
+| File | Description |
+|---|---|
+| `data/ward-heatmap.json` | **PLACEHOLDER** — pre-aggregated normalised severity scores (0–1) per ward per category. Replace with pipeline output when confirmed. |
+| `data/ward-boundaries.json` | **PLACEHOLDER** — simplified bounding-box GeoJSON for 20 stub wards. **TODO: replace with verified 198-ward GeoJSON** from BBMP/OpenCity/OSM admin boundaries. |
+| `data/ward-corporation-map.json` | **PLACEHOLDER** — stub mapping of 198 wards to 5 GBA corporations. **TODO: replace with verified official mapping.** |
+
+### TODO: Ward GeoJSON
+The dashboard map requires verified 198-ward polygon boundaries. Candidate sources:
+- data.opencity.in
+- BBMP Open Data portal
+- OpenStreetMap admin boundaries (Overpass API)
+
+---
+
+## Ward Images
+
+`/public/ward-images/` contains manually curated visual evidence per ward. See `public/ward-images/README.md` for the full curation guide.
+
+Structure:
+```
+/public/ward-images/
+├── [ward-slug]/
+│   ├── 01-description.jpg
+│   └── 02-description.jpg
+└── README.md
+```
+
+Images are shown in the Dashboard with captions only. Max 2–3 images per ward. **No complaint metadata is embedded.**
 
 ## 📱 GEODHA App – Comprehensive Feature List
 

@@ -1,0 +1,152 @@
+{
+  "_metadata": {
+    "description": "PLACEHOLDER — Pre-aggregated, non-reversible ward severity scores for public heatmap display. Values are normalised between 0 (low severity) and 1 (extreme severity). These scores do NOT expose raw complaint counts, individual records, officer names, or timestamps. Replace with pipeline output when confirmed.",
+    "attribution": "Based on OpenCity dataset",
+    "scale": "0.0 = low, 0.33 = medium, 0.67 = high, 1.0 = extreme",
+    "categories": ["open_burning", "garbage_dump", "vehicle_not_arrived"],
+    "last_updated": "PLACEHOLDER — set by data pipeline",
+    "version": "stub-v1"
+  },
+  "wards": {
+    "konanakunte": {
+      "name": "Konanakunte",
+      "corporation": "bengaluru-south",
+      "open_burning": 0.92,
+      "garbage_dump": 0.78,
+      "vehicle_not_arrived": 0.55
+    },
+    "lbs-nagar": {
+      "name": "LBS Nagar",
+      "corporation": "bengaluru-east",
+      "open_burning": 0.45,
+      "garbage_dump": 0.88,
+      "vehicle_not_arrived": 0.82
+    },
+    "swami-vivekananda-nagar": {
+      "name": "Swami Vivekananda Nagar",
+      "corporation": "bengaluru-north",
+      "open_burning": 0.95,
+      "garbage_dump": 0.60,
+      "vehicle_not_arrived": 0.40
+    },
+    "bellandur": {
+      "name": "Bellandur",
+      "corporation": "bengaluru-east",
+      "open_burning": 0.70,
+      "garbage_dump": 0.75,
+      "vehicle_not_arrived": 0.50
+    },
+    "koramangala": {
+      "name": "Koramangala",
+      "corporation": "bengaluru-south",
+      "open_burning": 0.35,
+      "garbage_dump": 0.55,
+      "vehicle_not_arrived": 0.45
+    },
+    "whitefield": {
+      "name": "Whitefield",
+      "corporation": "bengaluru-east",
+      "open_burning": 0.60,
+      "garbage_dump": 0.65,
+      "vehicle_not_arrived": 0.70
+    },
+    "yeshwanthpur": {
+      "name": "Yeshwanthpur",
+      "corporation": "bengaluru-north",
+      "open_burning": 0.50,
+      "garbage_dump": 0.80,
+      "vehicle_not_arrived": 0.60
+    },
+    "jp-nagar": {
+      "name": "JP Nagar",
+      "corporation": "bengaluru-south",
+      "open_burning": 0.40,
+      "garbage_dump": 0.50,
+      "vehicle_not_arrived": 0.35
+    },
+    "rajajinagar": {
+      "name": "Rajajinagar",
+      "corporation": "bengaluru-west",
+      "open_burning": 0.55,
+      "garbage_dump": 0.60,
+      "vehicle_not_arrived": 0.48
+    },
+    "indiranagar": {
+      "name": "Indiranagar",
+      "corporation": "bengaluru-central",
+      "open_burning": 0.25,
+      "garbage_dump": 0.42,
+      "vehicle_not_arrived": 0.30
+    },
+    "hebbal": {
+      "name": "Hebbal",
+      "corporation": "bengaluru-north",
+      "open_burning": 0.62,
+      "garbage_dump": 0.58,
+      "vehicle_not_arrived": 0.55
+    },
+    "yelahanka": {
+      "name": "Yelahanka",
+      "corporation": "bengaluru-north",
+      "open_burning": 0.72,
+      "garbage_dump": 0.68,
+      "vehicle_not_arrived": 0.65
+    },
+    "marathahalli": {
+      "name": "Marathahalli",
+      "corporation": "bengaluru-east",
+      "open_burning": 0.58,
+      "garbage_dump": 0.72,
+      "vehicle_not_arrived": 0.62
+    },
+    "bannerghatta-road": {
+      "name": "Bannerghatta Road",
+      "corporation": "bengaluru-south",
+      "open_burning": 0.48,
+      "garbage_dump": 0.55,
+      "vehicle_not_arrived": 0.52
+    },
+    "jayanagar": {
+      "name": "Jayanagar",
+      "corporation": "bengaluru-south",
+      "open_burning": 0.30,
+      "garbage_dump": 0.38,
+      "vehicle_not_arrived": 0.28
+    },
+    "electronic-city": {
+      "name": "Electronic City",
+      "corporation": "bengaluru-south",
+      "open_burning": 0.82,
+      "garbage_dump": 0.77,
+      "vehicle_not_arrived": 0.74
+    },
+    "btm-layout": {
+      "name": "BTM Layout",
+      "corporation": "bengaluru-south",
+      "open_burning": 0.44,
+      "garbage_dump": 0.62,
+      "vehicle_not_arrived": 0.55
+    },
+    "malleshwaram": {
+      "name": "Malleshwaram",
+      "corporation": "bengaluru-central",
+      "open_burning": 0.28,
+      "garbage_dump": 0.35,
+      "vehicle_not_arrived": 0.32
+    },
+    "shivajinagar": {
+      "name": "Shivajinagar",
+      "corporation": "bengaluru-central",
+      "open_burning": 0.36,
+      "garbage_dump": 0.48,
+      "vehicle_not_arrived": 0.40
+    },
+    "bommanahalli": {
+      "name": "Bommanahalli",
+      "corporation": "bengaluru-south",
+      "open_burning": 0.75,
+      "garbage_dump": 0.82,
+      "vehicle_not_arrived": 0.68
+    }
+  }
+}

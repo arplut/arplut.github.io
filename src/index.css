@@ -5,7 +5,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* GEODHA Design System - Civic engagement and environmental theme */
+/* GEODHA Design System — Civic engagement and environmental theme */
 
 @layer base {
   :root {
@@ -45,28 +45,21 @@
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
     --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
     --gradient-subtle: linear-gradient(180deg, hsl(var(--background)), hsl(var(--muted)));
-    
+
     --shadow-soft: 0 4px 24px -8px hsl(var(--primary) / 0.15);
     --shadow-glow: 0 0 32px hsl(var(--primary-glow) / 0.3);
-    
+
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -102,6 +95,7 @@
     --border: 147 20% 18%;
     --input: 147 20% 15%;
     --ring: 147 65% 55%;
+
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -120,8 +114,20 @@
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Barlow Condensed', ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: -0.01em;
   }
 }
+
+/* Heatmap severity colours */
+.heatmap-low    { background-color: #FEF08A; }
+.heatmap-medium { background-color: #FB923C; }
+.heatmap-high   { background-color: #EF4444; }
+.heatmap-extreme{ background-color: #991B1B; }
 
 /* Animation keyframes for custom animations */
 @keyframes scroll {

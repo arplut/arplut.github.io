@@ -5,6 +5,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import MapReports from "./pages/MapReports";
+import DashboardPage from "./pages/DashboardPage";
+import DataPage from "./pages/DataPage";
+import ReportPage from "./pages/ReportPage";
 import Blog from "./pages/Blog";
 import About from "./pages/About";
 import GetStarted from "./pages/GetStarted";
@@ -25,16 +28,22 @@ const App = () => {
         <BrowserRouter>
           <div className="min-h-screen bg-background">
             <TopBanner />
-            {/* The Navigation component will now read the route directly from React Router */}
             <Navigation />
             <Routes>
+              {/* Main v2 pages */}
               <Route path="/" element={<Index />} />
-              <Route path="/map" element={<MapReports />} />
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/data" element={<DataPage />} />
+              <Route path="/report" element={<ReportPage />} />
               <Route path="/blog" element={<Blog />} />
+
+              {/* Legacy routes — preserved for backwards compatibility */}
+              <Route path="/map" element={<MapReports />} />
               <Route path="/about" element={<About />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/get-started" element={<GetStarted />} />
-              {/* The catch-all route for 404 errors */}
+
+              {/* 404 fallback */}
               <Route path="*" element={<NotFound />} />
             </Routes>
             <Footer />

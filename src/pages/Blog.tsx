@@ -1,30 +1,23 @@
-import { Card, CardContent } from "@/components/ui/card";
+// Blog page — Notion embed fills the full page, no surrounding chrome
+
+const NOTION_URL =
+  (import.meta.env.VITE_BLOG_NOTION_URL as string | undefined) ??
+  'https://glen-hammer-7bb.notion.site/ebd/1abc5691405e80baa346dcda909b50f0';
 
 const Blog = () => {
   return (
-    <div className="min-h-screen bg-background p-4">
-      <div className="w-full max-w-none mx-auto h-full">
-        <Card className="shadow-soft overflow-hidden h-full">
-          <CardContent className="p-0 h-full">
-            <iframe 
-              src="https://glen-hammer-7bb.notion.site/ebd/1abc5691405e80baa346dcda909b50f0" 
-              width="100%" 
-              height="800"
-              frameBorder="0" 
-              allowFullScreen
-              title="Arplut Knowledge Hub - Blog"
-              className="w-full rounded-lg"
-              style={{
-                border: 'none',
-                outline: 'none',
-                display: 'block',
-                minHeight: '800px'
-              }}
-            />
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+    <iframe
+      src={NOTION_URL}
+      title="GEODHA Knowledge Hub — Blog"
+      allowFullScreen
+      style={{
+        display: 'block',
+        width: '100%',
+        height: 'calc(100vh - 4rem)',
+        border: 'none',
+        outline: 'none',
+      }}
+    />
   );
 };
 

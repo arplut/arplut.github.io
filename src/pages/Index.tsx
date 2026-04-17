@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Flame, Bug, Truck, Wind, BarChart2, Database, FileText, Smartphone, CheckCircle, MapPin, Trash2 } from 'lucide-react';
+import { Flame, Bug, Truck, Wind, BarChart2, Database, FileText, Smartphone, CheckCircle, MapPin, Trash2, Loader2 } from 'lucide-react';
 import heroImage from '@/assets/hero-image.jpg';
 import logoSquare from '@/assets/LOGO-SquareSVG.svg';
 import ScrollingBanner from '@/components/ScrollingBanner';
+
+const WEB3FORMS_KEY = '445de55d-332c-4925-8ad4-94e0daff1929';
 
 // Problem empathy cards — per-card colored icon boxes (matching UI_REFERENCE feature card style)
 const problemCards = [
@@ -74,6 +77,30 @@ const services = [
 
 const Index = () => {
   const navigate = useNavigate();
+  const [appEmail, setAppEmail]           = useState('');
+  const [appSubmitting, setAppSubmitting] = useState(false);
+  const [appSubmitted, setAppSubmitted]   = useState(false);
+
+  const handleAppSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!appEmail.trim()) return;
+    setAppSubmitting(true);
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          subject: 'App Launch Interest — GEODHA',
+          email: appEmail,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) setAppSubmitted(true);
+    } finally {
+      setAppSubmitting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -302,23 +329,35 @@ const Index = () => {
                 We are currently developing the mobile app to make reporting even easier. Pre-register your interest to get early access.
               </p>
               {/* Email interest form */}
-              <form
-                className="flex flex-col sm:flex-row gap-3 max-w-md"
-                onSubmit={(e) => e.preventDefault()}
-              >
-                <input
-                  type="email"
-                  placeholder="Enter your email address"
-                  className="flex-1 px-5 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm"
-                />
-                <button
-                  type="submit"
-                  className="px-6 py-3 font-bold rounded-xl text-white text-sm transition-opacity hover:opacity-90"
-                  style={{ background: 'var(--gradient-hero)' }}
+              {appSubmitted ? (
+                <div className="flex items-center gap-2 text-green-400 text-sm font-semibold max-w-md">
+                  <CheckCircle className="h-5 w-5 shrink-0" />
+                  You're on the list! We'll notify you when the app launches.
+                </div>
+              ) : (
+                <form
+                  className="flex flex-col sm:flex-row gap-3 max-w-md"
+                  onSubmit={handleAppSignup}
                 >
-                  Notify Me
-                </button>
-              </form>
+                  <input
+                    type="email"
+                    required
+                    value={appEmail}
+                    onChange={(e) => setAppEmail(e.target.value)}
+                    placeholder="Enter your email address"
+                    className="flex-1 px-5 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm"
+                  />
+                  <button
+                    type="submit"
+                    disabled={appSubmitting}
+                    className="px-6 py-3 font-bold rounded-xl text-white text-sm transition-opacity hover:opacity-90 disabled:opacity-60 flex items-center justify-center gap-2 shrink-0"
+                    style={{ background: 'var(--gradient-hero)' }}
+                  >
+                    {appSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
+                    {appSubmitting ? 'Sending…' : 'Notify Me'}
+                  </button>
+                </form>
+              )}
             </div>
 
             {/* Right: CSS phone mockup from UI_REFERENCE (no screenshots) */}

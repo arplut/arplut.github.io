@@ -36,11 +36,11 @@ const actionCards: ActionCardDef[] = [
     ctaText: 'How to submit',
     contentIntro: 'File a formal complaint through BBMP Sahaaya:',
     contentItems: [
-      'Visit bbmpsahaaya.karnataka.gov.in or download the BBMP Sahaaya app',
+      'Visit nammabengaluru.org.in or download the SMART BENGALURU app',
       'Select "Solid Waste Management" as the complaint category',
-      'Describe the issue and upload photos from your GEODHA report',
-      'Note your Grievance ID for tracking',
+      'Describe the issue, upload photos and select the location.',
       'Track resolution status at the same portal',
+      'You\'ll receive an SMS with a complaint ID for follow-up with contact of the ward marshal.',
       'Alternatively, call the BBMP helpline: 1533',
     ],
   },
@@ -49,11 +49,11 @@ const actionCards: ActionCardDef[] = [
     icon: Phone,
     iconBg: 'bg-green-100',
     iconColor: 'text-green-600',
-    title: 'Contact Ward Marshal',
-    description: 'Reach the GBA hotline to report directly to your ward marshal.',
-    type: 'action',
+    title: 'Civic Hotline',
+    description: 'If there is no response to your complaint, or no marshal assigned, call the GBA hotline to get direct contact details of your ward marshal and escalate the issue with them.',
+    type: 'action', 
     ctaText: 'Call GBA Hotline',
-    href: 'tel:+918061914960',
+    href: 'tel:1533',
   },
   {
     id: 'volunteer_orgs',
@@ -85,7 +85,7 @@ const actionCards: ActionCardDef[] = [
     contentIntro: 'Organisations running regular cleanup drives in Bengaluru:',
     contentItems: [
       'Ugly Indian — Spotfix events for blackspot cleanups',
-      'Broseph Foundation — Neighbourhood clean-up drives',
+      'Youth For Parivarthan — Neighbourhood clean-up drives',
       'SWaCH / Hasiru Dala — Waste picker-led cleanup initiatives',
       'BBMP Ward Committees — Ward-level clean-up coordination',
     ],
@@ -103,7 +103,7 @@ const actionCards: ActionCardDef[] = [
     contentIntro: 'Infrastructure options to improve waste management in your area:',
     contentItems: [
       'Kasa Kiosks — Community dry waste collection centres run by Hasiru Dala; locate one near you',
-      'QR Code Segregation — Some wards use QR codes on bins to enforce source segregation',
+      'QR Code Segregation — Waste Samaritan has developed a QR code based system for waste collectors to track and enforce source segregation',
       'BBMP Dry Waste Collection Centres (DWCCs) — One per ward; accepts segregated dry waste',
       'Composting — Daily Dump and BBMP subsidised home composters for wet waste',
     ],
@@ -193,11 +193,13 @@ const ReportPage = () => {
   const [submitted, setSubmitted]               = useState(false);
   const [error, setError]                       = useState('');
   const [descriptionError, setDescriptionError] = useState(false);
+  const [contactError, setContactError]         = useState(false);
   const [expandedCards, setExpandedCards]       = useState<Set<string>>(new Set());
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!description.trim()) { setDescriptionError(true); return; }
+    if (!contact.trim()) { setContactError(true); return; }
     setSubmitting(true);
     setError('');
     try {
@@ -233,6 +235,7 @@ const ReportPage = () => {
     setContact('');
     setError('');
     setDescriptionError(false);
+    setContactError(false);
   };
 
   const toggleCard = (id: string) => {
@@ -264,7 +267,7 @@ const ReportPage = () => {
             onClick={resetForm}
             className="px-5 py-2.5 bg-primary text-white text-sm font-semibold rounded-md hover:bg-primary/90 transition-colors"
           >
-            Submit another report
+            Explore other solutions.
           </button>
         </div>
       </div>
@@ -284,7 +287,7 @@ const ReportPage = () => {
             Report a Problem
           </h1>
           <p className="text-muted-foreground leading-relaxed max-w-2xl">
-            Tell us more about a problem you are facing. We will verify the information and add it to the civic dashboard, coordinate with authorities, or contact you about how to solve it. For garbage dumps or open burning, include the exact location and images of the problem.
+            Tell us more about a problem (garbage related) you are facing. We will verify the information and add it to the civic dashboard, coordinate with authorities, or contact you about how to solve it. Your identity will remain confidential.
           </p>
         </div>
       </div>
@@ -336,19 +339,22 @@ const ReportPage = () => {
             {/* Contact */}
             <div>
               <label htmlFor="contact" className="block text-sm font-semibold text-foreground mb-1">
-                Contact Details <span className="text-muted-foreground font-normal">(Optional)</span>
+                Contact Details <span className="text-[#EF4444]">*</span>
               </label>
               <p className="text-xs text-muted-foreground mb-3">
-                Include your contact details if you wish to be contacted for more information or receive updates.
+                Include your phone number or email address so we can reach you for more information or to provide updates.
               </p>
               <input
                 id="contact"
                 type="text"
                 value={contact}
-                onChange={(e) => setContact(e.target.value)}
+                onChange={(e) => { setContact(e.target.value); setContactError(false); }}
                 placeholder="Phone number or email address"
-                className="w-full px-4 py-3 rounded-md border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                className={`w-full px-4 py-3 rounded-md border bg-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary ${
+                  contactError ? 'border-[#EF4444]' : 'border-border'
+                }`}
               />
+              {contactError && <p className="text-xs text-[#EF4444] mt-1">Contact details are required.</p>}
             </div>
 
             {error && (

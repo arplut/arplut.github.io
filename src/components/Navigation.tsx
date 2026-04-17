@@ -33,7 +33,7 @@ const Navigation = () => {
           <img
             src={logoSvg}
             alt="GEODHA"
-            className="h-8 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
+            className="h-9 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
             loading="eager"
             decoding="sync"
           />
@@ -57,7 +57,7 @@ const Navigation = () => {
                   rel="noopener noreferrer"
                   className="block px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors"
                 >
-                  Other cities <span className="text-xs text-muted-foreground/60">(coming soon)</span>
+                  Other cities - sign up.
                 </a>
               </div>
             </div>
@@ -106,7 +106,7 @@ const Navigation = () => {
             className="px-4 py-2 text-sm font-semibold text-white rounded-md shadow-none transition-opacity hover:opacity-90"
             style={{ background: 'var(--gradient-hero)' }}
           >
-            Report a Problem
+            Submit Report
           </button>
         </div>
 

@@ -44,7 +44,7 @@ const services = [
   {
     icon: Smartphone,
     title: 'Reporting App',
-    description: 'Powerful tools to submit reports and arrange for cleanups in less than 30 seconds.',
+    description: 'Powerful tools to arrange for cleanups and report in less than 30 seconds.',
     href: '/report',
     cta: 'Launching soon',
     launchingSoon: true,
@@ -142,9 +142,15 @@ const Index = () => {
               <div className="flex flex-wrap gap-3 pt-2">
                 <button
                   onClick={() => { navigate('/dashboard'); window.scrollTo(0, 0); }}
+                  className="px-6 py-3 bg-secondary text-secondary-foreground font-semibold rounded-md hover:bg-secondary/90 transition-colors text-sm"
+                >
+                  Civic Dashboard (Coming Soon)
+                </button>
+                <button
+                  onClick={() => { navigate('/report'); window.scrollTo(0, 0); }}
                   className="px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-colors text-sm"
                 >
-                  View the Dashboard →
+                  Report a Garbage Problem →
                 </button>
               </div>
             </div>

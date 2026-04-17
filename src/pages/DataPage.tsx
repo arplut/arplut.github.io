@@ -98,7 +98,7 @@ const DataPage = () => {
 
       <div className="container px-4 sm:px-6 lg:px-8 py-12 space-y-16">
 
-        {/* ── HOW DATA GENERATES VALUE ── */}
+        {/* ── HOW DATA GENERATES VALUE ── 
         <section>
           <div className="grid lg:grid-cols-3 gap-6">
             {narrativePoints.map((point, i) => (
@@ -129,7 +129,7 @@ const DataPage = () => {
               who want to collaborate.
             </p>
           </div>
-        </section>
+        </section>*/}
 
         {/* ── ANALYSIS PREVIEW CARDS ── */}
         <section>

@@ -18,23 +18,27 @@ const DashboardPage = () => {
         />
 
         <div className="relative container px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto text-center">
+          <div className="max-w-4xl mx-auto text-center">
 
             {/* "Coming Soon" headline */}
-            <h1
-              className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-none mb-8 bg-gradient-primary bg-clip-text text-transparent"
-              style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
-            >
+            
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-lg font-semibold border border-primary/20 mb-6">
+              <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
               Coming Soon
-            </h1>
+            </span>
 
             {/* Supporting headline */}
-            <h2
-              className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-snug max-w-3xl mx-auto mb-4"
+            
+            <h1
+              className="text-5xl sm:text-6xl lg:text-6xl font-bold text-foreground leading-[1.05] mb-6"
               style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
             >
-              Learn about top challenges, problem hotspots and solutions for every neighbourhood of Bengaluru.
-            </h2>
+              Learn about top challenges,{' '} 
+              <span className="bg-gradient-primary bg-clip-text text-transparent">
+                problem hotspots
+              </span>
+              {' '}and solutions for every neighbourhood of Bengaluru.
+            </h1>
 
             {/* Sub-copy */}
             <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto mb-12">

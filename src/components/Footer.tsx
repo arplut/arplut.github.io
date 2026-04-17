@@ -98,13 +98,13 @@ const Footer = () => {
           <div className="space-y-4">
             <h3 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Get Involved</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              See a problem around you? Report it directly.
+              See a garbage problem around you? Tell us more about it and learn about exisiting solutions.
             </p>
             <Link
               to="/report"
               className="inline-block px-4 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-semibold rounded-md transition-colors"
             >
-              Report a Problem →
+              Submit Report →
             </Link>
           </div>
         </div>

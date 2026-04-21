@@ -26,6 +26,8 @@ dist-ssr
 # Environment files - NEVER commit these
 .env
 .env.local
+.env.production
+.env.staging
 .env.development.local
 .env.test.local
 .env.production.local
@@ -33,10 +35,22 @@ dist-ssr
 # Firebase private key files
 **/firebase-adminsdk-*.json
 **/service-account-*.json
+**/*serviceAccount*.json
+**/*service_account*.json
 
 # API key files
 **/*-key.json
 **/*-keys.json
+
+# Setup / internal docs (contain instructions + placeholder secrets)
+FIREBASE_SETUP.md
+
+# Admin panel — local only, not committed
+# Lives in src/admin/ and is loaded via dynamic imports in App.tsx
+src/admin/
+
+# Seed script — run once locally to populate Firestore, not needed in repo
+scripts/seed_geodha.ts
 
 REFERENCE_CODE/bun.lockb
 REFERENCE_CODE/components.json
@@ -185,3 +199,4 @@ scripts/fix_firebase_data.ts
 scripts/fix_firebase_data_v2.ts
 scripts/update_legacy_author_names.ts
 scripts/analyze_missing_images.cjs
+data/ward-heatmap2.json

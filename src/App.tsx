@@ -18,20 +18,13 @@ import TopBanner from "./components/TopBanner";
 import Footer from "./components/Footer";
 import NotFound from "./pages/NotFound";
 
-// Dynamic imports with @vite-ignore so the build succeeds even when the folder
-// is not present. Falls back to an invisible null component if the file is missing.
-type Mod = { default: React.ComponentType };
-const stub = (): Promise<Mod> => Promise.resolve({ default: () => null });
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-ignore
-const AdminLogin        = lazy(() => import(/* @vite-ignore */ "./admin/pages/AdminLogin").catch(stub));
-// @ts-ignore
-const AdminLayout       = lazy(() => import(/* @vite-ignore */ "./admin/pages/AdminLayout").catch(stub));
-// @ts-ignore
-const ActionsAdmin      = lazy(() => import(/* @vite-ignore */ "./admin/pages/ActionsAdmin").catch(stub));
-// @ts-ignore
-const TestimonialsAdmin = lazy(() => import(/* @vite-ignore */ "./admin/pages/TestimonialsAdmin").catch(stub));
-/* eslint-enable @typescript-eslint/ban-ts-comment */
+// ── Admin (gitignored — lives in src/admin/, absent on fresh clones) ──────────
+// vite.config.ts contains a plugin that resolves these to a null-component stub
+// when src/admin/ doesn't exist, so CI/CD builds always succeed.
+const AdminLogin        = lazy(() => import("./admin/pages/AdminLogin"));
+const AdminLayout       = lazy(() => import("./admin/pages/AdminLayout"));
+const ActionsAdmin      = lazy(() => import("./admin/pages/ActionsAdmin"));
+const TestimonialsAdmin = lazy(() => import("./admin/pages/TestimonialsAdmin"));
 
 const queryClient = new QueryClient();
 

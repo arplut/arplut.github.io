@@ -45,6 +45,9 @@ dist-ssr
 # Setup / internal docs (contain instructions + placeholder secrets)
 FIREBASE_SETUP.md
 
+# Storage CORS config — applied once via Firebase CLI, not needed in repo
+cors.json
+
 # Admin panel — local only, not committed
 # Lives in src/admin/ and is loaded via dynamic imports in App.tsx
 src/admin/

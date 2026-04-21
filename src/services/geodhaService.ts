@@ -210,16 +210,48 @@ export async function deleteTestimonial(id: string, imageUrls: string[]): Promis
 /**
  * Upload an image file for a testimonial.
  * Returns the public download URL.
- * Path: geodha/testimonials/{testimonialId}/{filename}
+ * Path: testimonials/{testimonialId}/{filename}
+ *
+ * NOTE: this path must match the Storage security rules:
+ *   match /testimonials/{allPaths=**} { allow write: if ... }
  */
 export async function uploadTestimonialImage(
   file: File,
   testimonialId: string,
 ): Promise<string> {
-  const safeName  = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
-  const storageRef = ref(storage, `geodha/testimonials/${testimonialId}/${safeName}`);
-  const snapshot  = await uploadBytes(storageRef, file);
-  return getDownloadURL(snapshot.ref);
+  const safeName   = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+  const path       = `testimonials/${testimonialId}/${safeName}`;
+  const storageRef = ref(storage, path);
+
+  // Diagnostics — visible in browser DevTools console
+  const { currentUser } = (await import('../lib/firebase')).auth;
+  console.group('📤 uploadTestimonialImage');
+  console.log('bucket :', storage.app.options.storageBucket);
+  console.log('path   :', path);
+  console.log('auth uid:', currentUser?.uid ?? '⚠️  NOT SIGNED IN');
+  console.log('file   :', file.name, `(${(file.size / 1024).toFixed(1)} KB)`);
+  console.groupEnd();
+
+  const TIMEOUT_MS = 30_000;
+  const upload = uploadBytes(storageRef, file)
+    .then((snap) => {
+      console.log('✅ uploadBytes succeeded, fetching download URL…');
+      return getDownloadURL(snap.ref);
+    })
+    .catch((err) => {
+      console.error('❌ uploadBytes failed:', err.code, err.message);
+      throw err;
+    });
+
+  const timeout = new Promise<never>((_, reject) =>
+    setTimeout(() => reject(new Error(
+      `Image upload timed out (30 s). Bucket: "${storage.app.options.storageBucket}". ` +
+      'Check: 1) Storage bucket name in .env.local is correct, ' +
+      '2) Firebase Storage is enabled (Build → Storage → Get Started), ' +
+      '3) Storage rules cover "testimonials/" path.'
+    )), TIMEOUT_MS)
+  );
+  return Promise.race([upload, timeout]);
 }
 
 /**

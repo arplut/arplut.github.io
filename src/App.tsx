@@ -24,6 +24,7 @@ const AdminLogin        = lazy(() => import("./admin/pages/AdminLogin"));
 const AdminLayout       = lazy(() => import("./admin/pages/AdminLayout"));
 const ActionsAdmin      = lazy(() => import("./admin/pages/ActionsAdmin"));
 const TestimonialsAdmin = lazy(() => import("./admin/pages/TestimonialsAdmin"));
+const WardDataAdmin     = lazy(() => import("./admin/pages/WardDataAdmin"));
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,7 @@ const App = () => {
               <Route path="/admin" element={<AdminLayout />}>
                 <Route path="actions"      element={<ActionsAdmin />} />
                 <Route path="testimonials" element={<TestimonialsAdmin />} />
+                <Route path="ward-data"    element={<WardDataAdmin />} />
               </Route>
 
               {/* ── Public routes (with Navigation + Footer) ──── */}

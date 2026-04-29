@@ -13,7 +13,7 @@ import {
   getDoc, getDocs,
   setDoc, addDoc, updateDoc, deleteDoc,
   serverTimestamp, deleteField,
-  Timestamp,
+  Timestamp, query, orderBy, limit,
 } from 'firebase/firestore';
 import {
   ref, uploadBytes, getDownloadURL, deleteObject,
@@ -23,6 +23,7 @@ import { db, storage } from '../lib/firebase';
 // ── Collection names ──────────────────────────────────────────────────────────
 
 const WARD_STATS_COL      = 'geodha_ward_stats';
+const WARD_SNAPSHOTS_COL  = 'geodha_ward_stats_snapshots';
 const ACTIONS_COL         = 'geodha_recommended_actions';
 const TESTIMONIALS_COL    = 'geodha_testimonials';
 
@@ -114,6 +115,43 @@ export async function setWardStats(wards: Record<string, WardData>): Promise<voi
     wards,
     updated_at: serverTimestamp(),
   });
+}
+
+// ── Ward stats snapshots ──────────────────────────────────────────────────────
+
+export interface WardStatsSnapshot {
+  id:       string;
+  label:    string;
+  saved_at: Timestamp;
+  wards:    Record<string, WardData>;
+}
+
+/** Save the current ward stats as a named snapshot (called before every publish). */
+export async function saveWardStatsSnapshot(
+  wards: Record<string, WardData>,
+  label: string,
+): Promise<string> {
+  const ref = await addDoc(collection(db, WARD_SNAPSHOTS_COL), {
+    wards,
+    label,
+    saved_at: serverTimestamp(),
+  });
+  return ref.id;
+}
+
+/** Return the 10 most recent snapshots, newest first. */
+export async function listWardStatsSnapshots(): Promise<WardStatsSnapshot[]> {
+  const q    = query(collection(db, WARD_SNAPSHOTS_COL), orderBy('saved_at', 'desc'), limit(10));
+  const snap = await getDocs(q);
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() } as WardStatsSnapshot));
+}
+
+/** Restore a snapshot: read it and overwrite the live summary document. */
+export async function restoreWardStatsSnapshot(snapshotId: string): Promise<void> {
+  const snap = await getDoc(doc(db, WARD_SNAPSHOTS_COL, snapshotId));
+  if (!snap.exists()) throw new Error('Snapshot not found.');
+  const { wards } = snap.data() as { wards: Record<string, WardData> };
+  await setWardStats(wards);
 }
 
 // ── Recommended actions ───────────────────────────────────────────────────────

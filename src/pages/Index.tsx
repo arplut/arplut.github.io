@@ -142,15 +142,9 @@ const Index = () => {
               <div className="flex flex-wrap gap-3 pt-2">
                 <button
                   onClick={() => { navigate('/dashboard'); window.scrollTo(0, 0); }}
-                  className="px-6 py-3 bg-secondary text-secondary-foreground font-semibold rounded-md hover:bg-secondary/90 transition-colors text-sm"
-                >
-                  Civic Dashboard (Coming Soon)
-                </button>
-                <button
-                  onClick={() => { navigate('/report'); window.scrollTo(0, 0); }}
                   className="px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-colors text-sm"
                 >
-                  Report a Garbage Problem →
+                  View Civic Dashboard →
                 </button>
               </div>
             </div>

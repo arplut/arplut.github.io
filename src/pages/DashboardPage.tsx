@@ -307,7 +307,7 @@ function WardSheet({ data, zone, scales, actions, allTestimonials, onClose }: Wa
 
   const handleShare = async () => {
     const url = `${window.location.origin}/dashboard?ward=${data.ward_num}`;
-    const text = `📍 ${data.ward_name} (Ward ${data.ward_num}) — see garbage-related issues reported in this ward on GEODHA → ${url}`;
+    const text = `📍 ${data.ward_name} (BBMP Ward ${data.ward_num}) — see garbage-related issues reported in this ward on GEODHA`;
     if (navigator.share) {
       try { await navigator.share({ title: data.ward_name, text, url }); return; } catch { /* fall through */ }
     }
@@ -669,7 +669,7 @@ const DashboardPage = () => {
   // ── Dashboard share ───────────────────────────────────────────────────────
   const shareDashboard = async () => {
     const url  = `${window.location.origin}/dashboard`;
-    const text = `🗺️ See Bengaluru's ward-by-ward garbage problem map — ${Object.keys(wardDataMap).length} wards tracked using BBMP grievance data. Find your area and see what residents can do about it → ${url}`;
+    const text = `🗺️ See Bengaluru's ward-by-ward garbage problem map. Find your area and see what residents can do about it →`;
     if (navigator.share) {
       try { await navigator.share({ title: 'GEODHA · Bengaluru Garbage Crisis Map', text, url }); return; } catch { /* fall through */ }
     }
@@ -714,7 +714,7 @@ const DashboardPage = () => {
 
   // ── Shared map block (used in both normal and fullscreen layouts) ──────────
   const mapBlock = (minH?: string) => (
-    <div className="relative flex-1" style={minH ? { minHeight: minH } : {}}>
+    <div className={`relative ${!minH ? 'flex-1' : ''}`} style={minH ? { height: minH } : {}}>
       <div className="absolute inset-0">
         <MapErrorBoundary>
           <WardMap
@@ -776,7 +776,7 @@ const DashboardPage = () => {
       )}
 
       {/* ── NORMAL LAYOUT ─────────────────────────────────────────────────── */}
-      <div className={`min-h-screen bg-white flex flex-col ${fullscreen ? 'invisible' : ''}`}>
+      <div className={`bg-white flex flex-col ${fullscreen ? 'invisible' : ''}`}>
 
         {/* Title section */}
         <div className="px-4 sm:px-6 pt-5 pb-3 bg-white">
@@ -819,7 +819,7 @@ const DashboardPage = () => {
         </div>
 
         {/* Map */}
-        {mapBlock('60vh')}
+        {mapBlock('70vh')}
 
         {/* Tap hint + severity disclaimer */}
         <div className="px-4 sm:px-6 border-t border-gray-50">
@@ -833,32 +833,33 @@ const DashboardPage = () => {
           </p>
         </div>
 
-        {/* Backdrop */}
-        <div
-          className={`fixed inset-0 bg-black/30 backdrop-blur-[1px] z-[1001] transition-opacity duration-300 ${
-            sheetOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-          }`}
-          onClick={handleClose}
-        />
+      </div>{/* end normal layout */}
 
-        {/* Bottom sheet */}
-        <div
-          className={`fixed inset-x-0 bottom-0 z-[1002] transition-transform duration-300 ease-out ${
-            sheetOpen ? 'translate-y-0' : 'translate-y-full'
-          }`}
-        >
-          <div className="bg-white rounded-t-2xl shadow-2xl mx-auto max-w-2xl">
-            {selectedWard && (
-              <WardSheet
-                data={selectedWard.data}
-                zone={selectedWard.zone}
-                scales={scales}
-                actions={actions}
-                allTestimonials={testimonials}
-                onClose={handleClose}
-              />
-            )}
-          </div>
+      {/* Backdrop — outside invisible wrapper so it works in fullscreen mode too */}
+      <div
+        className={`fixed inset-0 bg-black/30 backdrop-blur-[1px] z-[9100] transition-opacity duration-300 ${
+          sheetOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={handleClose}
+      />
+
+      {/* Bottom sheet — above fullscreen overlay (z-[9000]) and backdrop */}
+      <div
+        className={`fixed inset-x-0 bottom-0 z-[9200] transition-transform duration-300 ease-out ${
+          sheetOpen ? 'translate-y-0' : 'translate-y-full'
+        }`}
+      >
+        <div className="bg-white rounded-t-2xl shadow-2xl mx-auto max-w-2xl">
+          {selectedWard && (
+            <WardSheet
+              data={selectedWard.data}
+              zone={selectedWard.zone}
+              scales={scales}
+              actions={actions}
+              allTestimonials={testimonials}
+              onClose={handleClose}
+            />
+          )}
         </div>
       </div>
     </>

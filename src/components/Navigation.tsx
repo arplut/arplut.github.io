@@ -26,7 +26,7 @@ const Navigation = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-border bg-white shadow-sm">
+    <nav className="sticky top-0 z-[2000] w-full border-b border-border bg-white shadow-sm">
       <div className="container flex h-16 items-center gap-2 sm:gap-4">
         {/* Logo */}
         <Link to="/" className="flex items-center shrink-0 group" onClick={() => window.scrollTo(0, 0)}>

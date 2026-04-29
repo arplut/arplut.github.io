@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -28,6 +28,22 @@ const WardDataAdmin     = lazy(() => import("./admin/pages/WardDataAdmin"));
 
 const queryClient = new QueryClient();
 
+// Teach TypeScript about the gtag global injected by index.html
+declare function gtag(...args: unknown[]): void;
+
+/** Fires a GA4 page_view event on every React Router navigation. */
+function RouteTracker() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    if (typeof gtag === 'undefined') return;
+    gtag('event', 'page_view', {
+      page_path:  pathname,
+      page_title: document.title,
+    });
+  }, [pathname]);
+  return null;
+}
+
 /** Renders children only on the home page — used to gate the TopBanner. */
 function ShowOnHome({ children }: { children: React.ReactNode }) {
   const { pathname } = useLocation();
@@ -41,6 +57,7 @@ const App = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <RouteTracker />
           <Suspense fallback={null}>
             <Routes>
 

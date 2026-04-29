@@ -15,11 +15,13 @@ import type { WardData } from '@/services/geodhaService';
 // ── Testimonial marker type (exported for DashboardPage) ─────────────────────
 
 export interface TestimonialMarkerInfo {
-  id:       string;
-  wardNum:  number;
-  latlng:   [number, number];
+  id:        string;
+  wardNum:   number;
+  latlng:    [number, number];
   /** true = documented case at exact GPS; false = ward-centre fallback */
-  isExact:  boolean;
+  isExact:   boolean;
+  /** true = at least one testimonial for this ward/pin has uploaded images */
+  hasImages: boolean;
 }
 
 // ── Internal types ────────────────────────────────────────────────────────────
@@ -31,9 +33,9 @@ interface WardFeatureProperties {
 }
 
 interface DocMarker {
-  wardNum: number;
-  latlng:  [number, number];
-  icons:   string;
+  wardNum:   number;
+  latlng:    [number, number];
+  icons:     string;
 }
 
 interface Props {
@@ -49,10 +51,15 @@ interface Props {
 const GARBAGE_MOUND_SVG = `<svg xmlns='http://www.w3.org/2000/svg' width='18' height='16' viewBox='0 0 18 16' style='display:inline-block;vertical-align:middle;margin-top:-2px;'><ellipse cx='9' cy='14.5' rx='8.5' ry='1.5' fill='#57534e'/><path d='M1.5 14.5 C2 9.5 5 7 9 6.5 C13 7 16 9.5 16.5 14.5 Z' fill='#78716c'/><line x1='6' y1='9' x2='5' y2='5' stroke='#a8a29e' stroke-width='1.2' stroke-linecap='round'/><line x1='9' y1='7' x2='9' y2='3' stroke='#a8a29e' stroke-width='1.2' stroke-linecap='round'/><line x1='12' y1='9' x2='13' y2='5' stroke='#a8a29e' stroke-width='1.2' stroke-linecap='round'/></svg>`;
 
 /**
- * Inline red dashed-circle ! badge — appended to the ward cluster icon
- * for wards that have a testimonial without an exact GPS location.
+ * Inline ! badge appended to the ward cluster icon for wards with a centre
+ * testimonial (no exact GPS). Slightly larger when the testimonial has photos,
+ * to draw extra attention to documented cases with visual evidence.
  */
-const TESTIMONIAL_INLINE_BADGE = `<span style="display:inline-flex;align-items:center;justify-content:center;width:19px;height:19px;border-radius:50%;background:#dc2626;border:2px dashed rgba(255,255,255,0.9);font-size:11px;font-weight:900;color:#fff;font-family:sans-serif;vertical-align:middle;margin-left:1px;">!</span>`;
+function makeTestimonialInlineBadge(hasImages: boolean): string {
+  const size     = hasImages ? 23 : 19;
+  const fontSize = hasImages ? 13 : 11;
+  return `<span style="display:inline-flex;align-items:center;justify-content:center;width:${size}px;height:${size}px;border-radius:50%;background:#dc2626;border:2px dashed rgba(255,255,255,0.9);font-size:${fontSize}px;font-weight:900;color:#fff;font-family:sans-serif;vertical-align:middle;margin-left:1px;">!</span>`;
+}
 
 /** Ward problem icon cluster (critical-band categories + optional testimonial badge). */
 function makeProblemIcon(icons: string): L.DivIcon {
@@ -65,15 +72,22 @@ function makeProblemIcon(icons: string): L.DivIcon {
   });
 }
 
-/** Solid dark-red ! pin at exact GPS location — documented case. */
-function makeTestimonialExactIcon(): L.DivIcon {
+/**
+ * Solid dark-red ! pin at exact GPS location — documented case.
+ * Rendered larger when the testimonial has photos to signal richer evidence.
+ */
+function makeTestimonialExactIcon(hasImages: boolean): L.DivIcon {
+  const size     = hasImages ? 28 : 22;
+  const fontSize = hasImages ? 15 : 13;
+  const border   = hasImages ? '2.5px solid rgba(255,255,255,0.95)' : '2px solid rgba(255,255,255,0.9)';
+  const shadow   = hasImages ? '0 3px 8px rgba(0,0,0,0.65)' : '0 2px 6px rgba(0,0,0,0.55)';
   return L.divIcon({
     html: `<div style="
-      width:22px;height:22px;border-radius:50%;
-      background:#991b1b;border:2px solid rgba(255,255,255,0.9);
-      box-shadow:0 2px 6px rgba(0,0,0,0.55);
+      width:${size}px;height:${size}px;border-radius:50%;
+      background:#991b1b;border:${border};
+      box-shadow:${shadow};
       display:flex;align-items:center;justify-content:center;
-      font-size:13px;font-weight:900;color:#fff;font-family:sans-serif;
+      font-size:${fontSize}px;font-weight:900;color:#fff;font-family:sans-serif;
       transform:translate(-50%,-50%);cursor:pointer;user-select:none;
     ">!</div>`,
     className: '',
@@ -144,10 +158,16 @@ const WardMap = ({ wardDataMap, selectedWard, onWardSelect, zoomToWard, testimon
     burn:  computeScale(allWards.map((w) => w.burning_of_garbage)),
   }), [allWards]);
 
-  // Set of ward numbers that have a testimonial without an exact GPS location.
-  // These get the inline ! badge appended to their cluster icon.
-  const wardsWithCentreTestimonial = useMemo<Set<number>>(
-    () => new Set(testimonialMarkers.filter((m) => !m.isExact).map((m) => m.wardNum)),
+  // Map of ward numbers with a centre testimonial → whether they have images.
+  // Larger ! badges are shown for wards with photographic evidence.
+  const centreTestimonialWards = useMemo<Map<number, boolean>>(
+    () => {
+      const m = new Map<number, boolean>();
+      for (const t of testimonialMarkers.filter((mk) => !mk.isExact)) {
+        m.set(t.wardNum, t.hasImages);
+      }
+      return m;
+    },
     [testimonialMarkers],
   );
 
@@ -165,7 +185,9 @@ const WardMap = ({ wardDataMap, selectedWard, onWardSelect, zoomToWard, testimon
         if (classify.veh(w.garbage_vehicle_not_arrived) === 5) parts.push('🚛');
         if (classify.burn(w.burning_of_garbage)         === 5) parts.push('🔥');
       }
-      if (wardsWithCentreTestimonial.has(wNum)) parts.push(TESTIMONIAL_INLINE_BADGE);
+      if (centreTestimonialWards.has(wNum)) {
+        parts.push(makeTestimonialInlineBadge(centreTestimonialWards.get(wNum)!));
+      }
 
       if (parts.length === 0) continue;
 
@@ -174,7 +196,7 @@ const WardMap = ({ wardDataMap, selectedWard, onWardSelect, zoomToWard, testimon
       out.push({ wardNum: wNum, latlng: ringCentroid(ring), icons: parts.join('') });
     }
     return out;
-  }, [wardDataMap, classify, wardsWithCentreTestimonial]);
+  }, [wardDataMap, classify, centreTestimonialWards]);
 
   // GeoJSON styling
   const styleFeature = (feature?: GeoJSON.Feature): PathOptions => {
@@ -279,7 +301,7 @@ const WardMap = ({ wardDataMap, selectedWard, onWardSelect, zoomToWard, testimon
         <Marker
           key={`te-${m.id}`}
           position={m.latlng}
-          icon={makeTestimonialExactIcon()}
+          icon={makeTestimonialExactIcon(m.hasImages)}
           zIndexOffset={950}
           eventHandlers={{
             click: () => {

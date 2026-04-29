@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Index from "./pages/Index";
 import MapReports from "./pages/MapReports";
 import DashboardPage from "./pages/DashboardPage";
@@ -17,7 +17,6 @@ import Navigation from "./components/Navigation";
 import TopBanner from "./components/TopBanner";
 import Footer from "./components/Footer";
 import NotFound from "./pages/NotFound";
-
 // ── Admin (gitignored — lives in src/admin/, absent on fresh clones) ──────────
 // vite.config.ts contains a plugin that resolves these to a null-component stub
 // when src/admin/ doesn't exist, so CI/CD builds always succeed.
@@ -27,6 +26,12 @@ const ActionsAdmin      = lazy(() => import("./admin/pages/ActionsAdmin"));
 const TestimonialsAdmin = lazy(() => import("./admin/pages/TestimonialsAdmin"));
 
 const queryClient = new QueryClient();
+
+/** Renders children only on the home page — used to gate the TopBanner. */
+function ShowOnHome({ children }: { children: React.ReactNode }) {
+  const { pathname } = useLocation();
+  return pathname === "/" ? <>{children}</> : null;
+}
 
 const App = () => {
   return (
@@ -48,7 +53,7 @@ const App = () => {
               {/* ── Public routes (with Navigation + Footer) ──── */}
               <Route path="*" element={
                 <div className="min-h-screen bg-background">
-                  <TopBanner />
+                  <ShowOnHome><TopBanner /></ShowOnHome>
                   <Navigation />
                   <Routes>
                     <Route path="/"          element={<Index />} />
@@ -74,4 +79,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default App

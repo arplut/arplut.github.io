@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom';
 import { Mail, Linkedin, Instagram, MessageSquare } from 'lucide-react';
 import logoSvg from '@/assets/LOGO_SVG.svg';
+import reapBenefitLogo from '@/assets/reap-benefit-logo.png';
 
 const Footer = () => {
   return (
     <footer className="bg-card border-t">
       <div className="container px-4 py-14 sm:px-6 lg:px-8">
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-10">
           {/* Brand */}
           <div className="space-y-4 lg:col-span-1">
             <Link to="/" className="inline-block group">
@@ -55,6 +56,28 @@ const Footer = () => {
                 aria-label="Reddit"
               >
                 <MessageSquare className="h-4 w-4" />
+              </a>
+            </div>
+          </div>
+
+          {/* Partners & Supporters */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Partners &amp; Supporters</h3>
+            <div className="flex flex-col gap-4">
+              <a
+                href="https://www.reapbenefit.org"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="opacity-70 hover:opacity-100 transition-opacity inline-block"
+                aria-label="Reap Benefit"
+              >
+                <img
+                  src={reapBenefitLogo}
+                  alt="Reap Benefit"
+                  className="h-8 w-auto object-contain"
+                  loading="lazy"
+                  decoding="async"
+                />
               </a>
             </div>
           </div>
@@ -109,9 +132,9 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-xs text-muted-foreground">
-          <p>© 2025 GEODHA. All rights reserved.</p>
-          <p className="italic">Data sourced from BBMP grievance data (OpenCity dataset).</p>
+        {/* Bottom row */}
+        <div className="mt-8 pt-6 border-t border-border flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs text-muted-foreground">
+          <p>© 2026 GEODHA. All rights reserved.</p>
         </div>
       </div>
     </footer>

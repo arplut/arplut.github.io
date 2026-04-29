@@ -58,6 +58,10 @@ export interface ActionStep {
   emoji:   string;
   heading: string;
   detail:  string;
+  /** Optional URL — rendered as a link in the ward card. */
+  url?:     string;
+  /** Custom label for the URL link; defaults to "Learn more" when omitted. */
+  urlText?: string;
 }
 
 export interface RecommendedActionDoc {

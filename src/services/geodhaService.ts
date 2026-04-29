@@ -95,6 +95,8 @@ export interface TestimonialDoc {
   has_exact_location:  boolean;
   exact_lat?:          number;
   exact_lng?:          number;
+  /** Marks this testimonial as a critical/priority case — shown with a larger ! marker on the map. */
+  critical_or_not:     boolean;
   created_at?:         Timestamp;
   updated_at?:         Timestamp;
 }

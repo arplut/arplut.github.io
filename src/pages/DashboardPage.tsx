@@ -693,13 +693,13 @@ const DashboardPage = () => {
       const exact = wt.filter((t) => t.has_exact_location && t.exact_lat != null && t.exact_lng != null);
       if (exact.length > 0) {
         for (const t of exact) {
-          markers.push({ id: t.id, wardNum, latlng: [t.exact_lat!, t.exact_lng!], isExact: true, hasImages: t.images.length > 0 });
+          markers.push({ id: t.id, wardNum, latlng: [t.exact_lat!, t.exact_lng!], isExact: true, isCritical: t.critical_or_not ?? false });
         }
       } else {
-        const centroid  = WARD_CENTROIDS[wardNum];
-        const hasImages = wt.some((t) => t.images.length > 0);
+        const centroid   = WARD_CENTROIDS[wardNum];
+        const isCritical = wt.some((t) => t.critical_or_not);
         if (centroid) {
-          markers.push({ id: `centre-${wardNum}`, wardNum, latlng: centroid, isExact: false, hasImages });
+          markers.push({ id: `centre-${wardNum}`, wardNum, latlng: centroid, isExact: false, isCritical });
         }
       }
     }

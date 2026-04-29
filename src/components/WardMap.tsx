@@ -15,13 +15,13 @@ import type { WardData } from '@/services/geodhaService';
 // ── Testimonial marker type (exported for DashboardPage) ─────────────────────
 
 export interface TestimonialMarkerInfo {
-  id:        string;
-  wardNum:   number;
-  latlng:    [number, number];
+  id:         string;
+  wardNum:    number;
+  latlng:     [number, number];
   /** true = documented case at exact GPS; false = ward-centre fallback */
-  isExact:   boolean;
-  /** true = at least one testimonial for this ward/pin has uploaded images */
-  hasImages: boolean;
+  isExact:    boolean;
+  /** true = marked critical — shown with a slightly larger ! marker */
+  isCritical: boolean;
 }
 
 // ── Internal types ────────────────────────────────────────────────────────────
@@ -52,12 +52,11 @@ const GARBAGE_MOUND_SVG = `<svg xmlns='http://www.w3.org/2000/svg' width='18' he
 
 /**
  * Inline ! badge appended to the ward cluster icon for wards with a centre
- * testimonial (no exact GPS). Slightly larger when the testimonial has photos,
- * to draw extra attention to documented cases with visual evidence.
+ * testimonial (no exact GPS). Slightly larger when marked critical.
  */
-function makeTestimonialInlineBadge(hasImages: boolean): string {
-  const size     = hasImages ? 23 : 19;
-  const fontSize = hasImages ? 13 : 11;
+function makeTestimonialInlineBadge(isCritical: boolean): string {
+  const size     = isCritical ? 23 : 19;
+  const fontSize = isCritical ? 13 : 11;
   return `<span style="display:inline-flex;align-items:center;justify-content:center;width:${size}px;height:${size}px;border-radius:50%;background:#dc2626;border:2px dashed rgba(255,255,255,0.9);font-size:${fontSize}px;font-weight:900;color:#fff;font-family:sans-serif;vertical-align:middle;margin-left:1px;">!</span>`;
 }
 
@@ -74,13 +73,13 @@ function makeProblemIcon(icons: string): L.DivIcon {
 
 /**
  * Solid dark-red ! pin at exact GPS location — documented case.
- * Rendered larger when the testimonial has photos to signal richer evidence.
+ * Rendered slightly larger when marked critical.
  */
-function makeTestimonialExactIcon(hasImages: boolean): L.DivIcon {
-  const size     = hasImages ? 28 : 22;
-  const fontSize = hasImages ? 15 : 13;
-  const border   = hasImages ? '2.5px solid rgba(255,255,255,0.95)' : '2px solid rgba(255,255,255,0.9)';
-  const shadow   = hasImages ? '0 3px 8px rgba(0,0,0,0.65)' : '0 2px 6px rgba(0,0,0,0.55)';
+function makeTestimonialExactIcon(isCritical: boolean): L.DivIcon {
+  const size     = isCritical ? 28 : 22;
+  const fontSize = isCritical ? 15 : 13;
+  const border   = isCritical ? '2.5px solid rgba(255,255,255,0.95)' : '2px solid rgba(255,255,255,0.9)';
+  const shadow   = isCritical ? '0 3px 8px rgba(0,0,0,0.65)' : '0 2px 6px rgba(0,0,0,0.55)';
   return L.divIcon({
     html: `<div style="
       width:${size}px;height:${size}px;border-radius:50%;
@@ -158,13 +157,15 @@ const WardMap = ({ wardDataMap, selectedWard, onWardSelect, zoomToWard, testimon
     burn:  computeScale(allWards.map((w) => w.burning_of_garbage)),
   }), [allWards]);
 
-  // Map of ward numbers with a centre testimonial → whether they have images.
-  // Larger ! badges are shown for wards with photographic evidence.
+  // Map of ward numbers with a centre testimonial → whether any is critical.
+  // Critical wards get a slightly larger ! badge.
   const centreTestimonialWards = useMemo<Map<number, boolean>>(
     () => {
       const m = new Map<number, boolean>();
       for (const t of testimonialMarkers.filter((mk) => !mk.isExact)) {
-        m.set(t.wardNum, t.hasImages);
+        // Once a ward is flagged critical, keep it critical even if a later
+        // entry for the same ward is not.
+        m.set(t.wardNum, (m.get(t.wardNum) ?? false) || t.isCritical);
       }
       return m;
     },
@@ -301,7 +302,7 @@ const WardMap = ({ wardDataMap, selectedWard, onWardSelect, zoomToWard, testimon
         <Marker
           key={`te-${m.id}`}
           position={m.latlng}
-          icon={makeTestimonialExactIcon(m.hasImages)}
+          icon={makeTestimonialExactIcon(m.isCritical)}
           zIndexOffset={950}
           eventHandlers={{
             click: () => {

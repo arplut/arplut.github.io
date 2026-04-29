@@ -17,6 +17,7 @@ import Navigation from "./components/Navigation";
 import TopBanner from "./components/TopBanner";
 import Footer from "./components/Footer";
 import NotFound from "./pages/NotFound";
+import WasteGuide from "./pages/WasteGuide";
 
 // ── Admin (gitignored — lives in src/admin/, absent on fresh clones) ──────────
 // vite.config.ts contains a plugin that resolves these to a null-component stub
@@ -37,6 +38,9 @@ const App = () => {
         <BrowserRouter>
           <Suspense fallback={null}>
             <Routes>
+
+              {/* ── Standalone routes (no site nav/footer) ──── */}
+              <Route path="/guide" element={<WasteGuide />} />
 
               {/* ── Admin routes (standalone, no site chrome) ──── */}
               <Route path="/admin" element={<AdminLogin />} />

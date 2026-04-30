@@ -52,10 +52,10 @@ const resources = [
   {
     emoji: '🤝',
     title: 'Volunteer for Cleanups',
-    description: 'Check out which organizations are organizing local cleanups and how you can join in.',
+    description: 'Check out which organisations are running local cleanups and how you can join in.',
     href: '/volunteer',
-    available: false,
-    cta: 'Coming Soon',
+    available: true,
+    cta: 'Get involved →',
   },
   {
     emoji: '🏗',
@@ -283,58 +283,8 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ── SERVICES ── */}
-      <section className="py-16 sm:py-20 bg-muted/40 border-t border-border">
-        <div className="container px-4 sm:px-6 lg:px-8">
-          <div className="mb-10">
-            <h2
-              className="text-3xl sm:text-4xl font-bold text-foreground mb-3"
-              style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
-            >
-              Our Services
-            </h2>
-            <p className="text-muted-foreground max-w-xl">
-              GEODHA connects citizen evidence to institutional accountability, from street-level reporting to ward-level data.
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {services.map((svc) => (
-              <Link
-                key={svc.title}
-                to={svc.href}
-                className="group block p-6 rounded-xl bg-card border border-border hover:border-primary/40 hover:shadow-soft transition-all duration-200"
-                onClick={() => window.scrollTo(0, 0)}
-              >
-                <div className="mb-4 p-2.5 w-fit rounded-lg bg-secondary">
-                  <svc.icon className="h-6 w-6 text-primary" />
-                </div>
-                <h3
-                  className="font-bold text-foreground mb-2"
-                  style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '1.15rem' }}
-                >
-                  {svc.title}
-                </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                  {svc.description}
-                </p>
-                {svc.launchingSoon ? (
-                  <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-secondary text-muted-foreground">
-                    Launching soon
-                  </span>
-                ) : (
-                  <span className="text-xs font-semibold text-primary group-hover:underline">
-                    {svc.cta}
-                  </span>
-                )}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ── RESOURCES ── */}
-      <section className="py-16 sm:py-20 border-t border-border" style={{ background: '#F0FAF4' }}>
+      <section className="py-16 sm:py-20 bg-muted/40 border-t border-border">
         <div className="container px-4 sm:px-6 lg:px-8">
           <div className="mb-10">
             <h2
@@ -386,8 +336,58 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ── BOTTOM CTA ── */}
+      {/* ── SERVICES ── */}
       <section className="py-16 sm:py-20 bg-background border-t border-border">
+        <div className="container px-4 sm:px-6 lg:px-8">
+          <div className="mb-10">
+            <h2
+              className="text-3xl sm:text-4xl font-bold text-foreground mb-3"
+              style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+            >
+              Our Services
+            </h2>
+            <p className="text-muted-foreground max-w-xl">
+              GEODHA connects citizen evidence to institutional accountability, from street-level reporting to ward-level data.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {services.map((svc) => (
+              <Link
+                key={svc.title}
+                to={svc.href}
+                className="group block p-6 rounded-xl bg-card border border-border hover:border-primary/40 hover:shadow-soft transition-all duration-200"
+                onClick={() => window.scrollTo(0, 0)}
+              >
+                <div className="mb-4 p-2.5 w-fit rounded-lg bg-secondary">
+                  <svc.icon className="h-6 w-6 text-primary" />
+                </div>
+                <h3
+                  className="font-bold text-foreground mb-2"
+                  style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '1.15rem' }}
+                >
+                  {svc.title}
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                  {svc.description}
+                </p>
+                {svc.launchingSoon ? (
+                  <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-secondary text-muted-foreground">
+                    Launching soon
+                  </span>
+                ) : (
+                  <span className="text-xs font-semibold text-primary group-hover:underline">
+                    {svc.cta}
+                  </span>
+                )}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── BOTTOM CTA ── */}
+      <section className="py-16 sm:py-20 border-t border-border" style={{ background: '#F0FAF4' }}>
         <div className="container px-4 sm:px-6 lg:px-8 text-center">
           <h2
             className="text-3xl sm:text-4xl font-bold text-foreground mb-4"

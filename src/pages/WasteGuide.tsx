@@ -176,7 +176,7 @@ const DROP_POINTS = [
   },
   {
     name: '👕 Textile Waste',
-    desc: 'Half-yearly. Organise donations, thrift stores, or send to textile recycling centres. Reuse and donation first before recycling.',
+    desc: 'Half-yearly. Organise donations, thrift stores, or send to textile recycling centres such as Hasiru Dala. Reuse and donation first before recycling.',
     tags: [{ label: 'Half-yearly', style: 'blue' as const }, { label: 'Donate first', style: 'reduce' as const }],
     severity: 'soft' as const,
   },
@@ -802,7 +802,7 @@ export default function WasteGuide() {
         </div>
       </section>
 
-      {/* ── TRICKY ITEMS ───────────────────────────────────────────────────── */}
+      {/* ── TRICKY ITEMS ───────────────────────────────────────────────────── 
       <section style={{ borderTop: `1px solid ${C.border}` }} className="py-14">
         <div className="max-w-3xl mx-auto px-5">
           <SectionLabel>Honest answers to hard questions</SectionLabel>
@@ -812,7 +812,7 @@ export default function WasteGuide() {
             including where the system doesn't yet have a good answer.
           </SectionDesc>
 
-          {/* Filter bar */}
+          {/* Filter bar 
           <div className="flex flex-wrap gap-2 mb-6">
             {FILTER_BTNS.map(btn => (
               <button
@@ -849,7 +849,7 @@ export default function WasteGuide() {
             ))}
           </div>
         </div>
-      </section>
+      </section>*/}
 
       {/* ── COMMON MISTAKES ────────────────────────────────────────────────── */}
       <section style={{ borderTop: `1px solid ${C.border}` }} className="py-14">

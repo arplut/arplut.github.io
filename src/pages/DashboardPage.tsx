@@ -305,6 +305,10 @@ function WardSheet({ data, zone, scales, actions, allTestimonials, onClose }: Wa
   const allImages = testimonials.flatMap((t) => t.images);
   const [lightbox, setLightbox] = useState<{ idx: number } | null>(null);
 
+  // Active problem (for recommended-action selection)
+  const [activeCategory, setActiveCategory] = useState<ProblemCategory | null>(null);
+  useEffect(() => { setActiveCategory(null); }, [data.ward_num]);
+
   const handleShare = async () => {
     const url = `${window.location.origin}/dashboard?ward=${data.ward_num}`;
     const text = `📍 ${data.ward_name} (BBMP Ward ${data.ward_num}) — see garbage-related issues reported in this ward on GEODHA`;
@@ -327,7 +331,11 @@ function WardSheet({ data, zone, scales, actions, allTestimonials, onClose }: Wa
   const top      = problems[0];
   const others   = problems.slice(1).filter((p) => p.band >= 2);
   const allClean = problems.every((p) => p.band <= 1);
-  const action   = actions?.[top.category] ?? null;
+
+  // Which problem's recommended action to show — defaults to #1
+  const shownCategory   = activeCategory ?? top.category;
+  const shownProblem    = problems.find((p) => p.category === shownCategory) ?? top;
+  const action          = actions?.[shownCategory] ?? null;
 
   return (
     <>
@@ -387,7 +395,16 @@ function WardSheet({ data, zone, scales, actions, allTestimonials, onClose }: Wa
               </div>
             ) : (
               <div className="space-y-3">
-                <div className="rounded-xl border-2 p-4" style={{ borderColor: BAND[top.band].dot, background: BAND[top.band].cardBg }}>
+                {/* #1 Problem card — clickable to re-select */}
+                <button
+                  className={`w-full text-left rounded-xl border-2 p-4 transition-all ${shownCategory === top.category ? 'ring-2 ring-offset-1' : 'opacity-90 hover:opacity-100'}`}
+                  style={{
+                    borderColor: BAND[top.band].dot,
+                    background:  BAND[top.band].cardBg,
+                    ...(shownCategory === top.category ? { outlineColor: BAND[top.band].dot } : {}),
+                  }}
+                  onClick={() => setActiveCategory(top.category)}
+                >
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <span className="leading-none flex items-center"><ProblemIcon category={top.category} size={24} /></span>
@@ -404,10 +421,19 @@ function WardSheet({ data, zone, scales, actions, allTestimonials, onClose }: Wa
                       Among the highest affected wards in the city for this issue.
                     </p>
                   )}
-                </div>
+                </button>
 
+                {/* Secondary problems — clickable to view their recommended action */}
                 {others.map((p, i) => (
-                  <div key={p.category} className="flex items-center justify-between py-2.5 px-3 bg-gray-50 rounded-lg border border-gray-100">
+                  <button
+                    key={p.category}
+                    onClick={() => setActiveCategory(p.category)}
+                    className={`w-full flex items-center justify-between py-2.5 px-3 rounded-lg border transition-all ${
+                      shownCategory === p.category
+                        ? 'bg-blue-50 border-blue-200 ring-1 ring-blue-200'
+                        : 'bg-gray-50 border-gray-100 hover:bg-gray-100 hover:border-gray-200'
+                    }`}
+                  >
                     <div className="flex items-center gap-2 text-sm text-gray-700">
                       <span className="leading-none opacity-80 flex items-center"><ProblemIcon category={p.category} size={18} /></span>
                       <span className="font-medium">
@@ -416,7 +442,7 @@ function WardSheet({ data, zone, scales, actions, allTestimonials, onClose }: Wa
                       </span>
                     </div>
                     <BandBadge band={p.band} />
-                  </div>
+                  </button>
                 ))}
               </div>
             )}
@@ -480,10 +506,17 @@ function WardSheet({ data, zone, scales, actions, allTestimonials, onClose }: Wa
             <>
               <div className="mx-5 mt-3 border-t border-gray-100" />
               <section className="px-5 pt-4 pb-2">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3">Recommended Action</h3>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3">
+                  Recommended Action
+                  {shownCategory !== top.category && (
+                    <span className="ml-1.5 normal-case text-[10px] font-medium text-blue-500">
+                      · {shownProblem.label}
+                    </span>
+                  )}
+                </h3>
                 <div className="bg-gray-50 border border-gray-200 rounded-xl overflow-hidden">
                   <div className="px-4 py-3 flex items-start gap-2 border-b border-gray-100">
-                    <span className="leading-none mt-0.5 flex items-center"><ProblemIcon category={top.category} size={20} /></span>
+                    <span className="leading-none mt-0.5 flex items-center"><ProblemIcon category={shownCategory} size={20} /></span>
                     <div>
                       <p className="text-sm font-bold text-gray-800">{action.label}</p>
                       <p className="text-xs mt-0.5 leading-relaxed text-gray-500">{action.violation}</p>

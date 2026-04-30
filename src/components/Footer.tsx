@@ -93,6 +93,17 @@ const Footer = () => {
             </ul>
           </div>
 
+          {/* Resources */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Resources</h3>
+            <ul className="space-y-2.5 text-sm text-muted-foreground">
+              <li><Link to="/guide" className="hover:text-primary transition-colors">Waste Segregation Guide</Link></li>
+              <li><Link to="/guide2" className="hover:text-primary transition-colors">BWG Disposal Guidelines</Link></li>
+              <li><Link to="/volunteer" className="hover:text-primary transition-colors">Volunteer for Cleanups</Link></li>
+              <li><Link to="/waste-to-value" className="hover:text-primary transition-colors">Waste to Value Opportunities</Link></li>
+            </ul>
+          </div>
+
           {/* About */}
           <div className="space-y-4">
             <h3 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">About</h3>
@@ -121,7 +132,7 @@ const Footer = () => {
           <div className="space-y-4">
             <h3 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Get Involved</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              See a garbage problem around you? Tell us more about it and learn about exisiting solutions.
+              See a garbage problem around you? Tell us more about it and learn about existing solutions.
             </p>
             <Link
               to="/report"

@@ -17,6 +17,10 @@ import Navigation from "./components/Navigation";
 import TopBanner from "./components/TopBanner";
 import Footer from "./components/Footer";
 import NotFound from "./pages/NotFound";
+import WasteGuide from "./pages/WasteGuide";
+import BWGGuidePage from "./pages/BWGGuidePage";
+import VolunteerPage from "./pages/VolunteerPage";
+
 // ── Admin (gitignored — lives in src/admin/, absent on fresh clones) ──────────
 // vite.config.ts contains a plugin that resolves these to a null-component stub
 // when src/admin/ doesn't exist, so CI/CD builds always succeed.
@@ -61,6 +65,8 @@ const App = () => {
           <Suspense fallback={null}>
             <Routes>
 
+              {/* ── Standalone routes (no site nav/footer) ──── */}
+
               {/* ── Admin routes (standalone, no site chrome) ──── */}
               <Route path="/admin" element={<AdminLogin />} />
               <Route path="/admin" element={<AdminLayout />}>
@@ -84,6 +90,9 @@ const App = () => {
                     <Route path="/about"     element={<About />} />
                     <Route path="/privacy"   element={<PrivacyPolicy />} />
                     <Route path="/get-started" element={<GetStarted />} />
+                    <Route path="/guide"     element={<WasteGuide />} />
+                    <Route path="/guide2"    element={<BWGGuidePage />} />
+                    <Route path="/volunteer" element={<VolunteerPage />} />
                     <Route path="*"          element={<NotFound />} />
                   </Routes>
                   <Footer />

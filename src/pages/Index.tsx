@@ -39,6 +39,42 @@ const problemCards = [
   },
 ];
 
+// Resources section
+const resources = [
+  {
+    emoji: '♻️',
+    title: 'Waste Segregation Guide',
+    description: 'Which bin, what goes in, and the rules that matter. Practical guidance for every Bengaluru resident.',
+    href: '/guide',
+    available: true,
+    cta: 'Read the guide →',
+  },
+  {
+    emoji: '🤝',
+    title: 'Volunteer for Cleanups',
+    description: 'Check out which organisations are running local cleanups and how you can join in.',
+    href: '/volunteer',
+    available: true,
+    cta: 'Get involved →',
+  },
+  {
+    emoji: '🏗',
+    title: 'BWG Disposal Guidelines',
+    description: 'Mandatory compliance for apartments, hotels, and institutions that generate over 100 kg of waste per day.',
+    href: '/guide2',
+    available: false,
+    cta: 'Coming Soon',
+  },
+  {
+    emoji: '🌱',
+    title: 'Waste to Value',
+    description: 'Composting, biogas, and upcycling programmes open to residents, apartment complexes, and communities.',
+    href: '/waste-to-value',
+    available: false,
+    cta: 'Coming Soon',
+  },
+];
+
 // Services section
 const services = [
   {
@@ -241,8 +277,61 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ── SERVICES ── */}
+      {/* ── RESOURCES ── */}
       <section className="py-16 sm:py-20 bg-muted/40 border-t border-border">
+        <div className="container px-4 sm:px-6 lg:px-8">
+          <div className="mb-10">
+            <h2
+              className="text-3xl sm:text-4xl font-bold mb-3"
+              style={{ fontFamily: "'Barlow Condensed', sans-serif", color: '#1A1A18' }}
+            >
+              Resources
+            </h2>
+            <p className="max-w-xl" style={{ color: '#5A5A56' }}>
+              Guides and community programmes to help you act — whether you're a resident, an apartment complex, or a local volunteer.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {resources.map((res) => (
+              <Link
+                key={res.title}
+                to={res.href}
+                onClick={() => window.scrollTo(0, 0)}
+                className={`group block p-5 rounded-xl border transition-all duration-200 ${
+                  res.available
+                    ? 'bg-white border-l-4 hover:shadow-md cursor-pointer'
+                    : 'bg-white/60 border border-dashed cursor-default pointer-events-none'
+                }`}
+                style={res.available ? { borderLeftColor: '#2D6A4F', borderTopColor: '#E5E5E0', borderRightColor: '#E5E5E0', borderBottomColor: '#E5E5E0' } : { borderColor: '#D1D5DB' }}
+              >
+                <div className="text-[32px] mb-3 leading-none">{res.emoji}</div>
+                <h3
+                  className="font-bold mb-2"
+                  style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '1.1rem', color: res.available ? '#1A1A18' : '#9CA3AF' }}
+                >
+                  {res.title}
+                </h3>
+                <p className="text-sm leading-relaxed mb-4" style={{ color: res.available ? '#5A5A56' : '#9CA3AF' }}>
+                  {res.description}
+                </p>
+                {res.available ? (
+                  <span className="text-xs font-semibold" style={{ color: '#2D6A4F' }}>
+                    {res.cta}
+                  </span>
+                ) : (
+                  <span className="text-xs font-semibold px-2.5 py-1 rounded-full" style={{ background: '#F3F4F6', color: '#9CA3AF' }}>
+                    Coming Soon
+                  </span>
+                )}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── SERVICES ── */}
+      <section className="py-16 sm:py-20 bg-background border-t border-border">
         <div className="container px-4 sm:px-6 lg:px-8">
           <div className="mb-10">
             <h2
@@ -292,7 +381,7 @@ const Index = () => {
       </section>
 
       {/* ── BOTTOM CTA ── */}
-      <section className="py-16 sm:py-20 bg-background border-t border-border">
+      <section className="py-16 sm:py-20 border-t border-border" style={{ background: '#F0FAF4' }}>
         <div className="container px-4 sm:px-6 lg:px-8 text-center">
           <h2
             className="text-3xl sm:text-4xl font-bold text-foreground mb-4"

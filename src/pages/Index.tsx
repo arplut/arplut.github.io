@@ -242,24 +242,26 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
             {problemCards.map((card) => (
               <div
                 key={card.title}
-                className="group p-6 rounded-2xl bg-muted/40 hover:bg-muted/60 border border-border hover:border-primary/20 shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all duration-300"
+                className="group p-4 rounded-xl bg-muted/40 hover:bg-muted/60 border border-border hover:border-primary/20 shadow-sm hover:shadow-md transition-all duration-300 flex items-start gap-3"
               >
-                <div className={`w-14 h-14 rounded-xl ${card.iconBg} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                  <card.icon className={`h-6 w-6 ${card.iconColor}`} />
+                <div className={`w-10 h-10 rounded-lg ${card.iconBg} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform`}>
+                  <card.icon className={`h-5 w-5 ${card.iconColor}`} />
                 </div>
-                <h3
-                  className="font-bold text-foreground mb-2"
-                  style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '1.1rem' }}
-                >
-                  {card.title}
-                </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {card.description}
-                </p>
+                <div>
+                  <h3
+                    className="font-bold text-foreground mb-1"
+                    style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: '1rem' }}
+                  >
+                    {card.title}
+                  </h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {card.description}
+                  </p>
+                </div>
               </div>
             ))}
           </div>

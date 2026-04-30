@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 
 // ── Colour tokens (matching GEODHA + guide palette) ───────────────────────────
 const C = {
@@ -26,7 +27,34 @@ const C = {
   white:      '#FFFFFF',
 } as const;
 
+// ── Bin SVG icon ──────────────────────────────────────────────────────────────
+
+function BinSVG({ color, size = 44 }: { color: string; size?: number }) {
+  const h = size * 1.15;
+  return (
+    <svg width={size} height={h} viewBox="0 0 44 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Handle */}
+      <rect x="16" y="2" width="12" height="6" rx="3" fill={color} />
+      {/* Lid */}
+      <rect x="3" y="8" width="38" height="7" rx="3.5" fill={color} />
+      {/* Body */}
+      <path d="M8 15 L11 50 L33 50 L36 15 Z" fill={color} fillOpacity="0.18" stroke={color} strokeWidth="2" strokeLinejoin="round" />
+      {/* Vertical lines */}
+      <line x1="17" y1="20" x2="17" y2="46" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeOpacity="0.55" />
+      <line x1="22" y1="20" x2="22" y2="46" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeOpacity="0.55" />
+      <line x1="27" y1="20" x2="27" y2="46" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeOpacity="0.55" />
+    </svg>
+  );
+}
+
 // ── Data ──────────────────────────────────────────────────────────────────────
+
+const BIN_COLOR_HEX: Record<BinColor, string> = {
+  green: C.green,
+  blue:  C.blueMid,
+  red:   C.redMid,
+  black: C.blackMid,
+};
 
 const BINS = [
   {
@@ -35,8 +63,8 @@ const BINS = [
     label: 'Green Bin',
     name: 'Wet Waste',
     subtitle: '— Biodegradable',
-    emoji: '🟢',
-    pills: ['🕐 Collected Daily', '🚫 No liner', '🪣 Lidded bucket'],
+    frequency: 'Daily',
+    otherPills: ['🚫 No liner', '🪣 Lidded bucket'],
     badge: null,
     rules: [
       { bold: 'No plastic liner', rest: ' — not even compostable or biodegradable bags. Use dry leaves or old compost at the base instead.' },
@@ -55,8 +83,8 @@ const BINS = [
     label: 'Blue Bin / Bag',
     name: 'Dry Waste',
     subtitle: '— Recyclable',
-    emoji: '🔵',
-    pills: ['🕐 Twice a week', '✨ Must be clean & dry'],
+    frequency: 'Twice weekly',
+    otherPills: ['✨ Must be clean & dry'],
     badge: null,
     rules: [
       { bold: 'Must be clean and dry', rest: ' — rinse all containers before placing in dry waste. Food residue contaminates the entire load.' },
@@ -75,8 +103,8 @@ const BINS = [
     label: 'Red Bin · 5 Litres',
     name: 'Sanitary Waste',
     subtitle: null,
-    emoji: '🔴',
-    pills: ['🕐 Collected Daily', '🟡 Yellow bags only'],
+    frequency: 'Daily',
+    otherPills: ['🟡 Yellow bags only'],
     badge: { text: 'Critical rules', type: 'critical' },
     rules: [
       { bold: 'Use yellow non-chlorinated bags only', rest: ' for lining this bin.' },
@@ -95,8 +123,8 @@ const BINS = [
     label: 'Black Bin',
     name: 'Special Care',
     subtitle: '— Hazardous',
-    emoji: '⚫',
-    pills: ['🕐 Once a month', '🔒 Store safely'],
+    frequency: 'Monthly',
+    otherPills: ['🔒 Store safely'],
     badge: null,
     rules: [
       { bold: 'Store safely inside premises', rest: ' between monthly collections. Use a hard plastic container with a lid for items like syringes and razors.' },
@@ -136,7 +164,7 @@ const DROP_POINTS = [
   },
   {
     name: '📱 E-Waste',
-    desc: 'Store on premises. Quarterly collection by authorised handlers only. Sahas is a recommended e-waste handler in Bengaluru. Never give to informal scrap dealers.',
+    desc: 'Store on premises. Quarterly collection by authorised handlers only. Saahas and Naari Circuit are recommended e-waste handlers in Bengaluru. Never give to informal scrap dealers.',
     tags: [{ label: 'Quarterly', style: 'black' as const }],
     severity: 'medium' as const,
   },
@@ -160,6 +188,37 @@ const DROP_POINTS = [
   },
 ];
 
+
+// ── Initial item lists per bin (partial — full lists pending SWMRT/BSWML finalisation) ──
+
+const BIN_INITIAL_ITEMS: Record<string, { items: string[]; note: string }> = {
+  green: {
+    items: ['Food waste', 'Vegetable peels', 'Leftovers', 'Garden waste'],
+    note: 'To be kept in covered containers. Do NOT use plastic bags or liners of any kind.',
+  },
+  blue: {
+    items: ['Paper', 'Plastic', 'Metal', 'Glass'],
+    note: 'To be kept in plastic containers or a white bag. All items must be clean and dry.',
+  },
+  red: {
+    items: ['Diapers', 'Sanitary pads', 'Medicines', 'Bandages'],
+    note: 'Must be wrapped separately in paper before being handed over.',
+  },
+  black: {
+    items: [
+      'Swept dust (from floors, balconies)',
+      'Hair, small debris',
+      'Used tissues, cigarette butts',
+      'Broken ceramics, small stones',
+      'Vacuum cleaner dust',
+      'Non-recyclable multilayer wrappers (chips packets, sauce pouches, etc.)',
+    ],
+    note: 'To be kept in black disposable bags.',
+  },
+};
+
+// ── Tricky items ──────────────────────────────────────────────────────────────
+
 type FilterCat = 'all' | 'food' | 'plastic' | 'hazardous' | 'gap';
 type ConflictSeverity = 'hard' | 'medium' | 'soft';
 type TagStyle = 'green' | 'blue' | 'red' | 'black' | 'reduce' | 'gap';
@@ -179,7 +238,6 @@ const CONFLICT_ITEMS: ConflictItem[] = [
   { name: '🧻 Greasy paper & food-wrapping tissue', desc: 'Not recyclable when soiled. Not ideal for composting but acceptable. Wet waste is the least-bad option.', tags: [{ label: 'Wet waste', style: 'green' }], severity: 'soft', cat: 'food' },
   { name: '🍽 Paper cups & plates', desc: "Paper cups have a plastic lining — not compostable, not recyclable. Technically special care or reject waste. In practice they go in blue bin and get incinerated. The honest answer: these should not exist. If they do, blue bin.", tags: [{ label: 'Blue bin', style: 'blue' }, { label: 'Avoid entirely', style: 'reduce' }], severity: 'hard', cat: 'food' },
   { name: '🛍 Multilayer flexible packaging', desc: "Chips bags, biscuit wrappers, sauce pouches, toothpaste tubes. Blue bin by default but not actually recyclable in Bengaluru's current infrastructure. They go to incineration. The guide won't pretend otherwise.", tags: [{ label: 'Blue bin', style: 'blue' }, { label: 'Reduce generation', style: 'reduce' }], severity: 'hard', cat: 'plastic' },
-  { name: '🟫 Black plastic containers', desc: "Takeaway boxes, dark trays. Technically recyclable plastic but carbon black pigment makes them invisible to optical sorting machines. Effectively unrecyclable. Blue bin — will be incinerated.", tags: [{ label: 'Blue bin', style: 'blue' }], severity: 'hard', cat: 'plastic' },
   { name: '🫧 Bubble wrap & soft plastics', desc: "Technically recyclable but clogs machinery at most DWCCs. Some facilities accept it, most don't. Blue bin with caveat — check what your ward's DWCC accepts.", tags: [{ label: 'Blue bin', style: 'blue' }], severity: 'medium', cat: 'plastic' },
   { name: '💉 Syringes — home medical use', desc: 'Black bin (Special Care) only. Never red bin (sanitary) — needles cause serious injury to waste workers and damage incineration equipment. Store in a hard plastic container with a lid between monthly collections.', tags: [{ label: 'Black bin only', style: 'black' }], severity: 'hard', cat: 'hazardous' },
   { name: '💡 CFL & fluorescent tubes', desc: 'E-waste / Special Care. Contain mercury — never in dry waste or regular bins. Extremely commonly disposed incorrectly. Quarterly authorised collection only.', tags: [{ label: 'Black bin', style: 'black' }], severity: 'hard', cat: 'hazardous' },
@@ -200,13 +258,6 @@ const MISTAKES = [
   { icon: '🔥', title: 'Open burning', desc: 'Illegal. Causes cancer-level air pollution. Burning leaves is also illegal — composting is the alternative. Document and report via GEODHA or to your ward marshal.' },
   { icon: '🍕', title: 'Soiled packaging in blue bin', desc: 'Food residue on dry waste contaminates the entire load. Rinse before placing in blue bin. Heavily soiled items go in wet waste instead.' },
   { icon: '💡', title: 'CFL tubes in dry waste', desc: 'CFL tubes contain mercury. Never in regular bins. Quarterly authorised e-waste collection or black bin special care only.' },
-];
-
-const ESCALATION_STEPS = [
-  { step: 'Step 1', title: 'Document it', desc: 'Take a photo with GPS location enabled. Note the time and exact address. This is your evidence — without it, complaints are easy to dismiss.' },
-  { step: 'Step 2', title: 'File a complaint', desc: "Report via GEODHA (files directly to BBMP Sahaaya) or via the BBMP Sahaaya portal directly. You'll receive a complaint reference number." },
-  { step: 'Step 3', title: 'Contact your ward marshal', desc: 'BBMP marshals are authorised to issue on-the-spot fines. Share your photo and complaint reference. Marshals don\'t mind awareness drives on weekends and are generally responsive when approached as a team.' },
-  { step: 'Step 4', title: "Don't go alone", desc: "Elected representatives listen to a team, not individuals. For persistent problems, go with your RWA or neighbours. Documented community backing makes it harder to ignore and harder to falsely close." },
 ];
 
 const SEARCH_DATA = [
@@ -310,6 +361,7 @@ export default function WasteGuide() {
   const [openBins, setOpenBins] = useState<Set<string>>(new Set(['green']));
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<FilterCat>('all');
+  const [bwgTeaserOpen, setBwgTeaserOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const toggleBin = (id: string) => {
@@ -347,7 +399,7 @@ export default function WasteGuide() {
   };
 
   useEffect(() => {
-    document.title = 'Waste Disposal Guide — GEODHA';
+    document.title = 'Waste Guide — GEODHA';
     return () => { document.title = 'GEODHA'; };
   }, []);
 
@@ -362,27 +414,84 @@ export default function WasteGuide() {
   return (
     <div style={{ background: C.bg, color: C.text, fontFamily: "'Inter', sans-serif", fontSize: 15, lineHeight: 1.6 }} className="min-h-screen">
 
-      {/* ── HEADER ─────────────────────────────────────────────────────────── */}
-      <header
-        style={{ background: C.greenDark, height: 56, zIndex: 100 }}
-        className="sticky top-0 px-6 flex items-center justify-between"
-      >
-        <a href="/" style={{ textDecoration: 'none' }}>
-          <span
-            style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 20, color: C.white, letterSpacing: '-0.3px' }}
+      {/* ── WIP + GOV NOTICE BANNER ─────────────────────────────────────────── */}
+      <div style={{ background: C.amberLight, borderBottom: `1px solid #F5DEB3` }} className="px-4 py-3">
+        <div className="max-w-3xl mx-auto flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
+          <span className="text-[18px] shrink-0">🚧</span>
+          <div>
+            <p style={{ color: C.amber, fontWeight: 700, fontSize: 13 }} className="mb-0.5">
+              Work in Progress — We are working to finalise this guide.
+            </p>
+            <p style={{ color: C.blackMid, fontSize: 12, lineHeight: 1.5 }}>
+              The central government is launching a unified SWM compliance portal within the next 3 months.
+              The Greater Bengaluru Authority (GBA) and BSWML bylaws are expected by mid-May.
+              This guide will be updated as soon as those are finalised.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* ── BWG TEASER ─────────────────────────────────────────────────────── */}
+      <div style={{ background: C.white, borderBottom: `1px solid ${C.border}` }} className="px-4 py-0">
+        <div className="max-w-3xl mx-auto">
+          <button
+            onClick={() => setBwgTeaserOpen(v => !v)}
+            className="w-full flex items-center justify-between gap-4 py-4 text-left"
+            style={{ cursor: 'pointer', background: 'none', border: 'none', fontFamily: "'Inter', sans-serif" }}
           >
-            GEO<span style={{ color: C.greenMid }}>DHA</span>
-          </span>
-        </a>
-        <span style={{ fontSize: 11, fontWeight: 500, letterSpacing: '1.5px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)' }}>
-          Bengaluru Waste Guide
-        </span>
-      </header>
+            <div className="flex items-center gap-3">
+              <span className="text-[18px]">🏢</span>
+              <span style={{ fontSize: 14, fontWeight: 600, color: C.text }}>
+                Do you stay in an apartment, hotel, or large institution?
+              </span>
+              <span style={{
+                fontSize: 10, fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase',
+                background: C.blueLight, color: C.blue, padding: '2px 8px', borderRadius: 4, flexShrink: 0,
+              }}>
+                Different rules apply
+              </span>
+            </div>
+            <span style={{
+              color: C.textSec, fontSize: 12, flexShrink: 0,
+              transform: bwgTeaserOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', display: 'inline-block',
+            }}>▾</span>
+          </button>
+
+          {bwgTeaserOpen && (
+            <div style={{ borderTop: `1px solid ${C.border}` }} className="pb-5 pt-4">
+              <p style={{ fontSize: 13.5, color: C.textSec, marginBottom: 14, lineHeight: 1.6 }}>
+                Premises that meet <strong>any one</strong> of the thresholds below are classified as
+                <strong> Bulk Waste Generators (BWG)</strong> — with mandatory on-site processing,
+                BBMP registration, and monthly reporting requirements that go beyond standard doorstep collection.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mb-4">
+                {[
+                  { label: 'Waste generated', value: '> 100 kg / day' },
+                  { label: 'Built-up area', value: '> 20,000 sq.m' },
+                  { label: 'Water consumption', value: '> 40,000 LPD' },
+                ].map(t => (
+                  <div key={t.label} style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: 8 }} className="px-3 py-2.5 flex items-center justify-between gap-2">
+                    <span style={{ fontSize: 12, color: C.textSec }}>{t.label}</span>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: C.green }}>{t.value}</span>
+                  </div>
+                ))}
+              </div>
+              <Link
+                to="/guide2"
+                style={{ color: C.green, fontWeight: 700, fontSize: 13.5, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4 }}
+                className="hover:underline"
+              >
+                Read the BWG Disposal Guidelines →
+              </Link>
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* ── HERO ───────────────────────────────────────────────────────────── */}
       <div
         style={{ background: C.greenDark, position: 'relative', overflow: 'hidden' }}
-        className="px-6 pt-14 pb-12 text-center"
+        className="px-6 pt-12 pb-12 text-center"
       >
         {/* radial glows */}
         <div style={{
@@ -409,70 +518,27 @@ export default function WasteGuide() {
           Simple, honest guidance for every resident.
         </p>
 
-        {/* Bin quick-nav */}
-        <div className="relative flex flex-wrap gap-2.5 justify-center">
+        {/* Bin quick-nav — square tiles */}
+        <div className="relative grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-xl mx-auto">
           {[
-            { id: 'green', label: 'Green · Wet Waste',    dotColor: C.green,   bg: C.greenLight, color: C.greenDark },
-            { id: 'blue',  label: 'Blue · Dry Waste',     dotColor: C.blueMid, bg: C.blueLight,  color: C.blue },
-            { id: 'red',   label: 'Red · Sanitary',       dotColor: C.redMid,  bg: C.redLight,   color: C.red },
-            { id: 'black', label: 'Black · Special Care', dotColor: C.black,   bg: C.blackLight, color: C.black },
+            { id: 'green', label: 'Green Bin',    sublabel: 'Wet Waste',    bg: C.greenLight, color: C.greenDark, binColor: C.green },
+            { id: 'blue',  label: 'Blue Bin',     sublabel: 'Dry Waste',    bg: C.blueLight,  color: C.blue,     binColor: C.blueMid },
+            { id: 'red',   label: 'Red Bin',      sublabel: 'Sanitary',     bg: C.redLight,   color: C.red,      binColor: C.redMid },
+            { id: 'black', label: 'Black Bin',    sublabel: 'Special Care', bg: C.blackLight, color: C.black,    binColor: C.blackMid },
           ].map(b => (
             <button
               key={b.id}
               onClick={() => scrollToBin(b.id)}
-              style={{ background: b.bg, color: b.color, border: 'none', cursor: 'pointer' }}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-full text-[13px] font-semibold transition-transform hover:-translate-y-0.5 hover:shadow-lg"
+              style={{ background: b.bg, color: b.color, border: 'none', cursor: 'pointer', borderRadius: 12 }}
+              className="flex flex-col items-center justify-center gap-2 p-4 aspect-square transition-transform hover:-translate-y-0.5 hover:shadow-lg"
             >
-              <span style={{ width: 10, height: 10, borderRadius: '50%', background: b.dotColor, display: 'inline-block', flexShrink: 0 }} />
-              {b.label}
+              <BinSVG color={b.binColor} size={36} />
+              <div className="text-center">
+                <div style={{ fontSize: 12, fontWeight: 700 }}>{b.label}</div>
+                <div style={{ fontSize: 10, fontWeight: 500, opacity: 0.7 }}>{b.sublabel}</div>
+              </div>
             </button>
           ))}
-        </div>
-      </div>
-
-      {/* ── HIERARCHY STRIP ────────────────────────────────────────────────── */}
-      <div style={{ background: C.greenDark }} className="py-10">
-        <div className="max-w-3xl mx-auto px-5">
-          <p style={{ color: C.greenMid }} className="text-[11px] font-semibold tracking-[2px] uppercase mb-2">
-            Before you bin anything
-          </p>
-          <h2
-            style={{ fontFamily: "'Barlow Condensed', sans-serif", color: C.white, fontSize: 22, fontWeight: 700 }}
-            className="mb-7"
-          >
-            Reduce first. Then recycle. Then dispose.
-          </h2>
-          <div className="flex items-center overflow-x-auto pb-1">
-            {[
-              { num: 1, label: 'Reduce',  active: true },
-              { num: 2, label: 'Reuse',   active: true },
-              { num: 3, label: 'Recycle', active: false },
-              { num: 4, label: 'Recover', active: false },
-              { num: 5, label: 'Dispose', active: false },
-            ].map((step, i) => (
-              <>
-                <div key={step.num} className="flex flex-col items-center flex-1 min-w-[72px] text-center px-2">
-                  <div style={{
-                    width: 36, height: 36, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 13, fontWeight: 700, color: C.white, marginBottom: 8, flexShrink: 0,
-                    background: step.active ? C.greenMid : 'rgba(255,255,255,0.12)',
-                    border: `1.5px solid ${step.active ? C.greenMid : 'rgba(255,255,255,0.25)'}`,
-                  }}>
-                    {step.num}
-                  </div>
-                  <div style={{
-                    fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px',
-                    color: step.active ? C.white : 'rgba(255,255,255,0.55)',
-                  }}>
-                    {step.label}
-                  </div>
-                </div>
-                {i < 4 && (
-                  <div key={`arrow-${i}`} style={{ color: 'rgba(255,255,255,0.2)', fontSize: 16, flexShrink: 0, marginBottom: 24 }}>→</div>
-                )}
-              </>
-            ))}
-          </div>
         </div>
       </div>
 
@@ -485,6 +551,18 @@ export default function WasteGuide() {
             Every household in Bengaluru uses four bins. Here's exactly what each one is for,
             when it's collected, and the rules that matter.
           </SectionDesc>
+
+          {/* Wet waste stat blurb */}
+          <div
+            style={{ background: C.greenLight, border: `1px solid rgba(45,106,79,0.2)`, borderRadius: 12, borderLeft: `4px solid ${C.green}` }}
+            className="px-5 py-4 mb-8"
+          >
+            <p style={{ color: C.greenDark, fontSize: 14, lineHeight: 1.6 }}>
+              <strong>50%+ of Bengaluru's waste is wet waste.</strong> Segregating correctly into the green bin —
+              with no bag or liner , and washing takeway containers before disposal— reduces total waste generation and makes it significantly safer for waste handlers
+              who sort and process material downstream.
+            </p>
+          </div>
 
           {/* Search */}
           <div className="relative mb-8 max-w-lg">
@@ -558,10 +636,14 @@ export default function WasteGuide() {
                   <div
                     onClick={() => toggleBin(bin.id)}
                     style={{ cursor: 'pointer', userSelect: 'none' }}
-                    className="flex items-start gap-5 px-7 py-6 hover:opacity-90 transition-opacity sm:px-7 sm:py-6 px-4 py-4"
+                    className="flex items-start gap-5 px-5 py-5 hover:opacity-90 transition-opacity sm:px-7 sm:py-6"
                   >
-                    <div style={{ width: 56, height: 56, borderRadius: 14, background: s.iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 26, flexShrink: 0 }}>
-                      {bin.emoji}
+                    {/* Square bin tile icon */}
+                    <div style={{
+                      width: 60, height: 60, borderRadius: 12, background: s.iconBg,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                    }}>
+                      <BinSVG color={BIN_COLOR_HEX[bin.color]} size={32} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: s.labelColor, marginBottom: 4 }}>
@@ -576,8 +658,12 @@ export default function WasteGuide() {
                           </span>
                         )}
                       </div>
-                      <div className="flex flex-wrap gap-2">
-                        {bin.pills.map(p => <MetaPill key={p}>{p}</MetaPill>)}
+                      <div className="flex flex-wrap gap-2 items-center">
+                        <span style={{ fontSize: 11, fontWeight: 600, color: C.textSec, marginRight: 2 }}>
+                          Expected collection frequency:
+                        </span>
+                        <MetaPill>⏱ {bin.frequency}</MetaPill>
+                        {bin.otherPills.map(p => <MetaPill key={p}>{p}</MetaPill>)}
                       </div>
                     </div>
                     <div style={{
@@ -592,7 +678,7 @@ export default function WasteGuide() {
 
                   {/* Card body */}
                   {isOpen && (
-                    <div className="px-7 pb-7 sm:px-7 px-4">
+                    <div className="px-5 pb-6 sm:px-7 sm:pb-7">
                       <div style={{ height: 1, background: C.border, marginBottom: 24 }} />
 
                       {/* Rules */}
@@ -623,9 +709,28 @@ export default function WasteGuide() {
                             {bin.itemPills.map(p => <MetaPill key={p}>{p}</MetaPill>)}
                           </div>
                         )}
-                        <div style={{ background: C.bg, border: `2px dashed ${C.border}`, borderRadius: 10, color: C.textSec }} className="p-5 text-center text-[13px]">
-                          <span className="block text-[20px] mb-1.5">📋</span>
-                          Full item list being finalised by SWMRT and BSWML.<br />Coming soon.
+                        {/* Initial item list */}
+                        {BIN_INITIAL_ITEMS[bin.id] && (
+                          <div style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 10 }} className="mb-3 overflow-hidden">
+                            <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+                              {BIN_INITIAL_ITEMS[bin.id].items.map((item, i) => (
+                                <li key={i} style={{
+                                  fontSize: 13.5, color: C.text, padding: '6px 14px 6px 36px', position: 'relative',
+                                  borderBottom: i < BIN_INITIAL_ITEMS[bin.id].items.length - 1 ? `1px solid ${C.border}` : 'none',
+                                }}>
+                                  <span style={{ position: 'absolute', left: 14, color: BIN_COLOR_HEX[bin.color], fontWeight: 700, fontSize: 12 }}>•</span>
+                                  {item}
+                                </li>
+                              ))}
+                            </ul>
+                            <div style={{ background: BIN_STYLES[bin.color].iconBg, padding: '7px 14px', fontSize: 12, color: BIN_STYLES[bin.color].nameColor, fontStyle: 'italic' }}>
+                              {BIN_INITIAL_ITEMS[bin.id].note}
+                            </div>
+                          </div>
+                        )}
+                        <div style={{ background: C.bg, border: `2px dashed ${C.border}`, borderRadius: 10, color: C.textSec }} className="p-4 text-center text-[13px]">
+                          <span className="block text-[18px] mb-1">📋</span>
+                          Full item list being finalised by SWMRT and BSWML. Coming soon.
                         </div>
                       </div>
 
@@ -639,6 +744,32 @@ export default function WasteGuide() {
                 </div>
               );
             })}
+          </div>
+
+          {/* ── BIN COLOUR REFERENCE ─────────────────────────────────────────── */}
+          <div style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 14, marginTop: 28 }} className="p-5 sm:p-6">
+            <h3 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 18, fontWeight: 700, color: C.text, marginBottom: 4 }}>
+              Don't mix up the bin colours.
+            </h3>
+            <p style={{ fontSize: 13.5, color: C.textSec, marginBottom: 16, lineHeight: 1.55 }}>
+              Encourage and promote the following standardised colours across your building, street, and community:
+            </p>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {[
+                { color: C.green,    bg: C.greenLight, label: 'Green', name: 'Wet / Biodegradable',    example: 'Food waste, peels, garden waste' },
+                { color: C.blueMid,  bg: C.blueLight,  label: 'Blue',  name: 'Dry / Recyclable',       example: 'Paper, plastic, metal, glass' },
+                { color: C.redMid,   bg: C.redLight,   label: 'Red',   name: 'Sanitary / Hazardous',   example: 'Diapers, sanitary pads, bandages' },
+                { color: C.blackMid, bg: C.blackLight, label: 'Black', name: 'Reject Waste',           example: 'Dust, debris, multilayer wrappers' },
+              ].map(b => (
+                <div key={b.label} style={{ background: b.bg, borderRadius: 10, borderTop: `4px solid ${b.color}` }} className="p-3.5">
+                  <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: '1px', textTransform: 'uppercase', color: b.color, marginBottom: 3 }}>
+                    {b.label} Bin
+                  </div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: C.text, marginBottom: 4 }}>{b.name}</div>
+                  <div style={{ fontSize: 11.5, color: C.textSec, lineHeight: 1.4 }}>{b.example}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -745,59 +876,6 @@ export default function WasteGuide() {
           </div>
         </div>
       </section>
-
-      {/* ── ESCALATION ─────────────────────────────────────────────────────── */}
-      <section style={{ borderTop: `1px solid ${C.border}` }} className="py-14">
-        <div className="max-w-3xl mx-auto px-5">
-          <SectionLabel>When things go wrong</SectionLabel>
-          <SectionTitle>How to escalate</SectionTitle>
-          <SectionDesc>
-            Collection missed? Dump forming nearby? Open burning? You have more power
-            than you think — here's how to use it.
-          </SectionDesc>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-7">
-            {ESCALATION_STEPS.map(s => (
-              <div key={s.step} style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 12 }} className="p-5">
-                <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', color: C.green, marginBottom: 8 }}>{s.step}</div>
-                <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 8, color: C.text }}>{s.title}</div>
-                <div style={{ fontSize: 13, color: C.textSec, lineHeight: 1.5 }}>{s.desc}</div>
-              </div>
-            ))}
-          </div>
-
-          {/* Fine callout */}
-          <div style={{ background: C.greenDark, borderRadius: 12 }} className="p-6 sm:p-7 flex items-start gap-4 sm:gap-5">
-            <div style={{ fontSize: 36, flexShrink: 0 }}>⚖️</div>
-            <div>
-              <h4 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 18, fontWeight: 700, marginBottom: 6, color: C.white }}>
-                What a documented escalation looks like
-              </h4>
-              <p style={{ fontSize: 13.5, color: 'rgba(255,255,255,0.75)', lineHeight: 1.5 }}>
-                On 28 March 2026, a citizen in Bengaluru photographed open garbage burning with GPS coordinates and shared it to their
-                marshal's WhatsApp group. The marshal escalated to the CPWD office. A fine of{' '}
-                <strong style={{ color: C.greenMid }}>₹2,000</strong> was issued — receipt included. The WhatsApp thread ended:{' '}
-                <em>"Fines are definite deterrents. Hopefully there will not be repeats."</em>{' '}
-                This is what's possible when citizens document and marshals act.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── FOOTER ─────────────────────────────────────────────────────────── */}
-      <footer style={{ background: C.greenDark, color: 'rgba(255,255,255,0.5)' }} className="py-10 px-6 text-center text-[13px]">
-        <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 24, fontWeight: 700, color: C.white, marginBottom: 8 }}>
-          GEO<span style={{ color: C.greenMid }}>DHA</span>
-        </div>
-        <p className="mb-2">Ward-level waste accountability for Bengaluru</p>
-        <p>
-          <a href="https://geodha.org" style={{ color: C.greenMid, textDecoration: 'none' }}>geodha.org</a>
-          {' · '}Sources: SWMRT, BSWML, BAF, CPP / Beautiful Bharat, BBMP SWM Byelaws 2020, SWM 2026 Rules
-        </p>
-        <p style={{ marginTop: 12, fontSize: 11, opacity: 0.4 }}>
-          Last updated April 2026 · Item lists pending finalisation by SWMRT and BSWML
-        </p>
-      </footer>
 
       {/* Fade-up keyframe */}
       <style>{`@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }`}</style>

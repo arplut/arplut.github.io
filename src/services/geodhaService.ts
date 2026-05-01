@@ -191,13 +191,24 @@ export async function getTestimonials(): Promise<TestimonialDoc[]> {
 
 /**
  * Strip undefined values from an object — Firestore rejects them.
- * For the optional geo fields (exact_lat / exact_lng), use deleteField()
- * when has_exact_location is being set to false so they're removed from
- * the document rather than silently ignored.
+ * For the optional geo fields (exact_lat / exact_lng):
+ *   - addDoc variant: simply omits the fields (deleteField() is not valid with addDoc)
+ *   - updateDoc variant: uses deleteField() so they are removed from the document
  */
-function sanitiseTestimonialPayload(
-  data: Record<string, unknown>,
-): Record<string, unknown> {
+function sanitiseForAdd(data: Record<string, unknown>): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(data)) {
+    if (v !== undefined) out[k] = v;
+  }
+  // When location is disabled just leave the fields absent — no deleteField() on add
+  if (out['has_exact_location'] === false) {
+    delete out['exact_lat'];
+    delete out['exact_lng'];
+  }
+  return out;
+}
+
+function sanitiseForUpdate(data: Record<string, unknown>): Record<string, unknown> {
   const out: Record<string, unknown> = {};
   for (const [k, v] of Object.entries(data)) {
     if (v !== undefined) out[k] = v;
@@ -214,7 +225,7 @@ function sanitiseTestimonialPayload(
 export async function addTestimonial(
   data: Omit<TestimonialDoc, 'id' | 'created_at' | 'updated_at'>,
 ): Promise<string> {
-  const payload = sanitiseTestimonialPayload(data as Record<string, unknown>);
+  const payload = sanitiseForAdd(data as Record<string, unknown>);
   const docRef = await addDoc(collection(db, TESTIMONIALS_COL), {
     ...payload,
     created_at: serverTimestamp(),
@@ -228,7 +239,7 @@ export async function updateTestimonial(
   id: string,
   data: Partial<Omit<TestimonialDoc, 'id' | 'created_at'>>,
 ): Promise<void> {
-  const payload = sanitiseTestimonialPayload(data as Record<string, unknown>);
+  const payload = sanitiseForUpdate(data as Record<string, unknown>);
   await updateDoc(doc(db, TESTIMONIALS_COL, id), {
     ...payload,
     updated_at: serverTimestamp(),

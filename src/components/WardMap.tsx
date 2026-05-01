@@ -50,14 +50,17 @@ interface Props {
 
 const GARBAGE_MOUND_SVG = `<svg xmlns='http://www.w3.org/2000/svg' width='18' height='16' viewBox='0 0 18 16' style='display:inline-block;vertical-align:middle;margin-top:-2px;'><ellipse cx='9' cy='14.5' rx='8.5' ry='1.5' fill='#57534e'/><path d='M1.5 14.5 C2 9.5 5 7 9 6.5 C13 7 16 9.5 16.5 14.5 Z' fill='#78716c'/><line x1='6' y1='9' x2='5' y2='5' stroke='#a8a29e' stroke-width='1.2' stroke-linecap='round'/><line x1='9' y1='7' x2='9' y2='3' stroke='#a8a29e' stroke-width='1.2' stroke-linecap='round'/><line x1='12' y1='9' x2='13' y2='5' stroke='#a8a29e' stroke-width='1.2' stroke-linecap='round'/></svg>`;
 
+
 /**
- * Inline ! badge appended to the ward cluster icon for wards with a centre
- * testimonial (no exact GPS). Slightly larger when marked critical.
+ * Inline ! badge merged into the ward cluster for non-exact testimonials.
+ * Solid fill (matches the exact-pin style). Slightly larger when critical.
  */
 function makeTestimonialInlineBadge(isCritical: boolean): string {
-  const size     = isCritical ? 23 : 19;
-  const fontSize = isCritical ? 13 : 11;
-  return `<span style="display:inline-flex;align-items:center;justify-content:center;width:${size}px;height:${size}px;border-radius:50%;background:#dc2626;border:2px dashed rgba(255,255,255,0.9);font-size:${fontSize}px;font-weight:900;color:#fff;font-family:sans-serif;vertical-align:middle;margin-left:1px;">!</span>`;
+  const size     = isCritical ? 28 : 22;
+  const fontSize = isCritical ? 15 : 13;
+  const border   = isCritical ? '2.5px solid rgba(255,255,255,0.95)' : '2px solid rgba(255,255,255,0.9)';
+  const shadow   = isCritical ? '0 3px 8px rgba(0,0,0,0.65)' : '0 2px 6px rgba(0,0,0,0.55)';
+  return `<span style="display:inline-flex;align-items:center;justify-content:center;width:${size}px;height:${size}px;border-radius:50%;background:#991b1b;border:${border};box-shadow:${shadow};font-size:${fontSize}px;font-weight:900;color:#fff;font-family:sans-serif;vertical-align:middle;margin-left:2px;">!</span>`;
 }
 
 /** Ward problem icon cluster (critical-band categories + optional testimonial badge). */
@@ -157,23 +160,17 @@ const WardMap = ({ wardDataMap, selectedWard, onWardSelect, zoomToWard, testimon
     burn:  computeScale(allWards.map((w) => w.burning_of_garbage)),
   }), [allWards]);
 
-  // Map of ward numbers with a centre testimonial → whether any is critical.
-  // Critical wards get a slightly larger ! badge.
-  const centreTestimonialWards = useMemo<Map<number, boolean>>(
-    () => {
-      const m = new Map<number, boolean>();
-      for (const t of testimonialMarkers.filter((mk) => !mk.isExact)) {
-        // Once a ward is flagged critical, keep it critical even if a later
-        // entry for the same ward is not.
-        m.set(t.wardNum, (m.get(t.wardNum) ?? false) || t.isCritical);
-      }
-      return m;
-    },
-    [testimonialMarkers],
-  );
+  // Non-exact testimonials → merged into the ward cluster icon as an inline badge.
+  // Map: wardNum → isCritical (true if any testimonial for that ward is critical).
+  const centreTestimonialWards = useMemo<Map<number, boolean>>(() => {
+    const m = new Map<number, boolean>();
+    for (const t of testimonialMarkers.filter((mk) => !mk.isExact)) {
+      m.set(t.wardNum, (m.get(t.wardNum) ?? false) || t.isCritical);
+    }
+    return m;
+  }, [testimonialMarkers]);
 
-  // Ward cluster markers: critical-band problem icons + testimonial badge.
-  // Includes any ward with at least one problem icon OR a non-exact testimonial.
+  // Ward cluster markers: critical-band problem icons + inline testimonial badge.
   const docMarkers = useMemo<DocMarker[]>(() => {
     const out: DocMarker[] = [];
     for (const feat of (wardBoundaries as GeoJSON.FeatureCollection).features) {
@@ -297,7 +294,7 @@ const WardMap = ({ wardDataMap, selectedWard, onWardSelect, zoomToWard, testimon
         />
       ))}
 
-      {/* Exact-location markers — documented cases with GPS coordinates */}
+      {/* Exact-location markers — documented cases with a pinned GPS coordinate */}
       {testimonialMarkers.filter((m) => m.isExact).map((m) => (
         <Marker
           key={`te-${m.id}`}

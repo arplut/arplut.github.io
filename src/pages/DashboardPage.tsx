@@ -315,10 +315,17 @@ function WardSheet({ data, zone, scales, actions, allTestimonials, onClose }: Wa
   useEffect(() => { setActiveCategory(null); }, [data.ward_num]);
 
   const handleShare = async () => {
-    const url = `${window.location.origin}/dashboard?ward=${data.ward_num}`;
+    const url  = `${window.location.origin}/dashboard?ward=${data.ward_num}`;
     const text = `📍 ${data.ward_name} (BBMP Ward ${data.ward_num}) — see garbage-related issues reported in this ward on GEODHA`;
     if (navigator.share) {
-      try { await navigator.share({ title: data.ward_name, text, url }); return; } catch { /* fall through */ }
+      try {
+        await navigator.share({ title: data.ward_name, text, url });
+        return;
+      } catch (err) {
+        // User dismissed the share sheet — don't fall through to clipboard
+        if ((err as Error).name === 'AbortError') return;
+        // Any other error → fall through to clipboard
+      }
     }
     try {
       await navigator.clipboard.writeText(url);
@@ -710,10 +717,15 @@ const DashboardPage = () => {
     const url  = `${window.location.origin}/dashboard`;
     const text = `🗺️ See Bengaluru's ward-by-ward garbage problem map. Find your area and see what residents can do about it →`;
     if (navigator.share) {
-      try { await navigator.share({ title: 'GEODHA · Bengaluru Garbage Crisis Map', text, url }); return; } catch { /* fall through */ }
+      try {
+        await navigator.share({ title: 'GEODHA · Bengaluru Garbage Crisis Map', text, url });
+        return;
+      } catch (err) {
+        if ((err as Error).name === 'AbortError') return;
+      }
     }
     try {
-      await navigator.clipboard.writeText(text);
+      await navigator.clipboard.writeText(url);   // copy the URL, not the long text string
       setDashCopied(true);
       setTimeout(() => setDashCopied(false), 2500);
     } catch { /* ignore */ }

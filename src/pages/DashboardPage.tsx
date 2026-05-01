@@ -302,7 +302,12 @@ function WardSheet({ data, zone, scales, actions, allTestimonials, onClose }: Wa
   const [copied, setCopied] = useState(false);
 
   // Image lightbox state
+  // allImages = full-resolution URLs for the lightbox
+  // allThumbs = 300px thumbnails for the preview strip (falls back to full URL)
   const allImages = testimonials.flatMap((t) => t.images);
+  const allThumbs = testimonials.flatMap((t) =>
+    t.images.map((url, i) => t.thumb_images?.[i] ?? url)
+  );
   const [lightbox, setLightbox] = useState<{ idx: number } | null>(null);
 
   // Active problem (for recommended-action selection)
@@ -455,7 +460,7 @@ function WardSheet({ data, zone, scales, actions, allTestimonials, onClose }: Wa
             <section className="px-5 pt-4 pb-2">
               <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Photos</h3>
               <div className="flex gap-2 overflow-x-auto pb-1">
-                {allImages.map((src, i) => (
+                {allImages.map((_src, i) => (
                   <button
                     key={i}
                     onClick={() => setLightbox({ idx: i })}
@@ -463,9 +468,10 @@ function WardSheet({ data, zone, scales, actions, allTestimonials, onClose }: Wa
                     aria-label={`View photo ${i + 1}`}
                   >
                     <img
-                      src={src}
+                      src={allThumbs[i]}
                       alt={`Ward photo ${i + 1}`}
                       className="h-28 w-28 object-cover"
+                      loading="lazy"
                     />
                   </button>
                 ))}

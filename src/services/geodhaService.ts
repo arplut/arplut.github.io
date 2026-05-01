@@ -19,6 +19,8 @@ import {
   ref, uploadBytes, getDownloadURL, deleteObject,
 } from 'firebase/storage';
 import { db, storage } from '../lib/firebase';
+import { computeScale } from '../lib/severity';
+import type { BandLevel } from '../lib/severity';
 
 // ── Collection names ──────────────────────────────────────────────────────────
 
@@ -48,6 +50,12 @@ export interface WardData {
   severity_garbage_dump: number;
   severity_vehicle:      number;
   severity_burning:      number;
+  /** Pre-computed percentile bands (0–5). Written by recomputeWardClassifications(). */
+  band_total?: BandLevel;
+  band_dump?:  BandLevel;
+  band_veh?:   BandLevel;
+  band_burn?:  BandLevel;
+  top_problem?: ProblemCategory;
 }
 
 export type ProblemCategory =
@@ -91,7 +99,8 @@ export interface TestimonialDoc {
   locality:            string;
   date:                string;   // ISO date string
   tags:                TestimonialTag[];
-  images:              string[]; // Storage download URLs
+  images:              string[]; // Storage download URLs (originals)
+  thumb_images?:       string[]; // Parallel array of 300px thumbnail URLs
   has_exact_location:  boolean;
   exact_lat?:          number;
   exact_lng?:          number;
@@ -111,10 +120,51 @@ export async function getWardStats(): Promise<Record<string, WardData>> {
   return data.wards;
 }
 
-/** Admin: overwrite the entire ward stats document. */
+/**
+ * Compute percentile-based severity bands for all wards and stamp them onto
+ * each ward entry.  Returns a new Record — does not mutate the input.
+ * Called automatically by setWardStats so the dashboard never has to do this
+ * work client-side.
+ */
+export function recomputeWardClassifications(
+  wards: Record<string, WardData>,
+): Record<string, WardData> {
+  const list    = Object.values(wards);
+  const cTotal  = computeScale(list.map((w) => w.total_reports));
+  const cDump   = computeScale(list.map((w) => w.garbage_dump));
+  const cVeh    = computeScale(list.map((w) => w.garbage_vehicle_not_arrived));
+  const cBurn   = computeScale(list.map((w) => w.burning_of_garbage));
+
+  const out: Record<string, WardData> = {};
+  for (const [key, w] of Object.entries(wards)) {
+    const bandDump  = cDump(w.garbage_dump)                 as BandLevel;
+    const bandVeh   = cVeh(w.garbage_vehicle_not_arrived)   as BandLevel;
+    const bandBurn  = cBurn(w.burning_of_garbage)           as BandLevel;
+
+    // Top problem = highest band, tiebreak by raw count
+    const ranked: { cat: ProblemCategory; band: BandLevel; count: number }[] = [
+      { cat: 'garbage_dump',               band: bandDump, count: w.garbage_dump },
+      { cat: 'garbage_vehicle_not_arrived', band: bandVeh,  count: w.garbage_vehicle_not_arrived },
+      { cat: 'burning_of_garbage',         band: bandBurn, count: w.burning_of_garbage },
+    ].sort((a, b) => b.band !== a.band ? b.band - a.band : b.count - a.count);
+
+    out[key] = {
+      ...w,
+      band_total:  cTotal(w.total_reports) as BandLevel,
+      band_dump:   bandDump,
+      band_veh:    bandVeh,
+      band_burn:   bandBurn,
+      top_problem: ranked[0].cat,
+    };
+  }
+  return out;
+}
+
+/** Admin: overwrite the entire ward stats document. Auto-recomputes bands. */
 export async function setWardStats(wards: Record<string, WardData>): Promise<void> {
+  const withBands = recomputeWardClassifications(wards);
   await setDoc(doc(db, WARD_STATS_COL, 'summary'), {
-    wards,
+    wards:      withBands,
     updated_at: serverTimestamp(),
   });
 }
@@ -246,16 +296,16 @@ export async function updateTestimonial(
   });
 }
 
-/** Admin: delete a testimonial and all its Storage images. */
-export async function deleteTestimonial(id: string, imageUrls: string[]): Promise<void> {
-  // Delete images from Storage
-  await Promise.allSettled(imageUrls.map((url) => {
-    try {
-      const storageRef = ref(storage, url);
-      return deleteObject(storageRef);
-    } catch {
-      return Promise.resolve();
-    }
+/** Admin: delete a testimonial and all its Storage images (originals + thumbnails). */
+export async function deleteTestimonial(
+  id: string,
+  imageUrls: string[],
+  thumbUrls: string[] = [],
+): Promise<void> {
+  const allUrls = [...imageUrls, ...thumbUrls];
+  await Promise.allSettled(allUrls.map((url) => {
+    try { return deleteObject(ref(storage, url)); }
+    catch { return Promise.resolve(); }
   }));
   await deleteDoc(doc(db, TESTIMONIALS_COL, id));
 }
@@ -269,34 +319,68 @@ export async function deleteTestimonial(id: string, imageUrls: string[]): Promis
  *
  * NOTE: this path must match the Storage security rules:
  *   match /testimonials/{allPaths=**} { allow write: if ... }
+ *
+ * Returns { url, thumbUrl } — url is the original, thumbUrl is a ≤300px JPEG thumbnail.
  */
+
+/** Resize an image file to fit within maxPx × maxPx, returns a JPEG Blob. */
+async function createThumbnail(file: File, maxPx = 300): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      const scale  = Math.min(maxPx / img.width, maxPx / img.height, 1);
+      const canvas = document.createElement('canvas');
+      canvas.width  = Math.round(img.width  * scale);
+      canvas.height = Math.round(img.height * scale);
+      canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(
+        (blob) => blob ? resolve(blob) : reject(new Error('Thumbnail canvas.toBlob failed')),
+        'image/jpeg',
+        0.82,
+      );
+    };
+    img.onerror = () => { URL.revokeObjectURL(objectUrl); reject(new Error('Image load failed')); };
+    img.src = objectUrl;
+  });
+}
+
 export async function uploadTestimonialImage(
   file: File,
   testimonialId: string,
-): Promise<string> {
-  const safeName   = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
-  const path       = `testimonials/${testimonialId}/${safeName}`;
-  const storageRef = ref(storage, path);
+): Promise<{ url: string; thumbUrl: string }> {
+  const safeName    = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+  const origPath    = `testimonials/${testimonialId}/${safeName}`;
+  const thumbPath   = `testimonials/${testimonialId}/thumb_${safeName}`;
+  const origRef     = ref(storage, origPath);
+  const thumbRef    = ref(storage, thumbPath);
 
-  // Diagnostics — visible in browser DevTools console
   const { currentUser } = (await import('../lib/firebase')).auth;
   console.group('📤 uploadTestimonialImage');
   console.log('bucket :', storage.app.options.storageBucket);
-  console.log('path   :', path);
+  console.log('path   :', origPath);
   console.log('auth uid:', currentUser?.uid ?? '⚠️  NOT SIGNED IN');
   console.log('file   :', file.name, `(${(file.size / 1024).toFixed(1)} KB)`);
   console.groupEnd();
 
   const TIMEOUT_MS = 30_000;
-  const upload = uploadBytes(storageRef, file)
-    .then((snap) => {
-      console.log('✅ uploadBytes succeeded, fetching download URL…');
-      return getDownloadURL(snap.ref);
-    })
-    .catch((err) => {
-      console.error('❌ uploadBytes failed:', err.code, err.message);
-      throw err;
-    });
+
+  const doUpload = async (): Promise<{ url: string; thumbUrl: string }> => {
+    // Generate thumbnail client-side before uploading
+    const thumbBlob = await createThumbnail(file);
+
+    const [origSnap, thumbSnap] = await Promise.all([
+      uploadBytes(origRef,  file),
+      uploadBytes(thumbRef, thumbBlob),
+    ]);
+    const [url, thumbUrl] = await Promise.all([
+      getDownloadURL(origSnap.ref),
+      getDownloadURL(thumbSnap.ref),
+    ]);
+    console.log('✅ upload succeeded (original + thumbnail)');
+    return { url, thumbUrl };
+  };
 
   const timeout = new Promise<never>((_, reject) =>
     setTimeout(() => reject(new Error(
@@ -304,9 +388,10 @@ export async function uploadTestimonialImage(
       'Check: 1) Storage bucket name in .env.local is correct, ' +
       '2) Firebase Storage is enabled (Build → Storage → Get Started), ' +
       '3) Storage rules cover "testimonials/" path.'
-    )), TIMEOUT_MS)
+    )), TIMEOUT_MS),
   );
-  return Promise.race([upload, timeout]);
+
+  return Promise.race([doUpload(), timeout]);
 }
 
 /**

@@ -98,6 +98,37 @@ function useScales(wardDataMap: Record<number, WardData>) {
   }, [wardDataMap]);
 }
 
+// ── Date formatter — "2026-04-15" → "April 2026" ─────────────────────────────
+
+function formatMonthYear(dateStr: string): string {
+  if (!dateStr) return '';
+  const d = new Date(dateStr + 'T00:00:00'); // force local-date parse
+  if (isNaN(d.getTime())) return '';
+  return d.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+}
+
+// ── Link renderer (supports [text](url) and bare https:// URLs in quote text) ──
+
+function renderWithLinks(text: string): React.ReactNode {
+  const pattern = /\[([^\]]+)\]\((https?:\/\/[^)]+)\)|https?:\/\/\S+/g;
+  const nodes: React.ReactNode[] = [];
+  let last = 0, match: RegExpExecArray | null;
+  while ((match = pattern.exec(text)) !== null) {
+    if (match.index > last) nodes.push(text.slice(last, match.index));
+    const label = match[1];
+    const href  = match[2] ?? match[0];
+    nodes.push(
+      <a key={match.index} href={href} target="_blank" rel="noopener noreferrer"
+        className="underline text-blue-600 hover:text-blue-800 break-all">
+        {label ?? href}
+      </a>
+    );
+    last = match.index + match[0].length;
+  }
+  if (last < text.length) nodes.push(text.slice(last));
+  return nodes.length === 1 ? nodes[0] : <>{nodes}</>;
+}
+
 // ── Sub-components ────────────────────────────────────────────────────────────
 
 function GarbageMoundIcon({ size = 20 }: { size?: number }) {
@@ -296,7 +327,9 @@ interface WardSheetProps {
 
 function WardSheet({ data, zone, scales, actions, allTestimonials, onClose }: WardSheetProps) {
   const overallBand  = scales.total(data.total_reports) as BandLevel;
-  const testimonials = allTestimonials.filter((t) => t.ward_num === data.ward_num);
+  const testimonials = allTestimonials.filter(
+    (t) => t.ward_num === data.ward_num || (t.extra_ward_nums ?? []).includes(data.ward_num),
+  );
 
   // Share state
   const [copied, setCopied] = useState(false);
@@ -493,26 +526,60 @@ function WardSheet({ data, zone, scales, actions, allTestimonials, onClose }: Wa
             </section>
           )}
 
-          {/* Testimonials */}
-          {testimonials.length > 0 && (
-            <>
-              <div className="mx-5 mt-3 border-t border-gray-100" />
-              <section className="px-5 pt-4 pb-2">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3">Citizen Testimonials &amp; Insights</h3>
-                <div className="space-y-3">
-                  {testimonials.map((c) => (
-                    <div key={c.id} className="bg-amber-50 border border-amber-200 rounded-xl p-3.5 space-y-2">
-                      <p className="text-xs font-bold text-gray-800 leading-snug">{c.title}</p>
-                      <blockquote className="text-xs italic text-gray-600 leading-relaxed border-l-2 border-amber-400 pl-2.5">
-                        "{c.quote}"
-                      </blockquote>
-                      <p className="text-[10px] text-gray-400">{c.source}{c.locality ? ` · ${c.locality}` : ''}</p>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            </>
-          )}
+          {/* Testimonials — split into negative (amber) and positive (green) */}
+          {testimonials.length > 0 && (() => {
+            const negative = testimonials.filter((t) => !(t.is_positive ?? false));
+            const positive = testimonials.filter((t) =>   t.is_positive ?? false);
+            return (
+              <>
+                {negative.length > 0 && (
+                  <>
+                    <div className="mx-5 mt-3 border-t border-gray-100" />
+                    <section className="px-5 pt-4 pb-2">
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3">Citizen Testimonials &amp; Insights</h3>
+                      <div className="space-y-3">
+                        {negative.map((c) => (
+                          <div key={c.id} className="bg-amber-50 border border-amber-200 rounded-xl p-3.5 space-y-2">
+                            <p className="text-xs font-bold text-gray-800 leading-snug">{c.title}</p>
+                            <blockquote className="text-xs italic text-gray-600 leading-relaxed border-l-2 border-amber-400 pl-2.5">
+                              "{renderWithLinks(c.quote)}"
+                            </blockquote>
+                            <p className="text-[10px] text-gray-400">
+                              {c.source}{c.locality ? ` · ${c.locality}` : ''}{c.date ? ` · ${formatMonthYear(c.date)}` : ''}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </section>
+                  </>
+                )}
+                {positive.length > 0 && (
+                  <>
+                    <div className="mx-5 mt-3 border-t border-gray-100" />
+                    <section className="px-5 pt-4 pb-2">
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3 flex items-center gap-1.5">
+                        <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-green-700 text-white text-[9px] font-black">✓</span>
+                        Success Stories
+                      </h3>
+                      <div className="space-y-3">
+                        {positive.map((c) => (
+                          <div key={c.id} className="bg-green-50 border border-green-200 rounded-xl p-3.5 space-y-2">
+                            <p className="text-xs font-bold text-gray-800 leading-snug">{c.title}</p>
+                            <blockquote className="text-xs italic text-gray-600 leading-relaxed border-l-2 border-green-500 pl-2.5">
+                              "{renderWithLinks(c.quote)}"
+                            </blockquote>
+                            <p className="text-[10px] text-gray-400">
+                              {c.source}{c.locality ? ` · ${c.locality}` : ''}{c.date ? ` · ${formatMonthYear(c.date)}` : ''}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </section>
+                  </>
+                )}
+              </>
+            );
+          })()}
 
           {/* Recommended Action */}
           {!allClean && action && (
@@ -600,7 +667,11 @@ function MapLegend() {
       </span>
       <span className="flex items-center gap-1 ml-1 pl-2 border-l border-gray-200">
         <span className="inline-flex items-center justify-center h-3.5 w-3.5 rounded-full bg-red-600 text-white text-[8px] font-bold">!</span>
-        <span>Documented cases</span>
+        <span>Reported cases</span>
+      </span>
+      <span className="flex items-center gap-1 ml-1">
+        <span className="inline-flex items-center justify-center h-3.5 w-3.5 rounded-full bg-green-700 text-white text-[8px] font-bold">✓</span>
+        <span>Success stories</span>
       </span>
     </div>
   );
@@ -741,16 +812,22 @@ const DashboardPage = () => {
 
     const markers: TestimonialMarkerInfo[] = [];
     for (const [wardNum, wt] of byWard) {
-      const exact = wt.filter((t) => t.has_exact_location && t.exact_lat != null && t.exact_lng != null);
-      if (exact.length > 0) {
-        for (const t of exact) {
-          markers.push({ id: t.id, wardNum, latlng: [t.exact_lat!, t.exact_lng!], isExact: true, isCritical: t.critical_or_not ?? false });
-        }
-      } else {
-        const centroid   = WARD_CENTROIDS[wardNum];
-        const isCritical = wt.some((t) => t.critical_or_not);
-        if (centroid) {
-          markers.push({ id: `centre-${wardNum}`, wardNum, latlng: centroid, isExact: false, isCritical });
+      const centroid = WARD_CENTROIDS[wardNum];
+
+      // Handle negative and positive testimonials independently so both can
+      // appear in the same ward cluster simultaneously.
+      for (const isPositive of [false, true] as const) {
+        const group = wt.filter((t) => (t.is_positive ?? false) === isPositive);
+        if (group.length === 0) continue;
+
+        const exact = group.filter((t) => t.has_exact_location && t.exact_lat != null && t.exact_lng != null);
+        if (exact.length > 0) {
+          for (const t of exact) {
+            markers.push({ id: t.id, wardNum, latlng: [t.exact_lat!, t.exact_lng!], isExact: true, isCritical: t.critical_or_not ?? false, isPositive });
+          }
+        } else if (centroid) {
+          const isCritical = group.some((t) => t.critical_or_not);
+          markers.push({ id: `centre-${isPositive ? 'pos' : 'neg'}-${wardNum}`, wardNum, latlng: centroid, isExact: false, isCritical, isPositive });
         }
       }
     }

@@ -106,6 +106,14 @@ export interface TestimonialDoc {
   exact_lng?:          number;
   /** Marks this testimonial as a critical/priority case — shown with a larger ! marker on the map. */
   critical_or_not:     boolean;
+  /** true = success story / positive case — shown as a green ✓ on the map. Defaults to false. */
+  is_positive?:        boolean;
+  /**
+   * Additional ward numbers where this entry should appear in the ward sheet.
+   * The map marker is still placed at the primary ward_num location.
+   * Use for cross-ward initiatives that span multiple wards.
+   */
+  extra_ward_nums?:    number[];
   created_at?:         Timestamp;
   updated_at?:         Timestamp;
 }

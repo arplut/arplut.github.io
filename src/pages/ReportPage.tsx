@@ -1,11 +1,35 @@
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import {
   CheckCircle, ChevronDown, ChevronUp,
   FileText, Phone, Users, HeartHandshake, Lightbulb,
   Shield, MessageCircle, Layers, Recycle, Loader2,
+  Upload, X, ImageIcon,
 } from 'lucide-react';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { signInAnonymously } from 'firebase/auth';
+import { storage, auth } from '@/lib/firebase';
 
 const WEB3FORMS_KEY = '445de55d-332c-4925-8ad4-94e0daff1929';
+
+// ── Lazy anonymous auth — only called if the user uploads images ──────────────
+
+async function ensureAnonAuth() {
+  if (auth.currentUser) return;
+  await signInAnonymously(auth);
+}
+
+// ── Image helpers ─────────────────────────────────────────────────────────────
+
+const MAX_FILES  = 5;
+const MAX_MB     = 10;
+
+async function uploadReportImage(file: File, batchId: string): Promise<string> {
+  await ensureAnonAuth();
+  const safeName  = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+  const storageRef = ref(storage, `report-uploads/${batchId}/${safeName}`);
+  const snap      = await uploadBytes(storageRef, file);
+  return getDownloadURL(snap.ref);
+}
 
 // ── ACTION CARDS ──────────────────────────────────────────────────────────────
 
@@ -174,7 +198,7 @@ const actionCards: ActionCardDef[] = [
       'Hazardous Items (paint, chemicals, medicines) — Contact GBA or authorised hazardous waste handlers; never dispose in regular bins or drains',
     ],
   },
-]
+];
 
 // ── COMPONENT ─────────────────────────────────────────────────────────────────
 
@@ -189,23 +213,73 @@ const ReportPage = () => {
   const [contactError, setContactError]         = useState(false);
   const [expandedCards, setExpandedCards]       = useState<Set<string>>(new Set());
 
+  // Image upload state
+  const [uploads, setUploads]       = useState<{ file: File; preview: string }[]>([]);
+  const [uploading, setUploading]   = useState(false);
+  const [imageError, setImageError] = useState('');
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const handleFiles = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setImageError('');
+    const picked = Array.from(e.target.files ?? []);
+    e.target.value = '';
+
+    const tooBig = picked.filter((f) => f.size > MAX_MB * 1024 * 1024);
+    if (tooBig.length) {
+      setImageError(`Each photo must be under ${MAX_MB} MB. ${tooBig.map((f) => f.name).join(', ')} ${tooBig.length > 1 ? 'are' : 'is'} too large.`);
+      return;
+    }
+
+    setUploads((prev) => {
+      const combined = [...prev, ...picked.map((f) => ({ file: f, preview: URL.createObjectURL(f) }))];
+      if (combined.length > MAX_FILES) {
+        setImageError(`You can attach up to ${MAX_FILES} photos.`);
+        return prev;
+      }
+      return combined;
+    });
+  }, []);
+
+  const removeUpload = (i: number) => {
+    setUploads((prev) => {
+      URL.revokeObjectURL(prev[i].preview);
+      return prev.filter((_, idx) => idx !== i);
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!description.trim()) { setDescriptionError(true); return; }
-    if (!contact.trim()) { setContactError(true); return; }
+    if (!contact.trim())     { setContactError(true);     return; }
+
     setSubmitting(true);
+    setUploading(uploads.length > 0);
     setError('');
+
     try {
-      const res = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
+      // Upload images first (lazy anon auth only if needed)
+      let imageUrls: string[] = [];
+      if (uploads.length > 0) {
+        const batchId = `${Date.now()}`;
+        imageUrls = await Promise.all(uploads.map((u) => uploadReportImage(u.file, batchId)));
+      }
+      setUploading(false);
+
+      const body: Record<string, string> = {
+        access_key:  WEB3FORMS_KEY,
+        subject:     'New Problem Report — GEODHA',
+        description,
+        location,
+        contact,
+      };
+      if (imageUrls.length > 0) {
+        body.images = imageUrls.join('\n');
+      }
+
+      const res  = await fetch('https://api.web3forms.com/submit', {
+        method:  'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({
-          access_key: WEB3FORMS_KEY,
-          subject: 'New Problem Report — GEODHA',
-          description,
-          location,
-          contact,
-        }),
+        body:    JSON.stringify(body),
       });
       const data = await res.json();
       if (data.success) {
@@ -214,10 +288,16 @@ const ReportPage = () => {
       } else {
         setError('Something went wrong. Please try again or email us at contact@geodha.org.');
       }
-    } catch {
-      setError('Could not send your report. Please check your connection and try again.');
+    } catch (err) {
+      const msg = (err as Error).message ?? '';
+      if (msg.includes('storage') || msg.includes('upload') || msg.includes('auth')) {
+        setError('Could not upload your photos. Please check your connection and try again, or submit without photos.');
+      } else {
+        setError('Could not send your report. Please check your connection and try again.');
+      }
     } finally {
       setSubmitting(false);
+      setUploading(false);
     }
   };
 
@@ -229,6 +309,9 @@ const ReportPage = () => {
     setError('');
     setDescriptionError(false);
     setContactError(false);
+    uploads.forEach((u) => URL.revokeObjectURL(u.preview));
+    setUploads([]);
+    setImageError('');
   };
 
   const toggleCard = (id: string) => {
@@ -267,6 +350,8 @@ const ReportPage = () => {
     );
   }
 
+  const inputCls = 'w-full px-4 py-3 rounded-md border bg-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary';
+
   return (
     <div className="min-h-screen bg-background">
 
@@ -304,9 +389,7 @@ const ReportPage = () => {
                 onChange={(e) => { setDescription(e.target.value); setDescriptionError(false); }}
                 rows={5}
                 placeholder="e.g. There is a large illegal garbage dump near the entrance to our street. It has been there for over two weeks and is attracting stray animals."
-                className={`w-full px-4 py-3 rounded-md border bg-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-none ${
-                  descriptionError ? 'border-[#EF4444]' : 'border-border'
-                }`}
+                className={`${inputCls} resize-none ${descriptionError ? 'border-[#EF4444]' : 'border-border'}`}
               />
               {descriptionError && <p className="text-xs text-[#EF4444] mt-1">A description is required.</p>}
             </div>
@@ -325,7 +408,7 @@ const ReportPage = () => {
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="e.g. Near Konanakunte Circle, Bannerghatta Road, Ward 173"
-                className="w-full px-4 py-3 rounded-md border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                className={`${inputCls} border-border`}
               />
             </div>
 
@@ -343,11 +426,70 @@ const ReportPage = () => {
                 value={contact}
                 onChange={(e) => { setContact(e.target.value); setContactError(false); }}
                 placeholder="Phone number or email address"
-                className={`w-full px-4 py-3 rounded-md border bg-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary ${
-                  contactError ? 'border-[#EF4444]' : 'border-border'
-                }`}
+                className={`${inputCls} ${contactError ? 'border-[#EF4444]' : 'border-border'}`}
               />
               {contactError && <p className="text-xs text-[#EF4444] mt-1">Contact details are required.</p>}
+            </div>
+
+            {/* Photos */}
+            <div>
+              <label className="block text-sm font-semibold text-foreground mb-1">
+                Photos <span className="text-xs font-normal text-muted-foreground">(optional, up to {MAX_FILES})</span>
+              </label>
+              <p className="text-xs text-muted-foreground mb-3">
+                Attach photos of the problem site. Max {MAX_MB} MB per photo. Photos are uploaded securely when you submit.
+              </p>
+
+              {/* Thumbnail strip */}
+              {uploads.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {uploads.map((u, i) => (
+                    <div key={i} className="relative group">
+                      <img
+                        src={u.preview}
+                        alt=""
+                        className="h-20 w-20 object-cover rounded-lg border border-border"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeUpload(i)}
+                        className="absolute -top-1.5 -right-1.5 bg-gray-800 text-white rounded-full p-0.5 opacity-80 hover:opacity-100"
+                        aria-label="Remove photo"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Upload button */}
+              {uploads.length < MAX_FILES && (
+                <>
+                  <input
+                    ref={fileRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="hidden"
+                    onChange={handleFiles}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileRef.current?.click()}
+                    className="flex items-center gap-2 w-full px-4 py-3 border border-dashed border-border rounded-md text-sm text-muted-foreground hover:border-primary/50 hover:text-foreground transition-colors bg-card"
+                  >
+                    {uploads.length === 0
+                      ? <><ImageIcon className="h-4 w-4 shrink-0" /> Add photos</>
+                      : <><Upload className="h-4 w-4 shrink-0" /> Add more photos ({uploads.length}/{MAX_FILES})</>
+                    }
+                  </button>
+                </>
+              )}
+
+              {imageError && (
+                <p className="text-xs text-[#EF4444] mt-1.5">{imageError}</p>
+              )}
             </div>
 
             {error && (
@@ -362,7 +504,7 @@ const ReportPage = () => {
               className="w-full py-3.5 bg-primary text-white font-semibold rounded-md hover:bg-primary/90 active:bg-primary/80 transition-colors text-sm disabled:opacity-60 flex items-center justify-center gap-2"
             >
               {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
-              {submitting ? 'Submitting…' : 'Submit Report'}
+              {uploading ? 'Uploading photos…' : submitting ? 'Submitting…' : 'Submit Report'}
             </button>
 
           </form>

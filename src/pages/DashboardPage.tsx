@@ -107,6 +107,16 @@ function formatMonthYear(dateStr: string): string {
   return d.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
 }
 
+// ── Action-step template resolver ─────────────────────────────────────────────
+// Supported placeholders (set in Firestore, resolved at render time):
+//   {ward_num}   → raw ward number, e.g. "12"
+//   {ward_phone} → ward marshal phone, e.g. "9448197012"  (9448197 + 3-digit padded ward_num)
+
+function resolveStep(text: string, wardNum: number): string {
+  const phone = `9448197${String(wardNum).padStart(3, '0')}`;
+  return text.replace(/\{ward_num\}/g, String(wardNum)).replace(/\{ward_phone\}/g, phone);
+}
+
 // ── Link renderer (supports [text](url) and bare https:// URLs in quote text) ──
 
 function renderWithLinks(text: string): React.ReactNode {
@@ -394,11 +404,7 @@ function WardSheet({ data, zone, scales, actions, allTestimonials, onClose }: Wa
       )}
 
       <div className="flex flex-col">
-        <div className="flex justify-center pt-2.5 pb-1">
-          <div className="w-9 h-1 rounded-full bg-gray-300" />
-        </div>
-
-        <div className="flex items-start justify-between px-5 pt-2 pb-3 border-b border-gray-100">
+        <div className="flex items-start justify-between px-5 pt-3 pb-3 border-b border-gray-100">
           <div>
             <h2 className="text-xl font-bold leading-tight" style={{ fontFamily: "'Barlow Condensed', sans-serif" }}>
               {data.ward_name}
@@ -586,42 +592,46 @@ function WardSheet({ data, zone, scales, actions, allTestimonials, onClose }: Wa
             <>
               <div className="mx-5 mt-3 border-t border-gray-100" />
               <section className="px-5 pt-4 pb-2">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3">
-                  Recommended Action
-                  {shownCategory !== top.category && (
-                    <span className="ml-1.5 normal-case text-[10px] font-medium text-blue-500">
-                      · {shownProblem.label}
-                    </span>
-                  )}
+                {/* Violation context card */}
+                <div className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 flex items-start gap-2 mb-3">
+                  <span className="leading-none mt-0.5 flex items-center shrink-0"><ProblemIcon category={shownCategory} size={20} /></span>
+                  <div>
+                    <p className="text-sm font-bold text-gray-800">{action.label}</p>
+                    <p className="text-xs mt-0.5 leading-relaxed text-gray-500">{action.violation}</p>
+                  </div>
+                </div>
+
+                {/* Steps */}
+                <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+                  Recommended Actions
                 </h3>
                 <div className="bg-gray-50 border border-gray-200 rounded-xl overflow-hidden">
-                  <div className="px-4 py-3 flex items-start gap-2 border-b border-gray-100">
-                    <span className="leading-none mt-0.5 flex items-center"><ProblemIcon category={shownCategory} size={20} /></span>
-                    <div>
-                      <p className="text-sm font-bold text-gray-800">{action.label}</p>
-                      <p className="text-xs mt-0.5 leading-relaxed text-gray-500">{action.violation}</p>
-                    </div>
-                  </div>
                   <div className="divide-y divide-gray-100">
-                    {action.steps.map((s, i) => (
-                      <div key={i} className="flex gap-3 px-4 py-3">
-                        <span className="text-base leading-none mt-0.5 shrink-0">{s.emoji}</span>
-                        <div>
-                          <p className="text-xs font-semibold text-gray-800">{s.heading}</p>
-                          <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{s.detail}</p>
-                          {s.url && (
-                            <a
-                              href={s.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline mt-1"
-                            >
-                              {s.urlText?.trim() || 'Learn more'} <ExternalLink className="h-2.5 w-2.5" />
-                            </a>
-                          )}
+                    {action.steps.map((s, i) => {
+                      const heading  = resolveStep(s.heading,          data.ward_num);
+                      const detail   = resolveStep(s.detail,           data.ward_num);
+                      const url      = s.url     ? resolveStep(s.url,     data.ward_num) : undefined;
+                      const urlText  = s.urlText ? resolveStep(s.urlText, data.ward_num) : undefined;
+                      return (
+                        <div key={i} className="flex gap-3 px-4 py-3">
+                          <span className="text-base leading-none mt-0.5 shrink-0">{s.emoji}</span>
+                          <div>
+                            <p className="text-xs font-semibold text-gray-800">{heading}</p>
+                            <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{detail}</p>
+                            {url && (
+                              <a
+                                href={url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline mt-1"
+                              >
+                                {urlText?.trim() || 'Learn more'} <ExternalLink className="h-2.5 w-2.5" />
+                              </a>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               </section>
@@ -719,6 +729,29 @@ const DashboardPage = () => {
   const [fullscreen,   setFullscreen]   = useState(false);
   const [locating,     setLocating]     = useState(false);
   const [dashCopied,   setDashCopied]   = useState(false);
+
+  // ── Swipe-to-dismiss state ────────────────────────────────────────────────
+  const [dragY,      setDragY]      = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartY = useRef(0);
+
+  const onDragHandleStart = (e: React.TouchEvent) => {
+    dragStartY.current = e.touches[0].clientY;
+    setIsDragging(true);
+  };
+  const onDragHandleMove = (e: React.TouchEvent) => {
+    const delta = e.touches[0].clientY - dragStartY.current;
+    if (delta > 0) setDragY(delta);
+  };
+  const onDragHandleEnd = () => {
+    setIsDragging(false);
+    if (dragY > 80) {
+      setDragY(0);
+      handleClose();
+    } else {
+      setDragY(0);
+    }
+  };
 
   const handleWardSelect = (wardNum: number, data: WardData, zone: string) => {
     setSelectedWard({ num: wardNum, data, zone });
@@ -973,11 +1006,19 @@ const DashboardPage = () => {
 
       {/* Bottom sheet — above fullscreen overlay (z-[9000]) and backdrop */}
       <div
-        className={`fixed inset-x-0 bottom-0 z-[9200] transition-transform duration-300 ease-out ${
-          sheetOpen ? 'translate-y-0' : 'translate-y-full'
-        }`}
+        className={`fixed inset-x-0 bottom-0 z-[9200] ${isDragging ? '' : 'transition-transform duration-300 ease-out'}`}
+        style={{ transform: sheetOpen ? `translateY(${dragY}px)` : 'translateY(100%)' }}
       >
         <div className="bg-white rounded-t-2xl shadow-2xl mx-auto max-w-2xl">
+          {/* Drag handle — swipe this area down to dismiss */}
+          <div
+            className="flex justify-center pt-2.5 pb-1 cursor-grab active:cursor-grabbing touch-none select-none"
+            onTouchStart={onDragHandleStart}
+            onTouchMove={onDragHandleMove}
+            onTouchEnd={onDragHandleEnd}
+          >
+            <div className="w-10 h-1 rounded-full bg-gray-300" />
+          </div>
           {selectedWard && (
             <WardSheet
               data={selectedWard.data}

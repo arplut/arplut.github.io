@@ -63,11 +63,20 @@ export type ProblemCategory =
   | 'garbage_vehicle_not_arrived'
   | 'burning_of_garbage';
 
+/**
+ * A single step inside a RecommendedActionDoc.
+ *
+ * Any string field (heading, detail, url, urlText) may contain template
+ * placeholders that are resolved at render time for each ward:
+ *   {ward_num}   → raw ward number, e.g. "12"
+ *   {ward_phone} → ward marshal phone number, e.g. "9448197012"
+ *                  (prefix 9448197 + ward_num zero-padded to 3 digits)
+ */
 export interface ActionStep {
   emoji:   string;
   heading: string;
   detail:  string;
-  /** Optional URL — rendered as a link in the ward card. */
+  /** Optional URL — rendered as a link in the ward card. Supports {ward_num} and {ward_phone}. */
   url?:     string;
   /** Custom label for the URL link; defaults to "Learn more" when omitted. */
   urlText?: string;

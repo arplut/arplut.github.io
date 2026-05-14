@@ -437,11 +437,14 @@ function WardSheet({ data, zone, scales, actions, allTestimonials, onClose }: Wa
           {/* Problems */}
           <div className="px-5 pt-4 pb-3">
             {allClean ? (
-              <div className="flex items-center gap-3 bg-green-50 border border-green-200 rounded-xl px-4 py-3.5">
-                <span className="text-2xl">✅</span>
-                <div>
-                  <p className="text-sm font-semibold text-green-800">Low reported issues</p>
-                  <p className="text-xs text-green-700 mt-0.5">This ward has minimal complaints across all waste categories.</p>
+              <div className="space-y-3">
+                {/* Clean status */}
+                <div className="flex items-center gap-3 bg-green-50 border border-green-200 rounded-xl px-4 py-3.5">
+                  <span className="text-2xl">✅</span>
+                  <div>
+                    <p className="text-sm font-semibold text-green-800">Low reported issues</p>
+                    <p className="text-xs text-green-700 mt-0.5">This ward has minimal complaints across all waste categories.</p>
+                  </div>
                 </div>
               </div>
             ) : (
@@ -500,6 +503,8 @@ function WardSheet({ data, zone, scales, actions, allTestimonials, onClose }: Wa
           </div>
 
           <div className="mx-5 border-t border-gray-100" />
+          
+          
 
           {/* Photos */}
           {allImages.length > 0 ? (
@@ -637,6 +642,38 @@ function WardSheet({ data, zone, scales, actions, allTestimonials, onClose }: Wa
               </section>
             </>
           )}
+
+          <div className="px-5 pt-4 pb-3">
+            {allClean ? (
+              <div className="space-y-3">
+                {/* Report a problem */}
+                <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3.5 space-y-1.5">
+                  <p className="text-xs font-bold text-blue-800">🗑️ See a garbage problem?</p>
+                  <p className="text-xs text-blue-700 leading-relaxed">
+                    File a complaint on{' '}
+                    <a href="https://nammabengaluru.org.in" target="_blank" rel="noopener noreferrer"
+                      className="underline font-semibold">nammabengaluru.org.in</a>
+                    {' '}or call your Ward {data.ward_num} Marshall directly at{' '}
+                    <a href={`tel:9448197${String(data.ward_num).padStart(3, '0')}`}
+                      className="underline font-semibold text-blue-900">
+                      9448197{String(data.ward_num).padStart(3, '0')}
+                    </a>.
+                  </p>
+                </div>
+
+                {/* Segregation guide */}
+                <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3.5 space-y-1.5">
+                  <p className="text-xs font-bold text-blue-800">♻️ Practising good waste habits?</p>
+                  <p className="text-xs text-blue-700 leading-relaxed">
+                    Learn the 4-stream segregation rules for Bengaluru — wet, dry, sanitary, and hazardous.<br />{' '}
+                    <Link to="/guide" className="underline font-semibold text-blue-900">
+                      Read our segregation guide →
+                    </Link>
+                  </p>
+                </div>
+              </div>
+            ) : null}
+          </div>
 
           {/* CTA */}
           <div className="px-5 pt-4 pb-6">

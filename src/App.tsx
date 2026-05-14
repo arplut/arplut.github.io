@@ -48,6 +48,15 @@ function RouteTracker() {
   return null;
 }
 
+/** Scrolls to the top of the page on every route change. */
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [pathname]);
+  return null;
+}
+
 /** Renders children only on the home page — used to gate the TopBanner. */
 function ShowOnHome({ children }: { children: React.ReactNode }) {
   const { pathname } = useLocation();
@@ -62,6 +71,7 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <RouteTracker />
+          <ScrollToTop />
           <Suspense fallback={null}>
             <Routes>
 

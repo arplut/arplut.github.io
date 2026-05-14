@@ -2,9 +2,10 @@ import { useState, useRef, useCallback } from 'react';
 import {
   CheckCircle, ChevronDown, ChevronUp,
   FileText, Phone, Users, HeartHandshake, Lightbulb,
-  Shield, MessageCircle, Layers, Recycle, Loader2,
+  Shield, MessageCircle, Layers, Loader2,
   Upload, X, ImageIcon,
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { signInAnonymously } from 'firebase/auth';
 import { storage, auth } from '@/lib/firebase';
@@ -96,17 +97,10 @@ const actionCards: ActionCardDef[] = [
     iconBg: 'bg-cyan-100',
     iconColor: 'text-cyan-600',
     title: 'Volunteer for Cleanups',
-    description: 'Join cleanup drives run by organisations active across Bengaluru.',
-    type: 'expand',
+    description: 'Join cleanup drives run by organisations active across Bengaluru. Find events near you and connect with other volunteers.',
+    type: 'action',
     ctaText: 'Find cleanup drives',
-    contentIntro: 'Organisations running regular cleanup drives in Bengaluru:',
-    contentItems: [
-      'Youth For Parivarthan — Weekend spot-fixes and neighbourhood drives. Fill the volunteer form at youthforparivarthan.org.in, pay ₹200 membership fee, and join their WhatsApp community for event updates',
-      'The Ugly Indian — Invitation-only weekend spotfixes, 7–10 AM. Email theuglyindian@gmail.com to sign up as a volunteer and get invited to a fix near you',
-      'Indian Ploggers Army — Plogging runs combining jogging with litter pickup. Follow @theindianploggersarmy on Instagram for upcoming Bengaluru events',
-      'Team Everest — Beginner-friendly Trek & Plog events. Sign up event-by-event at teameverest.ngo — no ongoing commitment required',
-    ],
-    contentOutro: 'Most events are on weekends. Check their Instagram pages for upcoming drives near you.',
+    href: '/volunteer',
   },
   {
     id: 'waste_solutions',
@@ -114,16 +108,10 @@ const actionCards: ActionCardDef[] = [
     iconBg: 'bg-amber-100',
     iconColor: 'text-amber-600',
     title: 'Waste Management Solutions',
-    description: 'Explore infrastructure options like Kasa Kiosks, Dry Waste Collection Centres, and composting.',
-    type: 'expand',
-    ctaText: 'Explore solutions',
-    contentIntro: 'Infrastructure options to improve waste management in your area:',
-    contentItems: [
-      'Kasa Kiosks — Community dry waste drop-off points run by Hasiru Dala; locate one near you at hasirudala.in',
-      'Dry Waste Collection Centres (DWCCs) — One per ward; accepts segregated dry waste for recycling',
-      'Composting — Daily Dump and GBA-subsidised home composters available for wet waste processing',
-      'QR Segregation Tracking — Waste Samaritan has developed a QR-based system for waste collectors to track and enforce source segregation',
-    ],
+    description: 'There are many infrastructure options such as Kasa Kiosks, Dry Waste Collection Centres, and composting. Learn more about solutions on our blog.',
+    type: 'action',
+    ctaText: 'Read the blog',
+    href: '/blog',
   },
   {
     id: 'legal_rights',
@@ -167,36 +155,11 @@ const actionCards: ActionCardDef[] = [
     icon: Layers,
     iconBg: 'bg-green-100',
     iconColor: 'text-green-700',
-    title: 'Learn Waste Segregation',
-    description: '4-stream segregation: Wet, Dry, Sanitary, and Domestic Hazardous (SWM Rules 2026).',
-    type: 'expand',
-    ctaText: 'View segregation guide',
-    contentIntro: 'Bengaluru follows 4-stream segregation under SWM Rules 2026:',
-    contentItems: [
-      '🟢 Green Bin — Wet Waste: food scraps, vegetable peels, fruit rinds, garden waste, cooked food',
-      '🔵 Blue Bin — Dry Waste: paper, plastic, metal, glass, cardboard, tetra packs',
-      '🔴 Red Bin — Sanitary Waste: diapers, sanitary pads, tampons, masks, bandages (wrap securely before placing)',
-      '⬛ Black Bin — Domestic Hazardous: batteries, bulbs, paint cans, medicines, e-waste',
-    ],
-    contentOutro: 'Keep 4 separate bins at home and hand each to your waste collector separately. Do not use plastic bag liners inside bins.',
-  },
-  {
-    id: 'disposal_guide',
-    icon: Recycle,
-    iconBg: 'bg-teal-100',
-    iconColor: 'text-teal-600',
-    title: 'Responsible Disposal Guide',
-    description: 'How to dispose of clothes, e-waste, furniture, cooking oil, and other hard-to-recycle items.',
-    type: 'expand',
-    ctaText: 'View disposal guide',
-    contentIntro: 'For items that should not go in regular bins:',
-    contentItems: [
-      'Clothes and Textiles — Donate to Goonj or Pratham; Hasiru Dala runs textile recycling drives; do not mix with dry waste',
-      'E-waste (phones, batteries, chargers, bulbs) — Use GBA e-waste collection drives, Attero or Karo Sambhav drop-off points, or Flipkart/Amazon exchange programmes',
-      'Furniture and Bulky Items — Sell or donate via OLX or Facebook Marketplace; call GBA (1533) to schedule bulk waste pickup; scrap dealers accept metal items',
-      'Cooking Oil — Collect used oil and hand to Hasiru Dala or local recyclers; never pour down drains or mix with wet waste',
-      'Hazardous Items (paint, chemicals, medicines) — Contact GBA or authorised hazardous waste handlers; never dispose in regular bins or drains',
-    ],
+    title: 'Segregation & Disposal Guide',
+    description: 'Learn the 4-stream segregation rules for Bengaluru and how to responsibly dispose of clothes, e-waste, furniture, and other hard-to-recycle items.',
+    type: 'action',
+    ctaText: 'Read the guide',
+    href: '/guide',
   },
 ];
 
@@ -337,14 +300,29 @@ const ReportPage = () => {
             Report received
           </h2>
           <p className="text-muted-foreground leading-relaxed mb-6">
-            Thank you for your report. We will verify the information and follow up by adding it to the civic dashboard, coordinating with the relevant authorities, or reaching out to you directly.
+            Thank you for your report. We will verify the information and follow up by adding it to the civic dashboard, coordinating with the relevant authorities, or reaching out to you directly. You can also join our WhatsApp group to discuss directly with us.
           </p>
-          <button
+          <div className="flex flex-col sm:flex-row gap-3 justify-center mb-3">
+            <a
+              href="https://chat.whatsapp.com/GI1fXzsl1rDArxHbn7bfAT"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#25D366] text-white text-md font-semibold rounded-md hover:bg-[#1ebe5d] transition-colors"
+            >
+              <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.549 4.107 1.508 5.84L0 24l6.335-1.482A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.885 0-3.651-.51-5.17-1.399l-.371-.22-3.762.879.921-3.665-.243-.386A9.937 9.937 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+              </svg>
+              Join WhatsApp Community
+            </a>
+            
+          </div>
+          <span
             onClick={resetForm}
-            className="px-5 py-2.5 bg-primary text-white text-sm font-semibold rounded-md hover:bg-primary/90 transition-colors"
+            className="text-primary underline cursor-pointer pt-2.5"
           >
-            Explore other solutions.
-          </button>
+            Explore other solutions
+          </span>
         </div>
       </div>
     );
@@ -552,14 +530,25 @@ const ReportPage = () => {
                   </p>
 
                   {card.type === 'action' ? (
-                    <a
-                      href={card.href}
-                      className="inline-flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-lg text-white transition-opacity hover:opacity-90 w-fit"
-                      style={{ background: 'var(--gradient-hero)' }}
-                    >
-                      <Icon className="h-3.5 w-3.5" />
-                      {card.ctaText}
-                    </a>
+                    card.href?.startsWith('/') ? (
+                      <Link
+                        to={card.href}
+                        className="inline-flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-lg bg-green-100 text-green-800 hover:bg-green-200 transition-colors w-fit"
+                      >
+                        <Icon className="h-3.5 w-3.5" />
+                        {card.ctaText}
+                      </Link>
+                    ) : (
+                      <a
+                        href={card.href}
+                        target={card.href?.startsWith('tel:') ? undefined : '_blank'}
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-lg bg-green-100 text-green-800 hover:bg-green-200 transition-colors w-fit"
+                      >
+                        <Icon className="h-3.5 w-3.5" />
+                        {card.ctaText}
+                      </a>
+                    )
                   ) : (
                     <button
                       onClick={() => toggleCard(card.id)}

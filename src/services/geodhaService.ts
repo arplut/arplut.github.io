@@ -3,7 +3,9 @@
  * All Firestore + Storage operations for the GEODHA dashboard.
  *
  * Collections (prefixed "geodha_" to avoid clashes with existing app data):
- *   geodha_ward_stats/summary        — single doc: { wards: Record<string, WardData> }
+ *   geodha_ward_stats/summary        — single doc: { wards, baseline_id?, baseline_label? }
+ *   geodha_ward_stats/baseline       — single doc: baseline thresholds (optional)
+ *   geodha_ward_stats_snapshots/{id} — one doc per snapshot
  *   geodha_recommended_actions/{cat} — one doc per category
  *   geodha_testimonials/{id}         — one doc per testimonial / documented case
  */
@@ -19,8 +21,8 @@ import {
   ref, uploadBytes, getDownloadURL, deleteObject,
 } from 'firebase/storage';
 import { db, storage } from '../lib/firebase';
-import { computeScale } from '../lib/severity';
-import type { BandLevel } from '../lib/severity';
+import { extractThresholds, classifyFromThresholds } from '../lib/severity';
+import type { BandLevel, ScaleThresholds } from '../lib/severity';
 
 // ── Collection names ──────────────────────────────────────────────────────────
 
@@ -127,38 +129,116 @@ export interface TestimonialDoc {
   updated_at?:         Timestamp;
 }
 
+// ── Baseline thresholds ───────────────────────────────────────────────────────
+
+/**
+ * Per-metric break points [p20, p40, p60, p80] extracted from a reference
+ * snapshot.  When set, all future publishes classify wards against these fixed
+ * absolute thresholds instead of percentile-ranking the current data.
+ */
+export interface BaselineThresholds {
+  total: ScaleThresholds;
+  dump:  ScaleThresholds;
+  veh:   ScaleThresholds;
+  burn:  ScaleThresholds;
+}
+
+export interface BaselineDoc {
+  snapshot_id:    string;
+  snapshot_label: string;
+  saved_at:       Timestamp;
+  thresholds:     BaselineThresholds;
+}
+
+/** Fetch the active baseline, or null if none is set. */
+export async function getBaseline(): Promise<BaselineDoc | null> {
+  const snap = await getDoc(doc(db, WARD_STATS_COL, 'baseline'));
+  if (!snap.exists()) return null;
+  return snap.data() as BaselineDoc;
+}
+
+/** Compute and store thresholds from a snapshot's ward data as the new baseline. */
+export async function setBaselineFromSnapshot(
+  snapshotId:    string,
+  snapshotLabel: string,
+  snapshotWards: Record<string, WardData>,
+): Promise<void> {
+  const list = Object.values(snapshotWards);
+  const thresholds: BaselineThresholds = {
+    total: extractThresholds(list.map((w) => w.total_reports)),
+    dump:  extractThresholds(list.map((w) => w.garbage_dump)),
+    veh:   extractThresholds(list.map((w) => w.garbage_vehicle_not_arrived)),
+    burn:  extractThresholds(list.map((w) => w.burning_of_garbage)),
+  };
+  await setDoc(doc(db, WARD_STATS_COL, 'baseline'), {
+    snapshot_id:    snapshotId,
+    snapshot_label: snapshotLabel,
+    thresholds,
+    saved_at:       serverTimestamp(),
+  });
+}
+
+/** Remove the active baseline so future publishes revert to self-percentile ranking. */
+export async function clearBaseline(): Promise<void> {
+  await deleteDoc(doc(db, WARD_STATS_COL, 'baseline'));
+}
+
 // ── Ward stats ────────────────────────────────────────────────────────────────
 
+export interface WardStatsSummary {
+  wards:           Record<string, WardData>;
+  /** Label of the snapshot currently used as classification baseline, or null. */
+  baseline_label?: string | null;
+  baseline_id?:    string | null;
+}
+
 /** Fetch all ward statistics from Firestore (single document read). */
-export async function getWardStats(): Promise<Record<string, WardData>> {
+export async function getWardStats(): Promise<WardStatsSummary> {
   const snap = await getDoc(doc(db, WARD_STATS_COL, 'summary'));
   if (!snap.exists()) throw new Error('Ward stats not found. Run the seed script first.');
-  const data = snap.data() as { wards: Record<string, WardData> };
-  return data.wards;
+  const data = snap.data() as WardStatsSummary;
+  return {
+    wards:          data.wards,
+    baseline_label: data.baseline_label ?? null,
+    baseline_id:    data.baseline_id    ?? null,
+  };
 }
 
 /**
- * Compute percentile-based severity bands for all wards and stamp them onto
- * each ward entry.  Returns a new Record — does not mutate the input.
- * Called automatically by setWardStats so the dashboard never has to do this
- * work client-side.
+ * Compute severity bands for all wards and stamp them onto each entry.
+ * Returns a new Record — does not mutate the input.
+ *
+ * If `baseline` thresholds are provided, wards are classified against those
+ * fixed absolute break points (progress relative to a past snapshot).
+ * Otherwise bands are computed by percentile-ranking the current data.
+ *
+ * Called automatically by setWardStats — the dashboard reads pre-baked bands.
  */
 export function recomputeWardClassifications(
-  wards: Record<string, WardData>,
+  wards:    Record<string, WardData>,
+  baseline?: BaselineThresholds,
 ): Record<string, WardData> {
-  const list    = Object.values(wards);
-  const cTotal  = computeScale(list.map((w) => w.total_reports));
-  const cDump   = computeScale(list.map((w) => w.garbage_dump));
-  const cVeh    = computeScale(list.map((w) => w.garbage_vehicle_not_arrived));
-  const cBurn   = computeScale(list.map((w) => w.burning_of_garbage));
+  const list = Object.values(wards);
+
+  const cTotal = baseline
+    ? classifyFromThresholds(baseline.total)
+    : classifyFromThresholds(extractThresholds(list.map((w) => w.total_reports)));
+  const cDump = baseline
+    ? classifyFromThresholds(baseline.dump)
+    : classifyFromThresholds(extractThresholds(list.map((w) => w.garbage_dump)));
+  const cVeh = baseline
+    ? classifyFromThresholds(baseline.veh)
+    : classifyFromThresholds(extractThresholds(list.map((w) => w.garbage_vehicle_not_arrived)));
+  const cBurn = baseline
+    ? classifyFromThresholds(baseline.burn)
+    : classifyFromThresholds(extractThresholds(list.map((w) => w.burning_of_garbage)));
 
   const out: Record<string, WardData> = {};
   for (const [key, w] of Object.entries(wards)) {
-    const bandDump  = cDump(w.garbage_dump)                 as BandLevel;
-    const bandVeh   = cVeh(w.garbage_vehicle_not_arrived)   as BandLevel;
-    const bandBurn  = cBurn(w.burning_of_garbage)           as BandLevel;
+    const bandDump = cDump(w.garbage_dump)                 as BandLevel;
+    const bandVeh  = cVeh(w.garbage_vehicle_not_arrived)   as BandLevel;
+    const bandBurn = cBurn(w.burning_of_garbage)           as BandLevel;
 
-    // Top problem = highest band, tiebreak by raw count
     const ranked: { cat: ProblemCategory; band: BandLevel; count: number }[] = [
       { cat: 'garbage_dump',               band: bandDump, count: w.garbage_dump },
       { cat: 'garbage_vehicle_not_arrived', band: bandVeh,  count: w.garbage_vehicle_not_arrived },
@@ -177,12 +257,19 @@ export function recomputeWardClassifications(
   return out;
 }
 
-/** Admin: overwrite the entire ward stats document. Auto-recomputes bands. */
+/**
+ * Admin: overwrite the entire ward stats document.
+ * Automatically fetches the active baseline (if any) and applies it during
+ * band recomputation, then stamps baseline_id / baseline_label onto the doc.
+ */
 export async function setWardStats(wards: Record<string, WardData>): Promise<void> {
-  const withBands = recomputeWardClassifications(wards);
+  const baseline  = await getBaseline();
+  const withBands = recomputeWardClassifications(wards, baseline?.thresholds);
   await setDoc(doc(db, WARD_STATS_COL, 'summary'), {
-    wards:      withBands,
-    updated_at: serverTimestamp(),
+    wards:          withBands,
+    updated_at:     serverTimestamp(),
+    baseline_id:    baseline?.snapshot_id    ?? null,
+    baseline_label: baseline?.snapshot_label ?? null,
   });
 }
 

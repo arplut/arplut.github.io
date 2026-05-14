@@ -662,27 +662,35 @@ function WardSheet({ data, zone, scales, actions, allTestimonials, onClose }: Wa
 
 // ── Map legend ────────────────────────────────────────────────────────────────
 
-function MapLegend() {
+function MapLegend({ baselineLabel }: { baselineLabel?: string | null }) {
   const bands: BandLevel[] = [1, 2, 3, 4, 5];
   return (
-    <div className="flex items-center gap-0.5 flex-wrap text-[10px] text-gray-500">
-      {bands.map((b) => (
-        <span key={b} className="flex items-center gap-1 mr-2">
-          <span className="inline-block h-2.5 w-4 rounded-sm border border-black/8" style={{ background: BAND[b].mapColor }} />
-          {BAND[b].label}
+    <div className="flex flex-col gap-1.5">
+      <div className="flex items-center gap-0.5 flex-wrap text-[10px] text-gray-500">
+        {bands.map((b) => (
+          <span key={b} className="flex items-center gap-1 mr-2">
+            <span className="inline-block h-2.5 w-4 rounded-sm border border-black/8" style={{ background: BAND[b].mapColor }} />
+            {BAND[b].label}
+          </span>
+        ))}
+        <span className="flex items-center gap-1 mr-2 ml-1 pl-2 border-l border-gray-200">
+          <GarbageMoundIcon size={14} /><span>🚛🔥</span><span>Top-affected</span>
         </span>
-      ))}
-      <span className="flex items-center gap-1 mr-2 ml-1 pl-2 border-l border-gray-200">
-        <GarbageMoundIcon size={14} /><span>🚛🔥</span><span>Top-affected</span>
-      </span>
-      <span className="flex items-center gap-1 ml-1 pl-2 border-l border-gray-200">
-        <span className="inline-flex items-center justify-center h-3.5 w-3.5 rounded-full bg-red-600 text-white text-[8px] font-bold">!</span>
-        <span>Reported cases</span>
-      </span>
-      <span className="flex items-center gap-1 ml-1">
-        <span className="inline-flex items-center justify-center h-3.5 w-3.5 rounded-full bg-green-700 text-white text-[8px] font-bold">✓</span>
-        <span>Success stories</span>
-      </span>
+        <span className="flex items-center gap-1 ml-1 pl-2 border-l border-gray-200">
+          <span className="inline-flex items-center justify-center h-3.5 w-3.5 rounded-full bg-red-600 text-white text-[8px] font-bold">!</span>
+          <span>Reported cases</span>
+        </span>
+        <span className="flex items-center gap-1 ml-1">
+          <span className="inline-flex items-center justify-center h-3.5 w-3.5 rounded-full bg-green-700 text-white text-[8px] font-bold">✓</span>
+          <span>Success stories</span>
+        </span>
+      </div>
+      {baselineLabel && (
+        <p className="text-[10px] text-blue-600 flex items-center gap-1">
+          <span className="inline-block w-2 h-2 rounded-full bg-blue-500 shrink-0" />
+          Severity relative to baseline: <span className="font-semibold truncate max-w-[200px]">{baselineLabel}</span>
+        </p>
+      )}
     </div>
   );
 }
@@ -712,7 +720,7 @@ function ErrorScreen({ message }: { message: string }) {
 
 const DashboardPage = () => {
   // ── Firebase data ─────────────────────────────────────────────────────────
-  const { wardDataMap, loading: wardLoading, error: wardError }     = useWardStats();
+  const { wardDataMap, baselineLabel, loading: wardLoading, error: wardError } = useWardStats();
   const { actions,     loading: actLoading,  error: actError }      = useRecommendedActionsDB();
   const { testimonials }                                             = useTestimonialsDB();
 
@@ -931,7 +939,7 @@ const DashboardPage = () => {
 
           {/* Legend strip */}
           <div className="px-4 py-2 border-t border-gray-100 bg-white shrink-0">
-            <MapLegend />
+            <MapLegend baselineLabel={baselineLabel} />
           </div>
         </div>
       )}
@@ -976,7 +984,7 @@ const DashboardPage = () => {
 
         {/* Legend — above map */}
         <div className="px-4 sm:px-6 py-2 border-y border-gray-100 bg-white">
-          <MapLegend />
+          <MapLegend baselineLabel={baselineLabel} />
         </div>
 
         {/* Map */}

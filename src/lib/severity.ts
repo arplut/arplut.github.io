@@ -7,26 +7,43 @@
 export type BandLevel = 0 | 1 | 2 | 3 | 4 | 5;
 export type ClassifyFn = (value: number) => BandLevel;
 
+/**
+ * Four absolute break-point values [p20, p40, p60, p80] extracted from a
+ * reference dataset.  Stored in Firestore as the "baseline" so future uploads
+ * can be classified against fixed historical thresholds instead of
+ * re-percentiling themselves.
+ */
+export type ScaleThresholds = [number, number, number, number];
+
 /** Compute a classify function from a full array of raw values. */
 export function computeScale(values: number[]): ClassifyFn {
+  return classifyFromThresholds(extractThresholds(values));
+}
+
+/**
+ * Extract the four percentile break points from a set of raw values.
+ * Returns fixed numbers that can be stored and reused as a baseline.
+ */
+export function extractThresholds(values: number[]): ScaleThresholds {
   const nonZero = values.filter((v) => v > 0).sort((a, b) => a - b);
-  if (nonZero.length === 0) return () => 0;
+  if (nonZero.length === 0) return [1, 2, 3, 4];
 
   const pct = (p: number): number => {
     const idx = Math.floor((p / 100) * nonZero.length);
     return nonZero[Math.min(idx, nonZero.length - 1)];
   };
 
-  // Raw break values at the four percentile marks
   const raw = [pct(20), pct(40), pct(60), pct(80)];
-
-  // Deduplicate: enforce minimum gap of 1 between consecutive breaks
   const breaks: number[] = [];
   for (let i = 0; i < raw.length; i++) {
     const floor = i === 0 ? raw[i] : breaks[i - 1] + 1;
     breaks.push(Math.max(raw[i], floor));
   }
+  return breaks as ScaleThresholds;
+}
 
+/** Build a classify function from pre-computed break points. */
+export function classifyFromThresholds(breaks: ScaleThresholds): ClassifyFn {
   return (value: number): BandLevel => {
     if (value <= 0) return 0;
     if (value <= breaks[0]) return 1;

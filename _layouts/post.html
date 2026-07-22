@@ -1,0 +1,19 @@
+---
+layout: default
+---
+<article class="page-content">
+  <h1>{{ page.title }}</h1>
+  <div class="post-meta">{{ page.date | date: "%Y-%m-%d" }}{% if page.category %} · {{ page.category }}{% endif %}</div>
+  {{ content }}
+
+  {% if site.cusdis_app_id %}
+  <div id="cusdis_thread"
+    data-host="https://cusdis.com"
+    data-app-id="{{ site.cusdis_app_id }}"
+    data-page-id="{{ page.url }}"
+    data-page-url="{{ page.url | absolute_url }}"
+    data-page-title="{{ page.title }}">
+  </div>
+  <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
+  {% endif %}
+</article>

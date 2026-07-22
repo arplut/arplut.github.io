@@ -1,75 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Work in Progress</title>
-<style>
-  :root {
-    color-scheme: light dark;
-  }
+---
+layout: default
+---
+<section class="hero">
+  <div class="hero-kicker">// tail -f brain.log 👋</div>
+  <h1>Hi, I'm Pratul. Welcome to my brain's log.</h1>
+  <p>{{ site.description }}</p>
+  <a class="btn" href="{{ '/about/' | relative_url }}">why I started →</a>
+</section>
 
-  * {
-    box-sizing: border-box;
-  }
+<section class="category-grid">
+  {% for cat in site.categories_list %}
+  <a class="category-card" href="{{ '/blog/' | append: cat.slug | append: '/' | relative_url }}">
+    <span class="category-num">{{ forloop.index | prepend: "0" | slice: -2, 2 }}</span>
+    <h3>{{ cat.name }}</h3>
+    <p>{{ cat.description }}</p>
+  </a>
+  {% endfor %}
+</section>
 
-  html, body {
-    height: 100%;
-    margin: 0;
-  }
-
-  body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background: #0f172a;
-    color: #f1f5f9;
-    text-align: center;
-    padding: 1.5rem;
-  }
-
-  main {
-    max-width: 32rem;
-  }
-
-  h1 {
-    font-size: clamp(1.75rem, 5vw, 2.5rem);
-    margin-bottom: 0.75rem;
-    letter-spacing: -0.02em;
-  }
-
-  p {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    color: #cbd5e1;
-    margin-bottom: 1.75rem;
-  }
-
-  a {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #0f172a;
-    background: #38bdf8;
-    padding: 0.65rem 1.25rem;
-    border-radius: 999px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: transform 0.15s ease, background 0.15s ease;
-  }
-
-  a:hover {
-    background: #7dd3fc;
-    transform: translateY(-1px);
-  }
-</style>
-</head>
-<body>
-<main>
-  <h1>A BrainLOG by Pratul<br>Work in Progress 🚧</h1>
-  <p>Currently revamping my blog. In the meantime, feel free to connect with me on LinkedIn.</p>
-  <a href="https://www.linkedin.com/in/pratulvenkatesh/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-</main>
-</body>
-</html>
+<section class="recent">
+  <div class="recent-header">
+    <h2>Recently logged</h2>
+    <a href="{{ '/blog/' | relative_url }}">see all →</a>
+  </div>
+  {% for post in site.posts limit: 5 %}
+  <div class="post-row">
+    <div class="post-row-title">
+      <span class="post-row-num">{{ forloop.index | prepend: "0" | slice: -2, 2 }}</span>
+      <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+    </div>
+    <div class="post-row-meta">{{ post.category }} · {{ post.date | date: "%Y" }}</div>
+  </div>
+  {% endfor %}
+</section>

@@ -1,0 +1,17 @@
+---
+layout: page
+title: Blog
+permalink: /blog/
+---
+
+<section class="recent">
+  {% for post in site.posts %}
+  <div class="post-row">
+    <div class="post-row-title">
+      <span class="post-row-num">{{ forloop.index | prepend: "0" | slice: -2, 2 }}</span>
+      <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+    </div>
+    <div class="post-row-meta">{{ post.category }} · {{ post.date | date: "%Y" }}</div>
+  </div>
+  {% endfor %}
+</section>

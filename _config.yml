@@ -1,0 +1,49 @@
+title: brainLOG
+tagline: A brainLOG by Pratul
+description: "I write to think — to understand myself, to remember, and maybe to meet a few minds that wander the same way. Poems, reflections, science, and the quiet questions in between."
+url: "https://www.pratulv.com"
+author: Pratul Venkatesh
+email: pratulvenkatesh@outlook.com
+location: "Bengaluru, India"
+linkedin: "https://www.linkedin.com/in/pratulvenkatesh/"
+
+markdown: kramdown
+permalink: /blog/:categories/:title/
+
+collections:
+  category_pages:
+    output: true
+
+categories_list:
+  - name: Poems
+    slug: poems
+    description: "Verses and fragments — things felt before understood."
+  - name: Reflections on Life
+    slug: reflections
+    description: "Musings, essays, and stories from the everyday."
+  - name: Sci-Tech
+    slug: sci-tech
+    description: "Engineering, ideas, and building the future."
+  - name: Spirituality
+    slug: spirituality
+    description: "Seeking, stillness, and the search for meaning."
+
+nav:
+  - name: blog
+    url: /blog/
+  - name: about
+    url: /about/
+  - name: work
+    url: /work/
+  - name: stuff
+    url: /stuff/
+  - name: contact
+    url: /contact/
+
+plugins:
+  - jekyll-feed
+
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock

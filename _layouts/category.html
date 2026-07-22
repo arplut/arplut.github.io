@@ -1,0 +1,21 @@
+---
+layout: default
+---
+<section class="page-content">
+  <h1>{{ page.title }}</h1>
+  <p class="post-meta">{{ page.description }}</p>
+</section>
+<section class="recent">
+  {% assign posts = site.categories[page.category_slug] %}
+  {% for post in posts %}
+  <div class="post-row">
+    <div class="post-row-title">
+      <span class="post-row-num">{{ forloop.index | prepend: "0" | slice: -2, 2 }}</span>
+      <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+    </div>
+    <div class="post-row-meta">{{ post.date | date: "%Y" }}</div>
+  </div>
+  {% else %}
+  <p>No posts yet.</p>
+  {% endfor %}
+</section>

@@ -9,7 +9,8 @@ layout: default
 </section>
 
 <section class="category-grid">
-  {% for cat in site.categories_list %}
+  {% assign featured = site.categories_list | where: "featured", true %}
+  {% for cat in featured %}
   <a class="category-card" href="{{ '/blog/' | append: cat.slug | append: '/' | relative_url }}">
     <span class="category-num">{{ forloop.index | prepend: "0" | slice: -2, 2 }}</span>
     <h3>{{ cat.name }}</h3>
@@ -29,7 +30,7 @@ layout: default
       <span class="post-row-num">{{ forloop.index | prepend: "0" | slice: -2, 2 }}</span>
       <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
     </div>
-    <div class="post-row-meta">{{ post.category }} · {{ post.date | date: "%Y" }}</div>
+    <div class="post-row-meta">{% include primary_category.html post=post %} · {{ post.date | date: "%Y" }}</div>
   </div>
   {% endfor %}
 </section>

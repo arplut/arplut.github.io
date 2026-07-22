@@ -1,0 +1,66 @@
+name: Social drafts
+
+# When a post is published (added/changed on main), draft social-media copy for
+# it via the Claude API and open a PR with the drafts for review.
+# Nothing is posted automatically.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "_posts/**"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    # Skip if the API key secret isn't configured yet.
+    if: ${{ github.actor != 'github-actions[bot]' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Find changed posts
+        id: changed
+        run: |
+          BEFORE='${{ github.event.before }}'
+          if [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+            BEFORE=HEAD~1
+          fi
+          FILES=$(git diff --name-only --diff-filter=AM "$BEFORE" '${{ github.sha }}' -- '_posts/*.md' | tr '\n' ' ')
+          echo "files=$FILES" >> "$GITHUB_OUTPUT"
+          echo "Changed posts: $FILES"
+
+      - name: Install deps
+        if: ${{ steps.changed.outputs.files != '' }}
+        working-directory: scripts
+        run: npm install --no-audit --no-fund
+
+      - name: Generate social drafts
+        if: ${{ steps.changed.outputs.files != '' }}
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: node scripts/generate-social.mjs ${{ steps.changed.outputs.files }}
+
+      - name: Open PR with drafts
+        if: ${{ steps.changed.outputs.files != '' }}
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: social-drafts
+          title: "Social drafts for new post(s)"
+          commit-message: "chore: social drafts for new post(s)"
+          body: |
+            Auto-generated social-media drafts for the latest published post(s).
+            Review and edit `social/*.md`, then post manually. Close this PR if not needed.
+          add-paths: |
+            social/**

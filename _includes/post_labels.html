@@ -1,0 +1,12 @@
+{%- comment -%}
+Renders all of a post's categories as clickable label pills. Usage:
+  {% include post_labels.html post=page %}
+{%- endcomment -%}
+{% if include.post.categories and include.post.categories.size > 0 %}
+<div class="labels">
+  {% for cat in include.post.categories %}
+    {% assign match = site.categories_list | where: "slug", cat | first %}
+    <a class="label" href="{{ '/blog/' | append: cat | append: '/' | relative_url }}">{{ match.name | default: cat }}</a>
+  {% endfor %}
+</div>
+{% endif %}

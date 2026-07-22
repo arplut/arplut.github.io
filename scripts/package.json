@@ -1,0 +1,10 @@
+{
+  "name": "social-pipeline",
+  "private": true,
+  "type": "module",
+  "description": "Drafts social-media variants of a published blog post via the Claude API.",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.68.0",
+    "gray-matter": "^4.0.3"
+  }
+}

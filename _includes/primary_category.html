@@ -1,0 +1,9 @@
+{%- comment -%}
+Renders the display name of a post's first category. Usage:
+  {% include primary_category.html post=post %}
+{%- endcomment -%}
+{%- assign firstcat = include.post.categories | first -%}
+{%- if firstcat -%}
+{%- assign match = site.categories_list | where: "slug", firstcat | first -%}
+{{- match.name | default: firstcat -}}
+{%- endif -%}

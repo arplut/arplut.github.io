@@ -7,26 +7,42 @@ email: pratulvenkatesh@outlook.com
 location: "Bengaluru, India"
 linkedin: "https://www.linkedin.com/in/pratulvenkatesh/"
 
+# --- Third-party keys (drop these in — see SETUP.md) ---
+google_analytics: ""   # GA4 Measurement ID, e.g. "G-XXXXXXXXXX". Analytics only fire in production.
+cusdis_app_id: ""      # From cusdis.com. Comments only render once this is set.
+
 markdown: kramdown
-permalink: /blog/:categories/:title/
+
+# Posts live at /blog/<slug>/ — the URL is decoupled from categories,
+# so a post can carry multiple category labels without duplicating the page.
+permalink: /blog/:title/
 
 collections:
   category_pages:
     output: true
 
+# Master list of categories. `featured: true` ones become the 4 homepage cards.
+# `slug` is what goes in a post's `categories:` frontmatter; `name` is the display label.
 categories_list:
   - name: Poems
     slug: poems
+    featured: true
     description: "Verses and fragments — things felt before understood."
   - name: Reflections on Life
     slug: reflections
+    featured: true
     description: "Musings, essays, and stories from the everyday."
   - name: Sci-Tech
     slug: sci-tech
+    featured: true
     description: "Engineering, ideas, and building the future."
   - name: Spirituality
     slug: spirituality
+    featured: true
     description: "Seeking, stillness, and the search for meaning."
+  - name: Miscellany
+    slug: miscellany
+    description: "Odds and ends that defy category."
 
 nav:
   - name: blog
@@ -42,8 +58,17 @@ nav:
 
 plugins:
   - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
 
 exclude:
   - README.md
+  - SETUP.md
   - Gemfile
   - Gemfile.lock
+  - oauth-proxy/
+  - scripts/
+  - social/
+  - node_modules/
+  - package.json
+  - package-lock.json

@@ -4,7 +4,7 @@ backend:
   branch: main
   # base_url points to the OAuth proxy that performs the GitHub token exchange.
   # Not deployed yet — fill in once the proxy (e.g. a Cloudflare Worker) is live.
-  # base_url: https://<your-oauth-proxy>
+  base_url: https://decap-oauth.pratulv.workers.dev
   auth_endpoint: auth
 
 publish_mode: editorial_workflow

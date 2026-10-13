@@ -1,0 +1,62 @@
+---
+layout: post
+title: Maybe We Will Be OK. Conversations About AI from the Development Sector.
+date: 2026-10-13T17:57:00.000+05:30
+categories: reflections
+category: Reflections on Life
+---
+A few weeks ago, I joined a Dev Sec Meetup in Bengaluru built around a simple idea: a dialogic space to talk about AI through lived experiences. It was hosted by Naagha Shyamala R of Kshetra Foundation and co-hosted by Neena Jain, as part of the Dev Sec Meetups community started by Aagam Shah. These are free, inclusive, zero-waste meetups for anyone working towards making the city a better place, and this one was held at Samagata Foundation. Most of us in the room were from the development sector. The hosts were clear from the start that they didn’t walk in with answers, and didn’t expect us to walk out with any either.
+
+The conversation ran over three rounds: the costs and benefits of AI, its boundaries, and its governance and regulation. Most conversations about AI are led by people who build it or sell it, so if you are curious how people working on social issues on the ground think about it, I hope these notes offer a useful window. They come only from the small group I was part of; other groups had their own discussions and arrived at different insights. I scribbled notes on a sheet of brown paper as we went, and this piece is my attempt to make sense of them.
+
+<b>Round 1: Advantages and Disadvantages</b>
+
+The advantages came quickly. AI helps frame thoughts, speeds up coding, and lets you move faster. It can consolidate multiple ideas into one place. When used well, it helps more people communicate and express their ideas easily, and as something to bounce ideas off, it can help with thinking too. And the feedback is immediate.
+
+The disadvantages list was longer. Data centres and their water use. Entry level jobs disappearing. Erosion of critical thinking. Sycophantic AI that tells you what you want to hear. Blind trust in the output, for example in translation and self expression. And paywalls deciding who gets access to the better tools.
+
+Two points stayed with me more than the rest. The first was that jobs are being affected less by AI itself and more by the cost cutting mindset that comes with it. AI doesn’t decide to replace an entry level hire; a company looking to save money does. That distinction matters, because it puts the responsibility back on decisions people make.
+
+The second was the loss of real connections in the building process. AI helps you move fast, but the slower work you would have done without it forces you to build human connections along the way. And those connections are what anything needs to sustain.
+
+<b>Round 2: Boundaries and Using AI</b>
+
+This round was more personal. The idea of AI as a therapist got a fairly skeptical response from the room 😐, and sycophancy came up again. Some felt that for those who are discerning, it’s fine. Others pointed out that our generation grew up without AI, so we at least have a baseline to compare against. The general advice was to see it as an assistant, not more.
+
+Someone observed that the quantity of work has gone up, but its quality has dropped as a result. There was also a strong feeling that we should push back on the blame being put on consumers, when corporations and governments are the ones making the larger decisions. At the same time, some felt a personal value system can guide us back when we drift. Both can be true: individuals still have choices, but they shouldn’t carry the guilt for problems created at a much larger scale. And every generation worries about the next one, but mostly they turn out fine.
+
+That last point connected with something I have been thinking about. Take gaming addiction in children. It can look like they are doomed, but once they grow up, with the right environment and opportunities, they can heal and move past it. These things are not lifelong or character defining. I think we often underestimate how much people can recover when the conditions around them change.
+
+<b>Round 3: Governance and Regulation</b>
+
+Water came up again, this time from a policy angle. It can be made sustainable, but poor regulation allows exploitation. Right now, the government has made it too easy to set up data centres without proper planning. Regulation is tough to implement in India; it works on a long timeline, and a lot of damage may be done in the short term. India is also playing catch up on innovation, and as a country with large inertia, it is generally slow to respond and put the necessary regulation in place.
+
+There was an interesting observation about how differently sectors see this. The private sector tends to be optimistic and opportunistic, while the social sector is pessimistic and critical. That makes it difficult for either side to appeal to the other. Overall, the room was not very sure about solutions.
+
+Two thoughts of my own from this round. First, those of us in the development sector were already engaged and showing up to talk about this, but how do we bring people from outside the sector into these conversations? Second, and a little cynically: economics ultimately rules. :\
+
+<b>What We Took Away</b>
+
+At the end, we put together what felt most important to present:
+
+Too much blame and guilt is placed on consumers, instead of on governments and corporations.
+Trust in regulation is low. It cannot solve all the problems, because it will always be flawed.
+On countering nihilism and generational anxiety: maybe we will be ok.
+
+When asked if there were topics we wanted to talk about more, the honest answer was “not really.” But one question stayed open for me: public ownership. How can citizens be more involved in the key decisions around AI, like where data centres go, how jobs are regulated, and what happens in education? These decisions will affect a lot of lives, and right now very few people have a say in them. We didn’t get around to discussing it, but it feels like the conversation worth having next.
+
+One More Thought: Beyond the Chatbot
+
+A lot of people still think of AI as a chatbot. But a more recent development, and a higher risk, comes from advanced agentic AI: systems that can take actions on their own, not just answer questions. In the wrong hands, these can pose serious cybersecurity risks, including attacks on critical systems.
+
+How does this affect the common man? Imagine an airline’s systems going down one day, and suddenly passenger verification fails everywhere. Flights are severely delayed and no one is able to take off. We have already seen a version of this. In July 2024, a faulty software update from CrowdStrike crashed millions of Windows machines worldwide, grounding flights and disrupting banks and hospitals. That was an accident, not an attack. Now imagine the same scale of disruption done deliberately: a payment system crashing and millions of people unable to make online transactions, or a power grid being hacked and causing widespread blackouts.
+
+During that outage, IndiGo kept flights moving by issuing handwritten boarding passes. It made me think. Earlier I called India slow, and on regulation that is a real problem. But that same slowness to fully digitise means many of our analog fallbacks still exist. A system that can drop back to pen and paper is harder to break completely. Engineers call this graceful degradation, and it may turn out to be one of the most underrated forms of resilience we have. As we rush to automate everything, keeping a manual way to do the essential things might be one of the smartest choices we can make.
+
+Closing
+
+What surprised me, and the hosts said this too, was that there wasn’t really any anti-AI sentiment in the room. There was anxiety, mostly about making sure AI is used responsibly. And by the end, a lot of that anxiety had turned into curiosity.
+
+I count myself an optimist, though I acknowledge the high risks and damage AI can cause in the short term, especially in the wrong hands. By optimism, I simply mean pushing back on the nihilist view that all of humanity is doomed. I am not worried about a “sentient” or “conscious” AI; I am far more concerned about AI being misused by bad actors. In that way, AI is a lot like nuclear technology: the same science that powers cities can also build bombs, and the risk lies in who controls it and how. Which brings me back to the question I left the room with: who gets a say?
+
+No answers, as promised. But better questions.

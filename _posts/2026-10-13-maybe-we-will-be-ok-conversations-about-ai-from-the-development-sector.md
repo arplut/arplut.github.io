@@ -7,7 +7,8 @@ category: Reflections on Life
 ---
 A few weeks ago, I joined a Dev Sec Meetup in Bengaluru built around a simple idea: a dialogic space to talk about AI through lived experiences. It was hosted by Naagha Shyamala R of Kshetra Foundation and co-hosted by Neena Jain, as part of the Dev Sec Meetups community started by Aagam Shah. These are free, inclusive, zero-waste meetups for anyone working towards making the city a better place, and this one was held at Samagata Foundation. Most of us in the room were from the development sector. The hosts were clear from the start that they didn’t walk in with answers, and didn’t expect us to walk out with any either.
 
-assets/img/uploads/img-20260822-wa0033.jpg
+![Dev Sec Meetup]({'/assets/img/uploads/img-20260822-wa0033.jpg'})
+
 
 The conversation ran over three rounds: the costs and benefits of AI, its boundaries, and its governance and regulation. Most conversations about AI are led by people who build it or sell it, so if you are curious how people working on social issues on the ground think about it, I hope these notes offer a useful window. They come only from the small group I was part of; other groups had their own discussions and arrived at different insights. I scribbled notes on a sheet of brown paper as we went, and this piece is my attempt to make sense of them.
 

@@ -45,7 +45,7 @@ On countering nihilism and generational anxiety: maybe we will be ok.
 
 When asked if there were topics we wanted to talk about more, the honest answer was “not really.” But one question stayed open for me: public ownership. How can citizens be more involved in the key decisions around AI, like where data centres go, how jobs are regulated, and what happens in education? These decisions will affect a lot of lives, and right now very few people have a say in them. We didn’t get around to discussing it, but it feels like the conversation worth having next.
 
-One More Thought: Beyond the Chatbot
+<b>One More Thought: Beyond the Chatbot</b>
 
 A lot of people still think of AI as a chatbot. But a more recent development, and a higher risk, comes from advanced agentic AI: systems that can take actions on their own, not just answer questions. In the wrong hands, these can pose serious cybersecurity risks, including attacks on critical systems.
 
@@ -53,7 +53,7 @@ How does this affect the common man? Imagine an airline’s systems going down o
 
 During that outage, IndiGo kept flights moving by issuing handwritten boarding passes. It made me think. Earlier I called India slow, and on regulation that is a real problem. But that same slowness to fully digitise means many of our analog fallbacks still exist. A system that can drop back to pen and paper is harder to break completely. Engineers call this graceful degradation, and it may turn out to be one of the most underrated forms of resilience we have. As we rush to automate everything, keeping a manual way to do the essential things might be one of the smartest choices we can make.
 
-Closing
+<b>Closing</b>
 
 What surprised me, and the hosts said this too, was that there wasn’t really any anti-AI sentiment in the room. There was anxiety, mostly about making sure AI is used responsibly. And by the end, a lot of that anxiety had turned into curiosity.
 

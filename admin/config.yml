@@ -21,6 +21,8 @@ collections:
     fields:
       - { label: Layout, name: layout, widget: hidden, default: post }
       - { label: Title, name: title, widget: string }
+      # Jekyll uses front-matter `slug` for :title in the permalink, overriding the file name.
+      - { label: URL slug, name: slug, widget: string, required: false, pattern: ['^[a-z0-9]+(-[a-z0-9]+)*$', "Lowercase letters, numbers and hyphens only, e.g. ai-dev-sec"], hint: "Post lives at /blog/<slug>/. Leave blank to use the title-based default." }
       - { label: Publish Date, name: date, widget: datetime }
       - label: Category
         name: categories
@@ -32,14 +34,5 @@ collections:
           - { label: Spirituality, value: spirituality }
           - { label: Miscellany, value: miscellany }
         multiple: false
-      - label: Category (display name)
-        name: category
-        widget: select
-        options:
-          - Poems
-          - Reflections on Life
-          - Sci-Tech
-          - Spirituality
-          - Miscellany
       - { label: Excerpt, name: excerpt, widget: string, required: false }
       - { label: Body, name: body, widget: markdown }

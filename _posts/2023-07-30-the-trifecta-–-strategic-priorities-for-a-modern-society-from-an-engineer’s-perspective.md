@@ -4,7 +4,6 @@ title: The Trifecta – Strategic Priorities for a Modern Society (from an
   engineer’s perspective)
 date: 2023-07-30T17:00:00.000+05:30
 categories: sci-tech
-category: Sci-Tech
 excerpt: I have always wondered about how to solve different challenges people
   face, and at least for myself I think about how best to help towards these
   challenges with innovations in technology...

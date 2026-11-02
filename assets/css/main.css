@@ -379,11 +379,10 @@ a:focus-visible {
   text-align: right;
 }
 
-.footer-ring {
-  width: 2.25rem;
-  height: 2.25rem;
-  border: 3px solid var(--accent);
-  border-radius: 50%;
+.footer-mark {
+  display: block;
+  height: 4.5rem;
+  width: auto;
   margin-left: auto;
   margin-bottom: 0.75rem;
 }
@@ -1305,7 +1304,7 @@ a:focus-visible {
   .footer-signoff {
     text-align: left;
   }
-  .footer-ring {
+  .footer-mark {
     margin-left: 0;
   }
 }

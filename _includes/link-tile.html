@@ -1,0 +1,23 @@
+{%- comment -%}
+Compact link tile. Params: name, tag, note, and either
+  handle - a YouTube handle (the part after youtube.com/@); the channel icon is fetched automatically
+  url + avatar - any website and an image URL for its icon
+The tile shows the name's first letter if the icon fails to load.
+{%- endcomment -%}
+{%- if include.handle -%}
+  {%- assign tile_url = 'https://www.youtube.com/@' | append: include.handle -%}
+  {%- assign tile_avatar = 'https://unavatar.io/youtube/' | append: include.handle | append: '?fallback=false' -%}
+  {%- assign tile_label = '@' | append: include.handle -%}
+{%- else -%}
+  {%- assign tile_url = include.url -%}
+  {%- assign tile_avatar = include.avatar -%}
+  {%- assign tile_label = include.url | remove: 'https://' | remove: 'www.' -%}
+{%- endif -%}
+<a class="link-tile" href="{{ tile_url }}" target="_blank" rel="noopener">
+  <span class="link-tile-icon" data-initial="{{ include.name | slice: 0 }}">{% if tile_avatar %}<img src="{{ tile_avatar }}" alt="" loading="lazy" onerror="this.remove()">{% endif %}</span>
+  <span class="link-tile-text">
+    <span class="link-tile-head"><strong>{{ include.name }}</strong><span class="link-tile-tag">{{ include.tag }}</span></span>
+    <span class="link-tile-note">{{ include.note }}</span>
+    <span class="link-tile-url">{{ tile_label }} ↗</span>
+  </span>
+</a>

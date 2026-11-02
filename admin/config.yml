@@ -36,3 +36,42 @@ collections:
         multiple: false
       - { label: Excerpt, name: excerpt, widget: string, required: false }
       - { label: Body, name: body, widget: markdown }
+
+  # Recipes show up on /stuff/cooking/ under their group, and in "Recently added".
+  - name: recipes
+    label: Recipes
+    label_singular: Recipe
+    folder: _recipes
+    create: true
+    slug: "{{slug}}"
+    summary: "{{title}} · {{group}}"
+    fields:
+      - { label: Layout, name: layout, widget: hidden, default: recipe }
+      - { label: Title, name: title, widget: string, hint: "The dish, e.g. Sambar" }
+      - { label: Subtitle, name: subtitle, widget: string, required: false, hint: "Short line under the title, e.g. With homemade masala" }
+      - { label: URL slug, name: slug, widget: string, pattern: ['^[a-z0-9]+(-[a-z0-9]+)*$', "Lowercase letters, numbers and hyphens only, e.g. rava-dosa"], hint: "Recipe lives at /stuff/cooking/<slug>/." }
+      - { label: Date added, name: date, widget: datetime }
+      # Keep these in sync with the `recipes:` groups in stuff/cooking.html.
+      - label: Recipe group
+        name: group
+        widget: select
+        options: ["Dosa varieties", "Idli varieties", "Accompaniments", "Upma", "Chapati & curries", "Rice balls & sevai"]
+      - { label: Hero photo, name: hero_image, widget: image, required: false, hint: "Optional banner photo behind the title." }
+      - label: Ingredients
+        name: ingredients
+        widget: list
+        required: false
+        hint: "One block per part of the recipe, e.g. For the sambar, For the tadka."
+        fields:
+          - { label: Group, name: group, widget: string }
+          - { label: Items, name: items, widget: list, field: { label: Item, name: item, widget: string } }
+      - label: Reference video
+        name: video
+        widget: object
+        required: false
+        collapsed: true
+        fields:
+          - { label: YouTube link, name: url, widget: string, required: false, hint: "A youtu.be link with ?t= starts the embed at that time." }
+          - { label: Heading, name: title, widget: string, required: false, default: "Reference video" }
+          - { label: Note, name: note, widget: text, required: false }
+      - { label: Method, name: body, widget: markdown, hint: "Use '## ' for sections (Method, Storage & usage) and '### 1. Step name' for numbered steps." }

@@ -20,6 +20,16 @@ permalink: /blog/:title/
 collections:
   category_pages:
     output: true
+  # Recipes (editable in the CMS) live at /stuff/cooking/<slug>/ and are listed on the cooking page.
+  recipes:
+    output: true
+    permalink: /stuff/cooking/:slug/
+
+defaults:
+  - scope:
+      type: recipes
+    values:
+      layout: recipe
 
 # Master list of categories. `featured: true` ones become the 4 homepage cards.
 # `slug` is what goes in a post's `categories:` frontmatter; `name` is the display label.
@@ -53,6 +63,15 @@ nav:
     url: /work/
   - name: stuff
     url: /stuff/
+    # `children` turns the nav item into a dropdown. On desktop the parent is a link and hover opens
+    # the menu; on touch screens the menu adds an "Overview" entry for the parent url.
+    children:
+      - name: Photography
+        url: /stuff/photography/
+      - name: Curations & Guides
+        url: /stuff/guides/
+      - name: Cooking
+        url: /stuff/cooking/
   - name: contact
     url: /contact/
 

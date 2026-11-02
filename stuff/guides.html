@@ -1,0 +1,23 @@
+---
+layout: page
+title: Curations & Guides
+permalink: /stuff/guides/
+---
+
+<p><em>Resources I've gathered and guides I've written along the way.</em></p>
+
+{%- comment -%} Any `layout: guide` page under /stuff/guides/ shows up here automatically. {%- endcomment -%}
+{% assign guides = site.pages | where: "layout", "guide" | where_exp: "p", "p.url contains '/stuff/guides/'" | sort: "title" %}
+{% if guides.size > 0 %}
+<div class="hub-grid">
+  {% for guide in guides %}
+  <a class="hub-card" href="{{ guide.url | relative_url }}">
+    <span class="hub-num">{{ guide.icon }}</span>
+    <h3>{{ guide.title }}</h3>
+    <p>{{ guide.description }}</p>
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<p>The first guides are on their way.</p>
+{% endif %}

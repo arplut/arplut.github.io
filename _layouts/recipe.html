@@ -1,0 +1,59 @@
+---
+layout: guide
+---
+{%- comment -%}
+A recipe from the `recipes` collection (_recipes/, editable in the CMS). Front matter:
+  title, subtitle, slug, date, group (must match a group name on the cooking page), hero_image
+  ingredients - list of {group, items: [..]}; items render as tick-off checkboxes
+  video       - optional {url, title, note}; a YouTube link is embedded, starting at its ?t= time
+The body is the method, in Markdown.
+{%- endcomment -%}
+<p class="recipe-meta">
+  <span>{{ page.group }}</span>
+  <span>Added <time datetime="{{ page.date | date: '%Y-%m-%d' }}">{{ page.date | date: "%B %-d, %Y" }}</time></span>
+</p>
+
+{% if page.ingredients %}
+<section class="recipe-ingredients" aria-labelledby="ingredients">
+  <h2 id="ingredients">Ingredients</h2>
+  <div class="ingredient-groups">
+    {% for g in page.ingredients %}
+    <div class="ingredient-group">
+      <h3>{{ g.group }}</h3>
+      <ul>
+        {% for item in g.items %}
+        <li><label><input type="checkbox"> <span>{{ item }}</span></label></li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<div class="recipe-method">
+  {{ content }}
+</div>
+
+{% if page.video.url and page.video.url != blank %}
+{%- assign video_url = page.video.url -%}
+{%- if video_url contains 'v=' -%}
+  {%- assign video_id = video_url | split: 'v=' | last | split: '&' | first -%}
+{%- else -%}
+  {%- assign video_id = video_url | split: '?' | first | split: '/' | last -%}
+{%- endif -%}
+{%- assign video_start = '' -%}
+{%- if video_url contains 't=' -%}
+  {%- assign video_start = video_url | split: 't=' | last | split: '&' | first | remove: 's' -%}
+{%- endif -%}
+<section class="recipe-video">
+  <h2>{{ page.video.title | default: "Reference video" }}</h2>
+  {% if page.video.note and page.video.note != blank %}<p>{{ page.video.note }}</p>{% endif %}
+  <div class="video-embed">
+    <iframe src="https://www.youtube-nocookie.com/embed/{{ video_id }}{% if video_start != '' %}?start={{ video_start }}{% endif %}" title="{{ page.video.title | default: 'Reference video' | escape }}" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+  <p class="aside-note"><a href="{{ video_url }}" target="_blank" rel="noopener">Watch on YouTube ↗</a></p>
+</section>
+{% endif %}
+
+<p class="recipe-back"><a href="{{ '/stuff/cooking/' | relative_url }}#recipes">← All recipes</a></p>

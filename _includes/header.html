@@ -3,7 +3,48 @@
   <nav class="site-nav">
     {% for item in site.nav %}
       {%- assign url_prefix = page.url | slice: 0, item.url.size -%}
+      {%- if item.children -%}
+      {%- assign menu_id = 'nav-menu-' | append: item.name | slugify -%}
+      <div class="nav-dropdown">
+        {%- comment -%} A link on hover devices (hover opens the menu); on touch, the script turns a tap into open/close. {%- endcomment %}
+        <a class="nav-dropdown-toggle{% if url_prefix == item.url %} is-current{% endif %}" href="{{ item.url | relative_url }}" aria-expanded="false" aria-controls="{{ menu_id }}">{{ item.name }}<span class="caret" aria-hidden="true">▾</span></a>
+        <ul class="nav-menu" id="{{ menu_id }}">
+          <li class="nav-menu-overview"><a href="{{ item.url | relative_url }}"{% if page.url == item.url %} aria-current="page"{% endif %}>Overview</a></li>
+          {%- for child in item.children %}
+          {%- assign child_prefix = page.url | slice: 0, child.url.size %}
+          <li><a href="{{ child.url | relative_url }}"{% if child_prefix == child.url %} aria-current="page"{% endif %}>{{ child.name }}</a></li>
+          {%- endfor %}
+        </ul>
+      </div>
+      {%- else %}
       <a href="{{ item.url | relative_url }}"{% if url_prefix == item.url %} aria-current="page"{% endif %}>{{ item.name }}</a>
+      {%- endif %}
     {% endfor %}
   </nav>
 </header>
+<script>
+  (function () {
+    var toggles = document.querySelectorAll('.nav-dropdown-toggle');
+    var canHover = window.matchMedia('(hover: hover)');
+    function closeAll(except) {
+      toggles.forEach(function (t) { if (t !== except) t.setAttribute('aria-expanded', 'false'); });
+    }
+    toggles.forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        // With a mouse the link goes to the overview page; on touch a tap opens the menu instead.
+        if (canHover.matches) return;
+        e.preventDefault();
+        closeAll(btn);
+        btn.setAttribute('aria-expanded', String(btn.getAttribute('aria-expanded') !== 'true'));
+      });
+    });
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('.nav-dropdown')) closeAll();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      var open = document.querySelector('.nav-dropdown-toggle[aria-expanded="true"]');
+      if (open) { closeAll(); open.focus(); }
+    });
+  })();
+</script>

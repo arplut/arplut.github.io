@@ -1,0 +1,26 @@
+---
+layout: default
+---
+{%- comment -%}
+Long-form page under /stuff/ with a dark hero banner. Front matter:
+  icon        - emoji shown after the title and on the guides index
+  subtitle    - line under the title in the hero
+  description - summary for the guides index and SEO
+  hero_image  - optional background photo (only used once the file exists)
+Pages under /stuff/guides/ are listed on the Curations & Guides index; recipes get a "cooking" crumb.
+{%- endcomment -%}
+{%- assign hero = site.static_files | where: "path", page.hero_image | first -%}
+<header class="guide-hero"{% if hero %} style="--hero-img: url('{{ page.hero_image | relative_url }}')"{% endif %}>
+  <div class="guide-hero-inner">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{{ '/stuff/' | relative_url }}">stuff</a>
+      {%- if page.url contains '/stuff/guides/' %} / <a href="{{ '/stuff/guides/' | relative_url }}">curations &amp; guides</a>{% endif %}
+      {%- if page.collection == 'recipes' %} / <a href="{{ '/stuff/cooking/' | relative_url }}#recipes">cooking</a>{% endif %}
+    </nav>
+    <h1>{{ page.title }}{% if page.icon %} {{ page.icon }}{% endif %}</h1>
+    {% if page.subtitle and page.subtitle != blank %}<p class="guide-subtitle">{{ page.subtitle }}</p>{% endif %}
+  </div>
+</header>
+<article class="guide-body post-body">
+  {{ content }}
+</article>

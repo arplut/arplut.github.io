@@ -1,5 +1,6 @@
 ---
 layout: recipe
+published: true
 title: Sambar
 subtitle: With homemade masala
 slug: sambar

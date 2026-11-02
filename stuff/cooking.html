@@ -75,39 +75,40 @@ books:
     url: https://amzn.in/d/02iK2g5p
 
 # Family recipes. Items are plain names, or {name, detail, varieties, recipe} when there's more to say.
-# `recipe` is the slug of a recipe in _recipes/ (added through the CMS) and turns the tag into a link.
+# `recipe` is the slug of a recipe in _recipes/ (edited in the CMS). The tag becomes a link once that
+# recipe is published; drafts (`published: false`) stay as plain tags.
 # CMS recipes whose group matches but that aren't listed here are added to the end of the group.
 recipes:
   - group: Dosa varieties
     items:
-      - Plain Dosa
-      - Masala Dosa
-      - Onion Uttapam
-      - Rava Dosa
-      - { name: Ullundu Adai “Dosa”, detail: black urad dal & rice }
-      - { name: Parupu Adai “Dosa”, detail: Bengal gram dal & rice }
-      - Tomato Dosa
-      - Appam
-      - Wheat Dosa
-      - Ragi Dosa
-      - Neer Dosa
-      - { name: Rice Dosa, detail: cooked rice + plain rice }
+      - { name: Plain Dosa, recipe: plain-dosa }
+      - { name: Masala Dosa, recipe: masala-dosa }
+      - { name: Onion Uttapam, recipe: onion-uttapam }
+      - { name: Rava Dosa, recipe: rava-dosa }
+      - { name: Ullundu Adai “Dosa”, detail: black urad dal & rice, recipe: ullundu-adai-dosa }
+      - { name: Parupu Adai “Dosa”, detail: Bengal gram dal & rice, recipe: parupu-adai-dosa }
+      - { name: Tomato Dosa, recipe: tomato-dosa }
+      - { name: Appam, recipe: appam }
+      - { name: Wheat Dosa, recipe: wheat-dosa }
+      - { name: Ragi Dosa, recipe: ragi-dosa }
+      - { name: Neer Dosa, recipe: neer-dosa }
+      - { name: Rice Dosa, detail: cooked rice + plain rice, recipe: rice-dosa }
   - group: Idli varieties
     items:
-      - Plain Idli
-      - Rava Idli
-      - Sagoo Idli
-      - Kanchi Idli
-      - Idli Upma
+      - { name: Plain Idli, recipe: plain-idli }
+      - { name: Rava Idli, recipe: rava-idli }
+      - { name: Sagoo Idli, recipe: sagoo-idli }
+      - { name: Kanchi Idli, recipe: kanchi-idli }
+      - { name: Idli Upma, recipe: idli-upma }
   - group: Accompaniments
     items:
       - { name: Sambar, detail: homemade masala, recipe: sambar }
-      - { name: Chutney, varieties: [Coconut, Mint, Garlic & Urad, Bengal Gram, Tomato, Onion, Groundnut] }
-      - { name: Kadappa, detail: "boiled moong dal, potato, spices, coconut" }
-      - Tomato Kurma
-      - { name: Chutney Podi, varieties: [Red, Garlic, Coconut] }
-      - Potato Sagu
-      - Vegetable Sagu
+      - { name: Chutney, varieties: [Coconut, Mint, Garlic & Urad, Bengal Gram, Tomato, Onion, Groundnut], recipe: chutney }
+      - { name: Kadappa, detail: "boiled moong dal, potato, spices, coconut", recipe: kadappa }
+      - { name: Tomato Kurma, recipe: tomato-kurma }
+      - { name: Chutney Podi, varieties: [Red, Garlic, Coconut], recipe: chutney-podi }
+      - { name: Potato Sagu, recipe: potato-sagu }
+      - { name: Vegetable Sagu, recipe: vegetable-sagu }
     quote: Kadappa is the marriage between sambar and chutney.
     quote_by: Mom
   - group: Upma

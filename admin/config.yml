@@ -44,9 +44,10 @@ collections:
     folder: _recipes
     create: true
     slug: "{{slug}}"
-    summary: "{{title}} · {{group}}"
+    summary: "{{title}} · {{group}}{{published | ternary('', ' · DRAFT')}}"
     fields:
       - { label: Layout, name: layout, widget: hidden, default: recipe }
+      - { label: Published, name: published, widget: boolean, default: true, hint: "Off = draft: kept here in the CMS, but not on the site. Turn on once the recipe is written; its tag on the cooking page then links to it." }
       - { label: Title, name: title, widget: string, hint: "The dish, e.g. Sambar" }
       - { label: Subtitle, name: subtitle, widget: string, required: false, hint: "Short line under the title, e.g. With homemade masala" }
       - { label: URL slug, name: slug, widget: string, pattern: ['^[a-z0-9]+(-[a-z0-9]+)*$', "Lowercase letters, numbers and hyphens only, e.g. rava-dosa"], hint: "Recipe lives at /stuff/cooking/<slug>/." }
